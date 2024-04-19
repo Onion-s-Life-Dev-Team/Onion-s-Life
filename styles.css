@@ -1,0 +1,11 @@
+body {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-user-select: none; /* Safari */
+  -ms-user-select: none; /* IE 10 and IE 11 */
+  user-select: none; /* Standard syntax */
+  touch-action: manipulation;/*sus stack 
+ overflow code*/
+  height: 110%;
+  width: 100%; 
+  overflow: auto;
+}
