@@ -1,1 +1,1420 @@
-<html>template.html</html>
+<!DOCTYPE html>
+
+<html>
+
+<head>
+  <title>Onion's Life</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="shortcut icon" type="image/png" href="sprites/onion.png" />
+  <link rel="manifest" href="manifest.json" />
+  <meta charset="utf-8">
+
+  <style>
+    * {
+      margin: 0;
+    }
+
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    canvas {
+      display: block;
+    }
+  </style>
+</head>
+
+<body>
+  <script>
+    if (typeof navigator.serviceWorker !== 'undefined') {
+      navigator.serviceWorker.register('pwabuilder-sw.js')
+    }
+  </script>
+  <script type="module">
+
+    // import kaboom.js
+    import kaboom from "./kaboomCode.js";
+
+    let canvasWidth = document.documentElement.clientWidth;
+    let canvasHeight = document.documentElement.clientHeight;
+    let deviceMode = null;
+    let heightStretch = 0;
+    if ((window.matchMedia('(display-mode: fullscreen)').matches || window.navigator.fullscreen) && navigator.userAgent.includes('Android')) {
+      // Code for PWA running on Android
+      deviceMode = "Android";
+      heightStretch = 75;
+    } else if ((window.matchMedia('(display-mode: fullscreen)').matches || window.navigator.fullscreen) && navigator.userAgent.includes('CrOS')) {
+      // Code for PWA running on Chrome OS
+      deviceMode = "ChromeOS";
+    } else {
+      // Code for non-PWA behavior or other platforms
+      deviceMode = "Other";
+    }
+    import loadAssets from "./assets.js"
+    import {LEVELS, levelConf} from './levels.js';
+    //var scale = 1;
+    //if (canvasWidth < 800){
+    //scale = .5;
+    //} 
+    //initializing
+    kaboom({
+      background: [153, 204, 255],
+      //scale: scale,
+      width: canvasWidth,
+      height: canvasHeight + heightStretch,
+      //crisp: true,
+    })
+    // load assets
+    loadAssets()
+
+
+    //if(savedId != null){
+    //  savedId = 0;
+    //} else {
+    //  highestId = getData(savedId);
+    //}
+    //}
+    var rEnabled = true
+    var loops = 0;
+    var lvlWidth = 0;
+    var subX = 0;
+    var subY = 0;
+    // Set a cookie
+    function setCookie(name, value, days) {
+      let expires = "";
+      if (days) {
+        const date = new Date();
+        date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+        expires = "; expires=" + date.toUTCString();
+      }
+      document.cookie = name + "=" + value + expires + "; path=/";
+    }
+
+    // Get a cookie value
+    function getCookie(name) {
+      const cookies = document.cookie.split("; ");
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].split("=");
+        if (cookie[0] === name) {
+          return cookie[1];
+        }
+      }
+      return null;
+    }
+    var slctId = 0;
+    // Set a high score cookie
+    function setHighLevel(score) {
+      const existingHighLevel = getCookie("highLevel");
+      if (!existingHighLevel || parseInt(score) > parseInt(existingHighLevel)) {
+        setCookie("highLevel", score, 700);
+      }
+    }
+
+    // Get the high score
+    function getHighLevel() {
+      return getCookie("highLevel");
+    }
+    var first = true;
+    scene("game", ({levelId, coins} = {
+      jumpCount: 0,
+      levelId: 0,
+      coins: 0,
+      levelName: "Intro",
+    }) => {
+
+      if (first) {
+        levelId = slctId;
+        first = false;
+      }
+      if (!first) {
+        levelId = slctId;
+
+      }
+      if (levelId > highestId) {
+        highestId = levelId;
+      }
+
+      //if(levelId > savedId) {
+      //  setData(savedId, levelId)
+      //}
+
+
+      addLevel(LEVELS[levelId ?? 0], levelConf)
+
+
+      const music = play("OverworldlyFoe", {
+        volume: 1,
+        loop: true
+      })
+
+      // add a character to screen
+      const onion = add([
+        // list of components
+        sprite("onion"),
+        pos(120, 40),
+        area(),
+        body(),
+      ])
+
+      //Copy from here
+      if (levelId == 0) {
+        add([
+          text("Intro"),
+          layer("ui"),
+          fixed(),
+          pos(80, 40),
+        ])
+      }
+      //to here to add a new level name  
+      //levelNames()
+
+      if (levelId == 1) {
+        add([
+          text("Classic ~ 1"),
+          layer("ui"),
+          fixed(),
+          pos(80, 40),
+        ])
+      }
+      if (levelId == 2) {
+        add([
+          text("Flying For Coins ~ 2"),
+          layer("ui"),
+          fixed(),
+          pos(80, 40),
+        ])
+
+      }
+      if (levelId == 3) {
+        add([
+          text("Bouncy House ~ 3"),
+          layer("ui"),
+          fixed(),
+          pos(80, 40),
+        ])
+
+      }
+      if (levelId == 4) {
+        add([
+          text("Booby Trap ~ 4"),
+          layer("ui"),
+          fixed(),
+          pos(80, 40),
+        ])
+
+      }
+      if (levelId == 5) {
+        add([
+          text("Staircase of Doom ~ 5"),
+          layer("ui"),
+          fixed(),
+          pos(80, 40),
+        ])
+
+      }
+      if (levelId == 6) {
+        add([
+          text("Boucin' Around ~ 6"),
+          layer("ui"),
+          fixed(),
+          pos(80, 40),
+        ])
+
+      }
+      if (levelId == 7) {
+        add([
+          text("Look Out Below ~ 7"),
+          layer("ui"),
+          fixed(),
+          pos(80, 40),
+        ])
+
+      }
+      if (levelId == 8) {
+        add([
+          text("Whoop de doo ~ 8"),
+          layer("ui"),
+          fixed(),
+          pos(80, 40),
+        ])
+
+      }
+      if (levelId == 9) {
+        add([
+          text("Healthy Hurdles ~ 9"),
+          layer("ui"),
+          fixed(),
+          pos(80, 40),
+        ])
+
+      }
+      if (levelId == 10) {
+        add([
+          text("Onion Can Fly ~ 10"),
+          color(255, 250, 250),
+          layer("ui"),
+          fixed(),
+          pos(80, 40),
+        ])
+
+      }
+      if (levelId == 11) {
+        add([
+          text("Free Fallin' ~ 11"),
+          color(255, 250, 250),
+          layer("ui"),
+          fixed(),
+          pos(80, 40),
+        ])
+
+      }
+      if (levelId == 12) {
+        add([
+          text("Da Brick Wall ~ 12"),
+          color(255, 250, 250),
+          layer("ui"),
+          fixed(),
+          pos(80, 40),
+        ])
+
+      }
+      if (levelId == 13) {
+        add([
+          text("Leap O' Faith ~ 13"),
+          color(255, 240, 240),
+          layer("ui"),
+          fixed(),
+          pos(80, 40),
+        ])
+
+      }
+      if (levelId == 14) {
+        add([
+          text("Descending Tomfoolery ~ 14"),
+          color(255, 240, 240),
+          layer("ui"),
+          fixed(),
+          pos(80, 40),
+        ])
+      }
+      if (levelId == 15) {
+        add([
+          text("Now this is Hard ~ 15"),
+          color(255, 230, 230),
+          layer("ui"),
+          fixed(),
+          pos(80, 40),
+        ])
+
+      }
+      if (levelId == 16) {
+        add([
+          text("DON'T GET SPIKED ~ 16"),
+          color(255, 230, 230),
+          layer("ui"),
+          fixed(),
+          pos(80, 40),
+        ])
+
+      }
+      if (levelId == 17) {
+        add([
+          text("Platform Chaos ~ 17"),
+          color(255, 220, 220),
+          layer("ui"),
+          fixed(),
+          pos(80, 40),
+        ])
+      }
+      if (levelId == 18) {
+        add([
+          text("Enter the Secret Lair ~ 18"),
+          color(255, 220, 220),
+          layer("ui"),
+          fixed(),
+          pos(80, 40),
+        ])
+      }
+      if (levelId == 19) {
+        add([
+          text("Secret Lair ~ 19"),
+          color(255, 210, 210),
+          layer("ui"),
+          fixed(),
+          pos(80, 40),
+        ])
+      }
+      if (levelId == 20) {
+        add([
+          text("Rollercoaster ~ 20"),
+          color(255, 210, 210),
+          layer("ui"),
+          fixed(),
+          pos(80, 40),
+        ])
+      }
+      if (levelId == 21) {
+        add([
+          text("Onion's got HOPS ~ 21"),
+          color(255, 200, 200),
+          layer("ui"),
+          fixed(),
+          pos(80, 40),
+        ])
+      }
+      if (levelId == 22) {
+        add([
+          text("Cruisin' for a Bruisin' ~ 22"),
+          color(255, 190, 190),
+          layer("ui"),
+          fixed(),
+          pos(80, 40),
+        ])
+      }
+      if (levelId == 23) {
+        add([
+          text("Mount Scallion ~ 23"),
+          color(255, 180, 180),
+          layer("ui"),
+          fixed(),
+          pos(80, 40),
+        ])
+      }
+      if (levelId == 24) {
+        add([
+          text("DROP ~ 24"),
+          color(255, 170, 170),
+          layer("ui"),
+          fixed(),
+          pos(80, 40),
+        ])
+      }
+      if (levelId == 25) {
+        add([
+          text("Tower of Pain ~ 25"),
+          color(255, 160, 160),
+          layer("ui"),
+          fixed(),
+          pos(80, 40),
+        ])
+      }
+      if (levelId == 26) {
+        add([
+          text("Tricky timing ~ 26"),
+          color(255, 150, 150),
+          layer("ui"),
+          fixed(),
+          pos(80, 40),
+        ])
+      }
+      if (levelId == 27) {
+        add([
+          text("Insane Precision ~ 27"),
+          color(255, 140, 140),
+          layer("ui"),
+          fixed(),
+          pos(80, 40),
+        ])
+      }
+      if (levelId == 28) {
+        add([
+          text("It's Not That Simple ~ 28"),
+          color(255, 130, 130),
+          layer("ui"),
+          fixed(),
+          pos(80, 40),
+        ])
+      }
+      if (levelId == 29) {
+        add([
+          text("It's a long drop ~ 29"),
+          color(255, 120, 120),
+          layer("ui"),
+          fixed(),
+          pos(80, 40),
+        ])
+      }
+      if (levelId == 30) {
+        add([
+          text("Into the Abyss ~ 30"),
+          color(255, 110, 110),
+          layer("ui"),
+          fixed(),
+          pos(80, 40),
+        ])
+      }
+      if (levelId == 31) {
+        add([
+          text("Enter the Labyrinth ~ 31"),
+          color(255, 100, 100),
+          layer("ui"),
+          fixed(),
+          pos(80, 40),
+        ])
+      }
+      if (levelId == 32) {
+        add([
+          text("The Labyrinth ~ 32"),
+          color(255, 90, 90),
+          layer("ui"),
+          fixed(),
+          pos(80, 40),
+        ])
+      }
+
+      if (levelId == 33) {
+        add([
+          text("WZX/g:+`rQAW$N*-|oR.&'V/f/=|)p(a=^;u@:|a!6hYv@&FJ8-5H~kjq%#9Ia"),
+          color(255, 80, 80),
+          layer("ui"),
+          fixed(),
+          pos(80, 40),
+        ])
+      }
+      //that music annoys me
+      onKeyPress('s', () => {
+        if (music.isStopped()) {
+          music.play()
+        } else {
+          music.pause()
+        }
+      })
+      //music.detune(-2000)
+      // Function to apply random effects to the music
+      function applyRandomEffects() {
+        // Randomly detune the music
+        music.detune(Math.floor(Math.random() * 6001) - 3000); // Adjust the range as desired
+
+        // Randomly change the music's speed
+        music.speed = Math.random() * 2 + 0.5; // Adjust the range as desired
+
+      }
+
+      // Function to continuously apply changing effects
+      function continuouslyChangeEffects() {
+        setInterval(() => {
+          if (music && music.isPaused()) {
+            applyRandomEffects();
+          }
+        }, 2000); // Adjust the interval duration as desired (in milliseconds)
+      }
+
+      // Event listener for the "c" key press
+      onKeyPress("c", () => {
+        if (music && music.isPaused()) {
+          applyRandomEffects();
+        } else {
+          applyRandomEffects();
+          continuouslyChangeEffects();
+        }
+      });
+
+      //movement or controls
+      onKeyPress('p', () => {
+        onKeyPress('z', () => {
+          music.pause()
+          if (levelId + 1 < LEVELS.length) {
+            go("game", {
+              levelId: levelId + 1,
+              coins: coins,
+
+            })
+            levelId = levelId + 1
+            slctId = levelId
+            setHighLevel(levelId)
+          } else {
+            destroy(onion),
+              play("win")
+            add([
+              text("You Win!"),
+              color(0, 255, 0),
+              pos(onion.pos),
+            ])
+            setHighLevel(levelId)
+
+          }
+        })
+
+      })
+      onKeyPress("b", () => {
+        go("title");
+      })
+      keyDown('left', () => {
+        onion.move(-400, 0)
+      })
+      if (isTouch()) {
+        const leftArrow = add([
+          sprite("leftmove"),
+          "leftArrow",
+          pos(20, height() * 0.8),
+          fixed(),
+          scale(2),
+          area(),
+        ]);
+        const rightArrow = add([
+          sprite("rightmove"),
+          "rightArrow",
+          pos(120, height() * 0.8),
+          fixed(),
+          scale(2),
+          area(),
+        ]);
+        const jump = add([
+          sprite("jumpbutton"),
+          "jump",
+          pos(width() * 0.8, height() * 0.8),
+          fixed(),
+          scale(2),
+          area(),
+        ]);
+        const jumpright = add([
+          sprite("jumpright"),
+          "jumpright",
+          pos(120, height() * 0.7),
+          fixed(),
+          scale(2),
+          area(),
+        ]);
+        const jumpleft = add([
+          sprite("jumpleft"),
+          "jumpleft",
+          pos(20, height() * 0.7),
+          fixed(),
+          scale(2),
+          area(),
+        ]);
+        const restart = add([
+          sprite("restart"),
+          pos(width() * 0.8, height() * 0.15),
+          fixed(),
+          area(),
+          scale(2),
+        ]);
+        const home = add([
+          sprite("home"),
+          "b",
+          area(),
+          fixed(),
+          scale(2),
+          pos(width() * 0.9, height() * 0.15),
+        ]);
+        const dj = add([
+          sprite("dj"),
+          area(),
+          fixed(),
+          scale(2),
+          pos(width() * 0.7, height() * 0.15),
+        ]);
+
+        let touching = false;
+        let arrowClicked = null;
+        let maxJumps = 2;
+
+        if (levelId === 32) {
+          maxJumps = Infinity;
+        }
+        let djRotation = 0; // Variable to track the rotation angle
+        let isDjAnimating = false; // Variable to track the animation state
+
+        onTouchStart((id, pos) => {
+          touching = true;
+          if (rightArrow.hasPoint(pos)) {
+            arrowClicked = "right";
+            rightArrow.scale = vec2(1.8); // Scale down the right arrow
+          }
+          //basically replicate the crazy music behavior
+          if (dj.hasPoint(pos)) {
+            if (!isDjAnimating) {
+              isDjAnimating = true;
+              const startTime = time(); // Store the start time of the animation
+              action(() => {
+                const elapsedTime = time() - startTime; // Calculate the elapsed time since the animation started
+                djRotation += dt() * 360; // Increase the rotation angle per frame
+                dj.angle = djRotation; // Apply the rotation angle to the button
+
+                // Add movement effect
+                const movementAmount = Math.sin(time() * 4) * 4; // Adjust the movement intensity and speed
+                dj.move(movementAmount, 0);
+
+                // Add scaling effect
+                const scaleAmount = 1 + Math.sin(time() * 4) * 0.2; // Adjust the scale intensity and speed
+                dj.scale = vec2(scaleAmount);
+
+                // Stop the spinning animation after a certain duration or condition
+                if (elapsedTime >= 1) { // Adjust the duration as desired
+                  isDjAnimating = false;
+                  dj.angle = 0; // Reset the rotation angle
+                  dj.scale = vec2(2); // Reset the scale
+                  dj.pos = vec2(width() * 0.7, height() * 0.15); // Reset the position
+                }
+              });
+            }
+            if (music && music.isPaused()) {
+              applyRandomEffects();
+            } else {
+              applyRandomEffects();
+              continuouslyChangeEffects();
+            }
+          }
+
+          if (leftArrow.hasPoint(pos)) {
+            arrowClicked = "left";
+            leftArrow.scale = vec2(1.8); // Scale down the left arrow
+          }
+          if (jump.hasPoint(pos)) {
+            arrowClicked = "jump";
+            jump.scale = vec2(1.8); // Scale down the jump button
+            if (jumpCount < maxJumps || onion.isGrounded()) {
+              play("jump");
+              onion.jump();
+              jumpCount++;
+            }
+          }
+          if (jumpright.hasPoint(pos)) {
+            arrowClicked = "jumpright";
+            jumpright.scale = vec2(1.8); // Scale down the jumpright button
+            if (jumpCount < maxJumps || onion.isGrounded()) {
+              play("jump");
+              onion.jump();
+              if (!onion.isGrounded()) {
+                // If onion is not on the ground, move it to the right while jumping
+                onion.move(400, 0);
+              }
+              jumpCount++;
+            }
+          }
+          if (jumpleft.hasPoint(pos)) {
+            arrowClicked = "jumpleft";
+            jumpleft.scale = vec2(1.8); // Scale down the jumpleft button
+            if (jumpCount < maxJumps || onion.isGrounded()) {
+              play("jump");
+              onion.jump();
+              if (!onion.isGrounded()) {
+                // If onion is not on the ground, move it
+                onion.move(-400, 0);
+              }
+              jumpCount++;
+            }
+          }
+          if (rEnabled) {
+            if (restart.hasPoint(pos)) {
+              music.pause();
+              go("game", {
+                levelId: levelId,
+              });
+            }
+          }
+          if (home.hasPoint(pos)) {
+            music.pause();
+            setHighLevel(levelId);
+            go("title");
+          }
+        });
+
+        action(() => {
+          if (touching) {
+            if (arrowClicked == "left") {
+              onion.move(-400, 0);
+            }
+            if (arrowClicked == "right") {
+              onion.move(400, 0);
+            }
+          }
+          if (onion.isGrounded()) {
+            jumpCount = 0;
+          }
+          if (arrowClicked == "jumpright") {
+            onion.move(400, 0);
+          }
+          if (arrowClicked == "jumpleft") {
+            onion.move(-400, 0);
+          }
+        });
+
+        onTouchEnd(() => {
+          touching = false;
+          arrowClicked = null;
+          leftArrow.scale = vec2(2); // Scale the left arrow back to normal
+          rightArrow.scale = vec2(2); // Scale the right arrow back to normal
+          jump.scale = vec2(2); // Scale the jump button back to normal
+          jumpright.scale = vec2(2); // Scale the jumpright button back to normal
+          jumpleft.scale = vec2(2); // Scale the jumpleft button back to normal
+        });
+
+      }
+
+      keyDown('right', () => {
+        onion.move(400, 0);
+      });
+
+
+
+      if (levelId != 32) {
+        onKeyPress("up", () => {
+          play("jump")
+          onion.doubleJump()
+        })
+      } else if (levelId == 32) {
+        onKeyPress("up", () => {
+          play("jump")
+          onion.jump()
+        })
+      }
+
+
+      onKeyPress("f", (c) => {
+        fullscreen(!isFullscreen())
+      })
+
+      //devkey
+      /*keyDown('q', () => {
+
+         onion.jump()
+
+        })*/
+
+      //scrolling
+      // camera follows player
+      onion.onUpdate(() => {
+        camPos(onion.pos)
+      });
+      //onion.onUpdate(() => {
+      // center camera to player
+      //var currCam = camPos();
+      //if (currCam.x < onion.pos.x) {
+      //camPos(onion.pos.x, currCam.y);
+      //}
+      //if (currCam.y < onion.pos.y) {
+      //camPos(onion.pos.y, currCam.x);
+      //}
+      //});
+
+      //spike code
+      onion.onCollide("danger", (danger) => {
+        if (!isTouch()) {
+          loops = 0;
+          const sprites = [
+            "onion",
+            "heart",
+
+            "coin",
+
+          ]
+
+          sprites.forEach((spr) => {
+            loadSprite(spr, `/sprites/${spr}.png`)
+          })
+
+          loop(0.1, () => {
+            cleanup()
+            if (loops < 10) {
+              const item = add([
+                pos(onion.pos),
+                sprite(choose(sprites)),
+                origin("center"),
+                scale(rand(0.25, 0.5)),
+                area(),
+
+                body({solid: false, }),
+                lifespan(0.75, {fade: 0.5}),
+                move(choose([LEFT, RIGHT]), rand(60, 240)),
+                cleanup(),
+
+              ])
+              item.jump(rand(320, 500)),
+                cleanup()
+
+            }
+            loops++;
+
+          })
+        }
+
+        // Compose particle properties with components
+        destroy(onion)
+        shake();
+        music.pause()
+        play("death")
+        add([
+          text("You lose"),
+          pos(onion.pos),
+          color(255, 0, 0),
+          layer("ui"),
+        ])
+        setHighLevel(levelId);
+
+      })
+      onion.onCollide("enemy", (e, col) => {
+        // if it's not from the top, die
+        /*if (col.isBottom()) {
+
+
+        })
+
+        loop(0.1, () => {
+            cleanup()
+          if(loops<10){
+            const item = add([
+              pos(onion.pos),
+              sprite(choose(sprites)),
+              origin("center"),
+              scale(rand(0.25, 0.5)),
+              area(),
+
+              body({ solid: false, }),
+              lifespan(0.75, { fade: 0.5 }),
+              move(choose([LEFT, RIGHT]), rand(60, 240)),
+              cleanup(),
+
+            ])
+            item.jump(rand(320, 500)),
+              cleanup()
+
+          }
+            loops++;
+
+          })
+        */
+        destroy(onion)
+        shake();
+        music.pause()
+        play("death")
+        add([
+          text("You lose"),
+          pos(onion.pos),
+          color(255, 0, 0),
+          layer("ui"),
+        ])
+        setHighLevel(levelId);
+        //}
+      })
+      /*onion.onCollide("ground",(ground)=>{
+      play("jump")
+
+      //})
+    */
+      function spawnCloud() {
+
+        const dir = choose([LEFT, RIGHT])
+
+        add([
+          sprite("cloud", {flipX: dir.eq(LEFT)}),
+          move(dir, rand(20, 60)),
+          cleanup(),
+          pos(dir.eq(LEFT) ? width() : 0, rand(-20, 480)),
+          origin("top"),
+          area(),
+          z(-50),
+        ])
+
+        wait(rand(6, 12), spawnCloud)
+
+      }
+      spawnCloud()
+      spawnCloud()
+
+      const score = add([
+        text("Score: 0"),
+        pos(80, 100),
+        {value: 0},
+        layer("ui"),
+        fixed(),
+      ])
+      onion.onCollide("key", () => {
+        destroyAll("door");
+        destroyAll("key");
+        shake();
+      })
+      onion.onCollide("coin", (coin) => {
+        play("score")
+        score.value += 1
+        score.text = "Score:" + score.value
+        destroy(coin)
+
+      })
+
+      //define layers
+
+      layers([
+        "bg",
+        "obj",
+        "ui",
+      ],
+        "game");
+
+      //portal code
+
+      onion.onCollide("portal", () => {
+        music.pause()
+        play("portal")
+        if (levelId + 1 < LEVELS.length) {
+          go("game", {
+            levelId: levelId + 1,
+            coins: coins,
+
+          })
+          levelId = levelId + 1
+          slctId = levelId
+          setHighLevel(levelId)
+        } else {
+          destroy(onion),
+            play("win")
+          add([
+            text("You Win!"),
+            color(0, 255, 0),
+            pos(onion.pos),
+          ])
+          setHighLevel(levelId)
+        }
+      })
+      onion.onCollide("arg", () => {
+        music.pause()
+        go("game", {
+          levelId: -1,
+          coins: coins,
+        })
+      })
+      //jumpy code
+      onion.onCollide("jumpy", () => {
+        play("jumpy")
+        onion.jump(1200)
+      })
+      onion.onCollide("right", () => {
+        onUpdate(() => {
+          onion.move(100, 0)
+        })
+      })
+      onion.onCollide("left", () => {
+        onUpdate(() => {
+          onion.move(-100, 0)
+        })
+
+      })
+      onion.onCollide("stop", () => {
+        onion.move(-onion.move, 0)
+      })
+
+      //if(rEnabled == true){
+      onKeyDown("r", () => {
+        music.pause()
+        go("game", {
+          levelId: levelId,
+        });
+        //caleb is cool
+      });
+      //}
+
+
+    });
+
+    scene("title", () => {
+      if (parseInt(getHighLevel()) > 0) {
+        highestId = parseInt(getHighLevel());
+        slctId = parseInt(getHighLevel());
+        first = false;
+      } else {
+        slctId = 0;
+        first = true;
+      }
+      onKeyPress("s", () => {
+        go("select");
+      })
+
+      onKeyPress("c", () => {
+        go("credits");
+      })
+
+      onKeyPress("m", () => {
+        isMarketDay = true;
+        add([
+          text("MARKET DAY MODE", {size: 60}),
+          layer("title"),
+          color(255, 255, 0),
+          fixed(),
+          pos(width() / 2, height() * 0.20),
+        ])
+      })
+
+      add([
+        text("Onion's Life!", {size: 120}),
+        layer("title"),
+        color(0, 255, 0),
+        fixed(),
+        pos(width() / 2 - 464, height() * 0.10),
+      ])
+
+      const startBtn = add([
+        sprite("startbtn"),
+        layer("title"),
+        "start",
+        fixed(),
+        area(),
+        pos(width() / 2 - 255, height() * 0.85),
+      ])
+
+      const lvlSelect = add([
+        sprite("lvlSelect"),
+        layer("title"),
+        "lvlSelect",
+        fixed(),
+        area(),
+        pos(width() / 2 + 153, height() * 0.85),
+      ])
+
+      add([
+        text("PLAY"),
+        fixed(),
+        pos(width() / 2 - 141, height() * 0.87)
+      ])
+
+      onClick("start", () => {
+        go("game");
+      })
+
+      onKeyPress("space", () => {
+        go("game");
+      })
+
+      onClick("lvlSelect", () => {
+        go("select");
+      })
+      //registers touch 
+      if (isTouch()) {
+        onTouchStart((id, pos) => {
+          if (startBtn.hasPoint(pos)) {
+            go("game");
+          }
+          if (lvlSelect.hasPoint(pos)) {
+            go("select");
+          }
+        })
+      }
+      function spawnCloud() {
+
+        const dir = choose([LEFT, RIGHT])
+
+        add([
+          sprite("cloud", {flipX: dir.eq(LEFT)}),
+          move(dir, rand(20, 60)),
+          cleanup(),
+          pos(dir.eq(LEFT) ? width() : 0, rand(-20, 480)),
+          origin("top"),
+          area(),
+          z(-50),
+        ])
+
+        wait(rand(6, 12), spawnCloud)
+
+      }
+      spawnCloud()
+      spawnCloud()
+
+      add([
+        // list of components
+        sprite("bigonion"),
+        pos(width() / 2 - 115, height() / 2 - 126),
+      ])
+
+      onKeyPress('p', () => {
+        go("piracy");
+      })
+
+    })
+
+    scene("select", () => {
+
+      if (slctId == highestId) {
+        add([
+          sprite("lockedarrowr"),
+          pos(width() * 0.7 - 32, height() / 2 - 64),
+        ])
+      }
+
+      onKeyPress('b', () => {
+        go("title");
+      })
+
+      const levelButton = add([
+        // list of components
+        sprite("lvlbtn"),
+        "btn",
+        pos(width() / 2 - 128, height() / 2 - 128),
+        area(),
+
+      ])
+
+      if (slctId > 9) {
+        lvlWidth = 250;
+        subX = 120;
+        subY = 90;
+      }
+      if (slctId < 10) {
+        lvlWidth = 100;
+        subX = 55;
+        subY = 290;
+      }
+
+      add([
+        text(slctId, {
+          size: 200,
+          width: lvlWidth,
+          height: 180,
+        }),
+        pos(width() / 2 - subX, height() / 2 - subY),
+      ])
+      //touchscreen
+      const leftArrow = add([
+        sprite("arrowl"),
+        "l",
+
+        area({scale: 2, }),
+        pos(width() * 0.3 - 32, height() / 2 - 64),
+      ])
+      if (slctId < highestId) {
+        var rightArrow = add([
+          sprite("arrowr"),
+          "r",
+          area({scale: 2, }),
+          pos(width() * 0.7 - 32, height() / 2 - 64),
+        ])
+      }
+      if (isTouch()) {
+        onTouchStart((id, pos) => {
+          if (slctId < highestId) {
+            var rightArrow = add([
+              sprite("arrowr"),
+              "r",
+              area({scale: 2, }),
+            ])
+            rightArrow.pos = vec2(width() * 0.7 - 32, height() / 2 - 64);
+            if (rightArrow.hasPoint(pos)) {
+              if (slctId < LEVELS.length - 1) {
+                if (slctId < highestId) {
+                  slctId++;
+                  go("select");
+                }
+              }
+            }
+          }
+          if (leftArrow.hasPoint(pos)) {
+            if (slctId > 0) {
+              slctId--;
+              go("select");
+            }
+          }
+          if (levelButton.hasPoint(pos)) {
+            go("game");
+          }
+
+        })
+
+      }
+
+      onClick("r", () => {
+        if (slctId < LEVELS.length - 1) {
+          if (slctId < highestId) {
+            slctId++;
+            go("select");
+          }
+        }
+      })
+      onClick("b", () => {
+        go("title");
+      });
+      onClick("l", () => {
+        if (slctId > 0) {
+          slctId--;
+          go("select");
+        }
+      })
+
+      onClick("btn", () => {
+        go("game");
+      })
+
+
+      add([
+        text("Level Select"),
+        layer("select"),
+        fixed(),
+        pos(80, 40),
+      ])
+      function spawnCloud() {
+
+        const dir = choose([LEFT, RIGHT])
+
+        add([
+          sprite("cloud", {flipX: dir.eq(LEFT)}),
+          move(dir, rand(20, 60)),
+          cleanup(),
+          pos(dir.eq(LEFT) ? width() : 0, rand(-20, 480)),
+          origin("top"),
+          area(),
+          z(-50),
+        ])
+      }
+      spawnCloud()
+      spawnCloud()
+    })
+
+    scene("credits", () => {
+      function spawnCloud() {
+
+        const dir = choose([LEFT, RIGHT])
+
+        add([
+          sprite("cloud", {flipX: dir.eq(LEFT)}),
+          move(dir, rand(20, 60)),
+          cleanup(),
+          pos(dir.eq(LEFT) ? width() : 0, rand(-20, 480)),
+          origin("top"),
+          area(),
+          z(-50),
+        ])
+      }
+      spawnCloud()
+      spawnCloud()
+
+      onKeyPress('b', () => {
+        go("title");
+      })
+
+      add([
+        text("Credits"),
+        pos(80, height() * 0.05),
+      ])
+
+      add([
+        text("Neal - Lead Developer"),
+        pos(80, height() * 0.35),
+      ])
+      add([
+        text("Romeo - Lead Level Designer"),
+        pos(80, height() * 0.45),
+      ])
+      add([
+        text("Caleb - Lead UI Designer"),
+        pos(80, height() * 0.55),
+      ])
+      add([
+        text("Eli - Lead App Developer"),
+        pos(80, height() * 0.65),
+      ])
+
+
+    })
+    var highestId = 0;
+    scene("piracy", () => {
+      add([
+        // list of components
+        sprite("nopiracy"),
+        pos(width() / 2 - 115, height() / 2 + 50),
+      ])
+
+      add([
+        text("Onion doesn't like", {size: 120}),
+        layer("title"),
+        color(255, 255, 255),
+        fixed(),
+        pos(width() / 2 - 651, height() * 0.10),
+      ])
+      add([
+        text("pirates.", {size: 120}),
+        layer("title"),
+        color(255, 0, 0),
+        fixed(),
+        pos(width() / 2 - 275, height() * 0.30),
+      ])
+      onKeyPress("h", () => {
+        onKeyPress("q", () => {
+          go("title");
+        })
+      })
+    })
+    /*
+    scene("dj", () => {
+      const music = play("OverworldlyFoe", {
+        volume: 1,
+        loop: true
+      })
+      music.play()
+      const wheelSize = 100; // Size of the control wheels
+      const wheelSpacing = 50; // Spacing between the wheels
+      const wheelCenterY = height() / 2; // Y position for all wheels
+      const wheelSpeed = 0.1; // Speed of wheel rotation
+
+      const wheels = [
+        { name: "Volume", value: 0, min: 0, max: 1, step: 0.1 },
+        { name: "Speed", value: 1, min: 0.5, max: 2, step: 0.1 },
+        { name: "Detune", value: 0, min: -1200, max: 1200, step: 100 },
+      ];
+
+      const wheelSprites = [];
+
+      // Create the control wheels
+      wheels.forEach((wheel, index) => {
+        const wheelSprite = add([
+          sprite("dj"),
+          area(),
+          pos((index + 1) * (wheelSize + wheelSpacing), wheelCenterY),
+          origin("center"),
+          rotate(0),
+          wheel,
+        ]);
+        wheelSprites.push(wheelSprite);
+      });
+
+      // Function to modify the sound based on the wheel values
+      function modifySound() {
+        const volume = wheelSprites[0].value;
+        const speed = wheelSprites[1].value;
+        const detune = wheelSprites[2].value;
+
+        // Apply the modifications to the sound
+        music.volume(volume);
+        music.speed(speed);
+        music.detune(detune);
+      }
+
+      // Update the sound modification on each frame
+      action(() => {
+        modifySound();
+      });
+
+      // Mouse movement and click events to control the wheels
+      let wheelIndex = 0; // Index of the active wheel
+
+      onMouseMove(() => {
+        wheelIndex = Math.floor(mousePos().x / (wheelSize + wheelSpacing));
+      });
+
+      onMousePress(() => {
+        const activeWheel = wheelSprites[wheelIndex];
+        const scrollDelta = mousePos().y - activeWheel.pos.y;
+
+        // Update the wheel value based on the scroll direction and step
+        const { value, min, max, step } = activeWheel;
+
+        if (scrollDelta > 0) {
+          activeWheel.value = Math.min(value + step, max);
+        } else if (scrollDelta < 0) {
+          activeWheel.value = Math.max(value - step, min);
+        }
+      });
+    }) 
+    */
+    if ((window.matchMedia('(display-mode: fullscreen)').matches || window.navigator.fullscreen) || (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone)) {
+      go("title");
+    } else {
+      go("piracy");
+
+    }
+
+  </script>
+
+</body>
+
+</html>
