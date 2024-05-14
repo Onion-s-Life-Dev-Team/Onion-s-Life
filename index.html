@@ -858,7 +858,7 @@
       })
       onion.onCollide("enemy", (e, col) => {
         // if it's not from the top, die
-        /*if (col.isBottom()) {
+        if (col.isBottom()) {
 
 
         })
@@ -886,7 +886,7 @@
             loops++;
 
           })
-        */
+        
         destroy(onion)
         shake();
         music.pause()
@@ -1003,7 +1003,7 @@
 
       })
       onion.onCollide("stop", () => {
-        onion.move(-onion.move, 0)
+        onion.move(0, 0)
       })
 
       //if(rEnabled == true){
