@@ -787,9 +787,9 @@
 
       //scrolling
       // camera follows player
-      onion.onUpdate(() => {
+      onion.onPhysicsResolve(() => {
         camPos(onion.pos)
-      });
+      })
       //onion.onUpdate(() => {
       // center camera to player
       //var currCam = camPos();
