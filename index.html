@@ -808,10 +808,10 @@ f<!DOCTYPE html>
       })
       onion.onCollide("enemy", (e, col) => {
         // if it's not from the top, die
-        if (!col.isBottom()) {
+        if (col.isBottom()) {
          die()
         }
-        else if(col.isBottom()){
+        else if(!col.isBottom()){
           onion.jump(2400)
         }
       })
