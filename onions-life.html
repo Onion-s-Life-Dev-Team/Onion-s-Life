@@ -808,10 +808,10 @@
       })
 onion.onCollide("enemy", (e, col) => {
         // if it's not from the top, die
-        if (col.isBottom()) {
+        if (!col.isBottom()) {
          die()
         }
-        else if(!col.isBottom()){
+        else if(col.isBottom()){
           shake()
           destroy("enemy")
           onion.jump(2400)
@@ -929,6 +929,7 @@ onion.onCollide("enemy", (e, col) => {
       onion.onCollide("portal", () => {
         music.pause()
         play("portal")
+        shake()
         if (levelId + 1 < LEVELS.length) {
           go("game", {
             levelId: levelId + 1,
@@ -959,15 +960,13 @@ onion.onCollide("enemy", (e, col) => {
       //jumpy code
       onion.onCollide("jumpy", () => {
         play("jumpy")
+        shake()
         onion.jump(1200)
       })
       onion.onCollide("right", () => {
-        onUpdate(() => {
           onion.move(100, 0)
-        })
       })
       onion.onCollide("left", () => {
-        onUpdate(() => {
           onion.move(-100, 0)
         })
 
