@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+f<!DOCTYPE html>
 
 <html>
 
@@ -787,7 +787,7 @@
 
       //scrolling
       // camera follows player
-      onion.onUpdate(() => {
+      onion.onPhysicsResolve(() => {
         camPos(onion.pos)
       });
       //onion.onUpdate(() => {
@@ -811,7 +811,7 @@
         if (!col.isBottom()) {
          die()
         }
-        else{
+        else if(col.isBottom()){
           onion.jump(2400)
         }
       })
