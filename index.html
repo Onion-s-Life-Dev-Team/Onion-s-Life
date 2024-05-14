@@ -803,6 +803,24 @@
 
       //spike code
       onion.onCollide("danger", (danger) => {
+        die()
+
+      })
+      onion.onCollide("enemy", (e, col) => {
+        // if it's not from the top, die
+        if (col.isBottom()) {
+         die()
+        }
+        else{
+          onion.jump(2400)
+        }
+      })
+      /*onion.onCollide("ground",(ground)=>{
+      play("jump")
+
+      //})
+    */
+      function die(){
         if (!isTouch()) {
           loops = 0;
           const sprites = [
@@ -854,57 +872,7 @@
           layer("ui"),
         ])
         setHighLevel(levelId);
-
-      })
-      onion.onCollide("enemy", (e, col) => {
-        // if it's not from the top, die
-        if (col.isBottom()) {
-
-
-        })
-
-        loop(0.1, () => {
-            cleanup()
-          if(loops<10){
-            const item = add([
-              pos(onion.pos),
-              sprite(choose(sprites)),
-              origin("center"),
-              scale(rand(0.25, 0.5)),
-              area(),
-
-              body({ solid: false, }),
-              lifespan(0.75, { fade: 0.5 }),
-              move(choose([LEFT, RIGHT]), rand(60, 240)),
-              cleanup(),
-
-            ])
-            item.jump(rand(320, 500)),
-              cleanup()
-
-          }
-            loops++;
-
-          })
-        
-        destroy(onion)
-        shake();
-        music.pause()
-        play("death")
-        add([
-          text("You lose"),
-          pos(onion.pos),
-          color(255, 0, 0),
-          layer("ui"),
-        ])
-        setHighLevel(levelId);
-        //}
-      })
-      /*onion.onCollide("ground",(ground)=>{
-      play("jump")
-
-      //})
-    */
+      }
       function spawnCloud() {
 
         const dir = choose([LEFT, RIGHT])
