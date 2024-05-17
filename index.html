@@ -588,12 +588,8 @@ onion.onCollide("enemy", (e, col) => {
           area(),
           z(-50),
         ])
-
-        wait(rand(6, 12), spawnCloud)
-
       }
-      spawnCloud()
-      spawnCloud()
+      setInterval(spawnCloud, 10)
 
       const score = add([
         text("Score: 0"),
@@ -892,15 +888,9 @@ onion.onCollide("enemy", (e, col) => {
         fixed(),
         pos(80, 40),
       ])
-  
-      spawnCloud()
-      spawnCloud()
     })
 
     scene("credits", () => {
-      spawnCloud()
-      spawnCloud()
-
       onKeyPress('b', () => {
         go("title");
       })
