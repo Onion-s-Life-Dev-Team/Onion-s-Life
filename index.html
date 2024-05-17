@@ -648,10 +648,11 @@
         play("jumpy")
         onion.jump(1200)
       })
-      onion.onCollide("right", () => {
+      onion.onCollideUpdate("right", () => {
           moveOnion(false, 100)
       })
-      onion.onCollide("left", () => {
+    
+      onion.onCollideUpdate("left", () => {
         moveOnion(true, 100)
       })
       onion.onCollide("stop", () => {
