@@ -174,11 +174,11 @@
       "Allan Mode ~ 34"
     ];
     for(var index = 0; index<levelNames.length; index++){
-      var color = 255*(index/levelNames.length);
+      var notRColor = 255*(index/levelNames.length);
       add([
           text(levelNames[index]),
           layer("ui"),
-          color(255, 255-color, 255-color),
+          color(255, 255-notRColor, 255-notRColor),
           fixed(),
           pos(80, 40),
         ])
