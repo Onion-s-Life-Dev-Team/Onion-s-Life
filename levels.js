@@ -1178,8 +1178,7 @@ const levelConf = {
     "enemy",
     origin("bot"),
     area(),
-    body(),
-  ],
+    ],
   "!": () => [
     sprite("darrow"),
     origin("bot"),
