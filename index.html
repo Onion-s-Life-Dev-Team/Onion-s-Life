@@ -911,33 +911,33 @@
 
     })
     var highestId = 0;
-    scene("piracy", () => {
-      add([
-        // list of components
-        sprite("nopiracy"),
-        pos(width() / 2 - 115, height() / 2 + 50),
-      ])
+    // scene("piracy", () => {
+    //   add([
+    //     // list of components
+    //     sprite("nopiracy"),
+    //     pos(width() / 2 - 115, height() / 2 + 50),
+    //   ])
 
-      add([
-        text("Onion doesn't like", {size: 120}),
-        layer("title"),
-        color(255, 255, 255),
-        fixed(),
-        pos(width() / 2 - 651, height() * 0.10),
-      ])
-      add([
-        text("pirates.", {size: 120}),
-        layer("title"),
-        color(255, 0, 0),
-        fixed(),
-        pos(width() / 2 - 275, height() * 0.30),
-      ])
-      onKeyPress("h", () => {
-        onKeyPress("q", () => {
-          go("title");
-        })
-      })
-    })
+    //   add([
+    //     text("Onion doesn't like", {size: 120}),
+    //     layer("title"),
+    //     color(255, 255, 255),
+    //     fixed(),
+    //     pos(width() / 2 - 651, height() * 0.10),
+    //   ])
+    //   add([
+    //     text("pirates.", {size: 120}),
+    //     layer("title"),
+    //     color(255, 0, 0),
+    //     fixed(),
+    //     pos(width() / 2 - 275, height() * 0.30),
+    //   ])
+    //   onKeyPress("h", () => {
+    //     onKeyPress("q", () => {
+    //       go("title");
+    //     })
+    //   })
+    // })
     /*
     scene("dj", () => {
       const music = play("OverworldlyFoe", {
@@ -1010,9 +1010,9 @@
       });
     }) 
     */
-    if ((window.matchMedia('(display-mode: fullscreen)').matches || window.navigator.fullscreen) || (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone)) {
-      go("title");
-    }
+    // if ((window.matchMedia('(display-mode: fullscreen)').matches || window.navigator.fullscreen) || (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone)) {
+    go("title");
+    // }
 
   </script>
 
