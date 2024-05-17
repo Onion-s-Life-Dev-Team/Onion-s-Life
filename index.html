@@ -252,16 +252,12 @@
         go("title");
       })
       keyDown('left', () => {
-          moveOnion(true)
+          moveOnion(true, 400)
       })
 
       keyDown('right', () => {
-        moveOnion(false)
+        moveOnion(false, 400)
       });
-
-      function moveOnion(invert){
-          onion.move(invert ? 400 : -400, 0)
-      }
 
       function moveOnion(invert, distance){
           onion.move(invert ? distance : -distance, 0)
@@ -403,7 +399,7 @@
               onion.jump();
               if (!onion.isGrounded()) {
                 // If onion is not on the ground, move it to the right while jumping
-                moveOnion(false);
+                moveOnion(false, 400);
               }
               jumpCount++;
             }
@@ -416,7 +412,7 @@
               onion.jump();
               if (!onion.isGrounded()) {
                 // If onion is not on the ground, move it
-                moveOnion(true);
+                moveOnion(true, 400);
               }
               jumpCount++;
             }
@@ -439,20 +435,20 @@
         action(() => {
           if (touching) {
             if (arrowClicked == "left") {
-              moveOnion(true)
+              moveOnion(true, 400)
             }
             if (arrowClicked == "right") {
-              moveOnion(false)
+              moveOnion(false, 400)
             }
           }
           if (onion.isGrounded()) {
             jumpCount = 0;
           }
           if (arrowClicked == "jumpright") {
-            moveOnion(false)
+            moveOnion(false, 400)
           }
           if (arrowClicked == "jumpleft") {
-            moveOnion(true)
+            moveOnion(true, 400)
           }
         });
 
@@ -505,7 +501,7 @@
         die()
 
       })
-onion.onCollide("enemy", (e, col) => {
+      onion.onCollide("enemy", (e, col) => {
         // if it's not from the top, die
         if (col.isBottom()) {
          shake()
@@ -589,7 +585,7 @@ onion.onCollide("enemy", (e, col) => {
           z(-50),
         ])
       }
-      setInterval(spawnCloud, 10)
+      setInterval(spawnCloud, 10000)
 
       const score = add([
         text("Score: 0"),
