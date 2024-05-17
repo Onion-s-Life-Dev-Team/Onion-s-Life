@@ -252,8 +252,21 @@
         go("title");
       })
       keyDown('left', () => {
-        onion.move(-400, 0)
+          moveOnion(true)
       })
+
+      keyDown('right', () => {
+        moveOnion(false)
+      });
+
+      function moveOnion(invert){
+          onion.move(invert ? 400 : -400, 0)
+      }
+
+      function moveOnion(invert, distance){
+          onion.move(invert ? distance : -distance, 0)
+      }
+
       if (isTouch()) {
         const leftArrow = add([
           sprite("leftmove"),
@@ -390,7 +403,7 @@
               onion.jump();
               if (!onion.isGrounded()) {
                 // If onion is not on the ground, move it to the right while jumping
-                onion.move(400, 0);
+                moveOnion(false);
               }
               jumpCount++;
             }
@@ -403,7 +416,7 @@
               onion.jump();
               if (!onion.isGrounded()) {
                 // If onion is not on the ground, move it
-                onion.move(-400, 0);
+                moveOnion(true);
               }
               jumpCount++;
             }
@@ -426,20 +439,20 @@
         action(() => {
           if (touching) {
             if (arrowClicked == "left") {
-              onion.move(-400, 0);
+              moveOnion(true)
             }
             if (arrowClicked == "right") {
-              onion.move(400, 0);
+              moveOnion(false)
             }
           }
           if (onion.isGrounded()) {
             jumpCount = 0;
           }
           if (arrowClicked == "jumpright") {
-            onion.move(400, 0);
+            moveOnion(false)
           }
           if (arrowClicked == "jumpleft") {
-            onion.move(-400, 0);
+            moveOnion(true)
           }
         });
 
@@ -455,11 +468,7 @@
 
       }
 
-      keyDown('right', () => {
-        onion.move(400, 0);
-      });
-
-
+     
 
       if (levelId != 32) {
         onKeyPress("up", () => {
@@ -490,17 +499,7 @@
       onion.onUpdate(() => {
         camPos(onion.pos)
       })
-      //onion.onUpdate(() => {
-      // center camera to player
-      //var currCam = camPos();
-      //if (currCam.x < onion.pos.x) {
-      //camPos(onion.pos.x, currCam.y);
-      //}
-      //if (currCam.y < onion.pos.y) {
-      //camPos(onion.pos.y, currCam.x);
-      //}
-      //});
-
+    
       //spike code
       onion.onCollide("danger", (danger) => {
         die()
@@ -664,12 +663,12 @@ onion.onCollide("enemy", (e, col) => {
       })
       onion.onCollide("right", () => {
         onUpdate(() => {
-          onion.move(100, 0)
+          moveOnion(false, 100)
         })
       })
       onion.onCollide("left", () => {
         onUpdate(() => {
-          onion.move(-100, 0)
+          moveOnion(true, 100)
         })
 
       })
@@ -705,17 +704,6 @@ onion.onCollide("enemy", (e, col) => {
 
       onKeyPress("c", () => {
         go("credits");
-      })
-
-      onKeyPress("m", () => {
-        isMarketDay = true;
-        add([
-          text("MARKET DAY MODE", {size: 60}),
-          layer("title"),
-          color(255, 255, 0),
-          fixed(),
-          pos(width() / 2, height() * 0.20),
-        ])
       })
 
       add([
@@ -772,25 +760,7 @@ onion.onCollide("enemy", (e, col) => {
           }
         })
       }
-      function spawnCloud() {
 
-        const dir = choose([LEFT, RIGHT])
-
-        add([
-          sprite("cloud", {flipX: dir.eq(LEFT)}),
-          move(dir, rand(20, 60)),
-          cleanup(),
-          pos(dir.eq(LEFT) ? width() : 0, rand(-20, 480)),
-          origin("top"),
-          area(),
-          z(-50),
-        ])
-
-        wait(rand(6, 12), spawnCloud)
-
-      }
-      spawnCloud()
-      spawnCloud()
 
       add([
         // list of components
@@ -922,39 +892,12 @@ onion.onCollide("enemy", (e, col) => {
         fixed(),
         pos(80, 40),
       ])
-      function spawnCloud() {
-
-        const dir = choose([LEFT, RIGHT])
-
-        add([
-          sprite("cloud", {flipX: dir.eq(LEFT)}),
-          move(dir, rand(20, 60)),
-          cleanup(),
-          pos(dir.eq(LEFT) ? width() : 0, rand(-20, 480)),
-          origin("top"),
-          area(),
-          z(-50),
-        ])
-      }
+  
       spawnCloud()
       spawnCloud()
     })
 
     scene("credits", () => {
-      function spawnCloud() {
-
-        const dir = choose([LEFT, RIGHT])
-
-        add([
-          sprite("cloud", {flipX: dir.eq(LEFT)}),
-          move(dir, rand(20, 60)),
-          cleanup(),
-          pos(dir.eq(LEFT) ? width() : 0, rand(-20, 480)),
-          origin("top"),
-          area(),
-          z(-50),
-        ])
-      }
       spawnCloud()
       spawnCloud()
 
