@@ -260,7 +260,7 @@
       });
 
       function moveOnion(invert, distance){
-          onion.move(invert ? distance : -distance, 0)
+          onion.move(!invert ? distance : -distance, 0)
       }
 
       if (isTouch()) {
@@ -524,9 +524,7 @@
           const sprites = [
             "onion",
             "heart",
-
-            "coin",
-
+            "coin"
           ]
 
           sprites.forEach((spr) => {
@@ -535,7 +533,7 @@
 
           loop(0.1, () => {
             cleanup()
-            if (loops < 10) {
+            if (loops < 5) {
               const item = add([
                 pos(onion.pos),
                 sprite(choose(sprites)),
@@ -547,14 +545,11 @@
                 lifespan(0.75, {fade: 0.5}),
                 move(choose([LEFT, RIGHT]), rand(60, 240)),
                 cleanup(),
-
               ])
               item.jump(rand(320, 500)),
                 cleanup()
-
             }
             loops++;
-
           })
         }
 
