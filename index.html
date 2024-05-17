@@ -648,13 +648,13 @@
         play("jumpy")
         onion.jump(1200)
       })
-      onion.onCollideUpdate("right", () => {
-          moveOnion(false, 100)
+      onion.onCollide("right", () => {
+        moveOnion(false, 100)
       })
-    
-      onion.onCollideUpdate("left", () => {
+      onion.onCollide("left", () => {
         moveOnion(true, 100)
       })
+      //Set a variable to move in update in onCollide, change the variable to not move in the ending collision
       onion.onCollide("stop", () => {
         onion.move(0, 0)
       })
