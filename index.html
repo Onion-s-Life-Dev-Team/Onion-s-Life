@@ -649,15 +649,10 @@
         onion.jump(1200)
       })
       onion.onCollide("right", () => {
-        onUpdate(() => {
           moveOnion(false, 100)
-        })
       })
       onion.onCollide("left", () => {
-        onUpdate(() => {
-          moveOnion(true, 100)
-        })
-
+        moveOnion(true, 100)
       })
       onion.onCollide("stop", () => {
         onion.move(0, 0)
