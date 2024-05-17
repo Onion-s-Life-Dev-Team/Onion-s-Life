@@ -173,16 +173,16 @@
       "Enter the Labyrinth ~ 31","The Labyrinth ~ 32","Onion's Demise ~ 33",
       "Allan Mode ~ 34"
     ];
-    for(var index = 0; index<levelNames.length; index++){
-      var notRColor = 255*(index/levelNames.length);
-      add([
-          text(levelNames[index]),
-          layer("ui"),
-          color(255, 255-notRColor, 255-notRColor),
-          fixed(),
-          pos(80, 40),
-        ])
-    }  
+  
+    var notRColor = 255*(levelId/levelNames.length);
+    add([
+        text(levelNames[levelId]),
+        layer("ui"),
+        color(255, 255-notRColor, 255-notRColor),
+        fixed(),
+        pos(80, 40),
+      ])
+  
       //that music annoys me
       onKeyPress('s', () => {
         if (music.isStopped()) {
