@@ -1049,6 +1049,22 @@ const LEVELS = [
   "  ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ",
   "  =$=$=$=$=$=$=$=$=$=$=$=$=$=$=$=$=$=$=$=$=$=$=$=$=$=$=$=$= O",
   "=============================================================",
+],[
+ "",
+ "",
+ "",
+ "                l                                                                       O",
+ "",
+ "                                      ^    ^   ^",
+ "",
+ "    ^     l    ^^^^lllll^^^ ^ ^^l^ ^ ^ l ^ l ^ l ^     ^ l ^    lll    l       l",
+ "",
+ "",
+ "",
+ "",
+"====   ==  ===  =  ==  =  =  ===  =  =  ==  ==  =  ==  =  ==  ==  =  =  =====  =  l ",
+"     l                           l             l             l         l",
+"iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii",
 ],
   //end of level code 
 ]
