@@ -173,8 +173,8 @@
       "Enter the Labyrinth ~ 31","The Labyrinth ~ 32","Onion's Demise ~ 33",
       "Allan Mode ~ 34"
     ];
-    for(var index = 0; index<levelNames.length(); index++){
-      var color = 255*(index/levelNames.length());
+    for(var index = 0; index<levelNames.length; index++){
+      var color = 255*(index/levelNames.length);
       add([
           text(levelNames[index]),
           layer("ui"),
