@@ -76,6 +76,11 @@
     )
     .on(
       'broadcast',
+      { event: 'new_player' },
+      (event) => { receivedMoveLevels(event) }
+    )
+    .on(
+      'broadcast',
       { event: 'player_died' },
       (event) => { receivedDeathMessage(event) }
     )
@@ -99,59 +104,52 @@
       }
     }
 
-    // Handle a mouse event.
-    function receivedOnionPosition({ event, payload }){
-      const { userId, x, y, level } = payload
-      if (userId !== userID){
-        // Check if we already have a sprite for this user.
-        let onion = otherOnions.find(onion => onion.userId === userId)
-        //if onion is already hidden, return null
-        if (!onion){
-          //perform a level check ot see if the onion is in the same level
-          // If not, create a new sprite.
-          onion = add([
-            sprite("onion"),
-            pos(x, y),
-            area(),
-            body(),
-            { userId, level }
-          ])
-          otherOnions.push(onion)
-          displayOnionsInLevel(trackingLevelId)
-        } else {
-          // If we already have a sprite, update its position.
-          onion.pos.x = x
-          onion.pos.y = y
-          onion.level = level
+    function receivedMoveLevels({ event, payload }) {
+      const { userId, level } = payload;
+      if (userId !== userID) {
+        let onion = otherOnions.find(onion => onion.userId === userId);
+        if (onion) {
+          onion.level = level;
+          // Check if the level matches the current player's level
+          if (level !== trackingLevelId) {
+            destroy(onion); // Remove sprite from view
+            otherOnions.splice(otherOnions.indexOf(onion), 1); // Remove from array
+          }
         }
       }
     }
 
-    //handle level change
-    function receivedMoveLevels({ event, payload }){
-      const { userId, level } = payload
-      if (userId !== userID){
-        //set the onions that moved ups level to the new level
-        displayOnionsInLevel(level)
-
-      }
-    }
-
-    // helper to check for onions in a level and display them
-    function displayOnionsInLevel(level){
-      //check the onions array
-      //if there are onions in the current level, display them
-      //if there are onions not in the current level, remove them
-      for (let onion of otherOnions){
-        if (onion.level === level){
-          onion.hidden = false
-        } else {
-          onion.hidden = true
-        }
-        console.log(onion.hidden);
-      }
+    function receivedOnionPosition({ event, payload }) {
       
+      const { userId, x, y, level } = payload;
+      if (userId !== userID) {
+        let onion = otherOnions.find(onion => onion.userId === userId);
+        if (level === trackingLevelId) { // Ensure the onion is in the same level
+          if (!onion) {
+            onion = add([
+              sprite("onion"),
+              pos(x, y),
+              area(),
+              body(),
+              { userId, level }
+            ]);
+            console.log("Added new onion", onion);
+            otherOnions.push(onion);
+          } else {
+            onion.pos.x = x;
+            onion.pos.y = y;
+          }
+        } else {
+          if (onion) {
+            destroy(onion.sprite); // Remove sprite from view
+            otherOnions.splice(otherOnions.indexOf(onion), 1); // Remove from array
+          }
+        }
+      }
     }
+
+
+
   
     // Helper function for sending our own mouse position.
     function sendOnionPosition(channel, userId, x, y, level){
@@ -292,8 +290,15 @@
 
 
       addLevel(LEVELS[levelId ?? 0], levelConf)
-
-      displayOnionsInLevel(levelId)
+      function sendNewPlayer(){
+        // send a new player event
+        return channel.send({
+          type: 'broadcast',
+          event: 'new_player',
+          payload: { userId: userID, x: 120, y: 40, level: levelId }
+        })
+      }
+      sendNewPlayer()
       const music = play("OverworldlyFoe", {
         volume: 1,
         loop: true
@@ -410,7 +415,6 @@
 
       function moveOnion(invert, distance){
           onion.move(!invert ? distance : -distance, 0)
-          displayOnionsInLevel(levelId)
           sendOnionPosition(channel, userID, onion.pos.x, onion.pos.y, levelId);
       }
 
