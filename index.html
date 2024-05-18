@@ -46,7 +46,8 @@
     const supabase = createClient(SUPABASE_URL, SUPABASE_KEY)
     //generate random ID
     const userID = Math.floor(Math.random() * 1000000);
-    const otherOnions = [];
+    var allUserIds = [];
+    var otherOnions = [];
     /*
     async function updateGameState(newState) {
       const { data, error } = await supabase
@@ -89,7 +90,17 @@
       { event: 'move_levels' },
       (event) => { receivedMoveLevels(event) }
     )
-    .subscribe()
+    .on('presence', { event: 'join' }, ({ newPresences }) => {
+      printOnions(newPresences)
+    })
+    .on('presence', { event: 'sync' }, () => {
+      printOnions(channel.presenceState())
+    })
+    .subscribe(async (status) => {
+      if (status === 'SUBSCRIBED') {
+        await channel.track({ online_at: new Date().toISOString(), userId: userID})
+      }
+    })
 
     //handle death event
     function receivedDeathMessage({ event, payload }){
@@ -103,6 +114,40 @@
         }
       }
     }
+
+    //create a function that prints all onion users
+    // this should add a number in the corner to display how many onions are on, and the uptime
+    //this could include each user
+    function printOnions(presences){
+      //create a for loop that removes the previous onion text from screen
+      for (var i = 0; i < 20; i++){
+        add([
+          text(` `, { size: 20 }),
+          pos(10, 10 + (i * 20)),
+          layer("ui"),
+          fixed(),
+        ])
+      }
+      var k = 0;
+      for (const [userId, presence] of Object.entries(presences)) {
+        if(presence.userId){
+          allUserIds.push(presence.userId)
+        }
+        k++;
+      }
+      console.log(allUserIds)
+      for (var i = 0; i < allUserIds.length; i++){
+        add([
+          text(`Onion ${i + 1}: ${allUserIds[i]}`, { size: 20 }),
+          pos(10, 10 + (i * 20)),
+          layer("ui"),
+          fixed(),
+        ])
+      }
+    }
+
+    
+    
 
     function receivedMoveLevels({ event, payload }) {
       const { userId, level } = payload;
@@ -298,6 +343,7 @@
           payload: { userId: userID, x: 120, y: 40, level: levelId }
         })
       }
+      printOnions(channel.presenceState())
       sendNewPlayer()
       const music = play("OverworldlyFoe", {
         volume: 1,
