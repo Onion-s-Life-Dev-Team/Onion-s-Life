@@ -43,5 +43,11 @@ export default function loadAssets() {
   loadSound("jump", "sounds/hit.mp3")
   loadSound("jumpy", "sounds/spring.mp3")
   loadSound("win", "sounds/error.mp3")
-
+  //import new onion's
+  loadSprite("onion-red", "sprites/onion-watermelon.png")
+  loadSprite("onion-beach","sprites/onion-beach.png")
+  loadSprite("onion-watermelon", "sprites/onion-watermelon2.png")
+  loadSprite("onion-blue","sprites/onion-blue.png")
+  loadSprite("onion-gold","sprites/onion-gold.png")
+  loadSprite("onion-dark","sprites/onion-dark.png")
 }
