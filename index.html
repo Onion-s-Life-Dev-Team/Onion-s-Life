@@ -139,7 +139,7 @@
       for (var i = 0; i < allUserIds.length; i++){
         add([
           text(`Onion ${i + 1}: ${allUserIds[i]}`, { size: 20 }),
-          pos(10, 10 + (i * 20)),
+          pos(canvasWidth - 200, 10 + (i * 20)),
           layer("ui"),
           fixed(),
         ])
