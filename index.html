@@ -30,13 +30,161 @@
 <body>
   <script>
     if (typeof navigator.serviceWorker !== 'undefined') {
-      navigator.serviceWorker.register('pwabuilder-sw.js')
+      //navigator.serviceWorker.register('pwabuilder-sw.js')
     }
   </script>
   <script type="module">
 
     // import kaboom.js
     import kaboom from "./kaboomCode.js";
+    import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+
+
+    const SUPABASE_URL = 'https://ihrdqbqvoflutgbzhqqo.supabase.co'
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlocmRxYnF2b2ZsdXRnYnpocXFvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTYwNDI1ODIsImV4cCI6MjAzMTYxODU4Mn0.d3Vac0lv5CicW-FF_NfZ7j3BAkaXEDLctg47V64S2NE'
+
+    const supabase = createClient(SUPABASE_URL, SUPABASE_KEY)
+    //generate random ID
+    const userID = Math.floor(Math.random() * 1000000);
+    const otherOnions = [];
+    /*
+    async function updateGameState(newState) {
+      const { data, error } = await supabase
+          .from('players')
+          .update(newState)
+          .eq('userID', userID); // Assuming there's a single game state record with id 1
+
+      if (error) {
+          console.error('Error updating game state:', error);
+      } else {
+          console.log('Game state updated:', data);
+      }
+    }
+    */
+
+    const channel = supabase.channel('player_locations')
+    const PLAYER_EVENT = 'player_moved'
+    var trackingLevelId = 0;
+
+    // Subscribe to mouse events.
+    // Our second parameter filters only for mouse events.
+    channel
+    .on(
+      'broadcast',
+      { event: PLAYER_EVENT },
+      (event) => { receivedOnionPosition(event) }
+    )
+    .on(
+      'broadcast',
+      { event: 'player_died' },
+      (event) => { receivedDeathMessage(event) }
+    )
+    .on(
+      'broadcast',
+      { event: 'move_levels' },
+      (event) => { receivedMoveLevels(event) }
+    )
+    .subscribe()
+
+    //handle death event
+    function receivedDeathMessage({ event, payload }){
+      const { userId } = payload
+      if (userId !== userID){
+        // Check if we already have a sprite for this user.
+        let onion = otherOnions.find(onion => onion.userId === userId)
+        if (onion){
+          destroy(onion)
+          otherOnions.splice(otherOnions.indexOf(onion), 1)
+        }
+      }
+    }
+
+    // Handle a mouse event.
+    function receivedOnionPosition({ event, payload }){
+      const { userId, x, y, level } = payload
+      if (userId !== userID){
+        // Check if we already have a sprite for this user.
+        let onion = otherOnions.find(onion => onion.userId === userId)
+        //if onion is already hidden, return null
+        if (!onion){
+          //perform a level check ot see if the onion is in the same level
+          // If not, create a new sprite.
+          onion = add([
+            sprite("onion"),
+            pos(x, y),
+            area(),
+            body(),
+            { userId, level }
+          ])
+          otherOnions.push(onion)
+          displayOnionsInLevel(trackingLevelId)
+        } else {
+          // If we already have a sprite, update its position.
+          onion.pos.x = x
+          onion.pos.y = y
+          onion.level = level
+        }
+      }
+    }
+
+    //handle level change
+    function receivedMoveLevels({ event, payload }){
+      const { userId, level } = payload
+      if (userId !== userID){
+        //set the onions that moved ups level to the new level
+        displayOnionsInLevel(level)
+
+      }
+    }
+
+    // helper to check for onions in a level and display them
+    function displayOnionsInLevel(level){
+      //check the onions array
+      //if there are onions in the current level, display them
+      //if there are onions not in the current level, remove them
+      for (let onion of otherOnions){
+        if (onion.level === level){
+          onion.hidden = false
+        } else {
+          onion.hidden = true
+        }
+        console.log(onion.hidden);
+      }
+      
+    }
+  
+    // Helper function for sending our own mouse position.
+    function sendOnionPosition(channel, userId, x, y, level){
+      return channel.send({
+        type: 'broadcast',
+        event: PLAYER_EVENT,
+        payload: { userId, x, y, level }
+      })
+    }
+    //what to do when the onion dies
+    function sendDeathMessage(channel, userId){
+      return channel.send({
+        type: 'broadcast',
+        event: 'player_died',
+        payload: { userId }
+      })
+    }
+
+    function sendMoveLevels(channel, userId, level){
+      return channel.send({
+        type: 'broadcast',
+        event: 'move_levels',
+        payload: { userId, level }
+      })
+    }
+    
+    // send a death message when the user leaves the page
+    window.addEventListener('beforeunload', () => {
+      sendDeathMessage(channel, userID)
+    })
+
+
+    
 
     let canvasWidth = document.documentElement.clientWidth;
     let canvasHeight = document.documentElement.clientHeight;
@@ -145,7 +293,7 @@
 
       addLevel(LEVELS[levelId ?? 0], levelConf)
 
-
+      displayOnionsInLevel(levelId)
       const music = play("OverworldlyFoe", {
         volume: 1,
         loop: true
@@ -232,6 +380,7 @@
 
             })
             levelId = levelId + 1
+            trackingLevelId = levelId;
             slctId = levelId
             setHighLevel(levelId)
           } else {
@@ -261,6 +410,8 @@
 
       function moveOnion(invert, distance){
           onion.move(!invert ? distance : -distance, 0)
+          displayOnionsInLevel(levelId)
+          sendOnionPosition(channel, userID, onion.pos.x, onion.pos.y, levelId);
       }
 
       if (isTouch()) {
@@ -470,11 +621,14 @@
         onKeyPress("up", () => {
           play("jump")
           onion.doubleJump()
+          sendOnionPosition(channel, userID, onion.pos.x, onion.pos.y, levelId);
         })
       } else if (levelId == 32) {
         onKeyPress("up", () => {
           play("jump")
           onion.jump()
+          sendOnionPosition(channel, userID, onion.pos.x, onion.pos.y, levelId);
+
         })
       }
 
@@ -565,6 +719,7 @@
           layer("ui"),
         ])
         setHighLevel(levelId);
+        sendDeathMessage(channel, userID);
       }
       function spawnCloud() {
 
@@ -616,6 +771,8 @@
       onion.onCollide("portal", () => {
         music.pause()
         play("portal")
+        sendMoveLevels(channel, userID, levelId + 1)
+        trackingLevelId = levelId + 1;
         if (levelId + 1 < LEVELS.length) {
           go("game", {
             levelId: levelId + 1,
@@ -623,6 +780,7 @@
 
           })
           levelId = levelId + 1
+          trackingLevelId = levelId;
           slctId = levelId
           setHighLevel(levelId)
         } else {
