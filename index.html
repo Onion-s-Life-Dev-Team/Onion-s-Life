@@ -30,13 +30,204 @@
 <body>
   <script>
     if (typeof navigator.serviceWorker !== 'undefined') {
-      navigator.serviceWorker.register('pwabuilder-sw.js')
+      //navigator.serviceWorker.register('pwabuilder-sw.js')
     }
   </script>
   <script type="module">
 
     // import kaboom.js
     import kaboom from "./kaboomCode.js";
+    import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+
+
+    const SUPABASE_URL = 'https://ihrdqbqvoflutgbzhqqo.supabase.co'
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlocmRxYnF2b2ZsdXRnYnpocXFvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTYwNDI1ODIsImV4cCI6MjAzMTYxODU4Mn0.d3Vac0lv5CicW-FF_NfZ7j3BAkaXEDLctg47V64S2NE'
+
+    const supabase = createClient(SUPABASE_URL, SUPABASE_KEY)
+    //generate random ID
+    const userID = Math.floor(Math.random() * 1000000);
+    var allUserIds = [];
+    var otherOnions = [];
+    /*
+    async function updateGameState(newState) {
+      const { data, error } = await supabase
+          .from('players')
+          .update(newState)
+          .eq('userID', userID); // Assuming there's a single game state record with id 1
+
+      if (error) {
+          console.error('Error updating game state:', error);
+      } else {
+          console.log('Game state updated:', data);
+      }
+    }
+    */
+
+    const channel = supabase.channel('player_locations')
+    const PLAYER_EVENT = 'player_moved'
+    var trackingLevelId = 0;
+
+    // Subscribe to mouse events.
+    // Our second parameter filters only for mouse events.
+    channel
+    .on(
+      'broadcast',
+      { event: PLAYER_EVENT },
+      (event) => { receivedOnionPosition(event) }
+    )
+    .on(
+      'broadcast',
+      { event: 'new_player' },
+      (event) => { receivedMoveLevels(event) }
+    )
+    .on(
+      'broadcast',
+      { event: 'player_died' },
+      (event) => { receivedDeathMessage(event) }
+    )
+    .on(
+      'broadcast',
+      { event: 'move_levels' },
+      (event) => { receivedMoveLevels(event) }
+    )
+    .on('presence', { event: 'join' }, ({ newPresences }) => {
+      printOnions(newPresences)
+    })
+    .on('presence', { event: 'sync' }, () => {
+      printOnions(channel.presenceState())
+    })
+    .subscribe(async (status) => {
+      if (status === 'SUBSCRIBED') {
+        await channel.track({ online_at: new Date().toISOString(), userId: userID})
+      }
+    })
+
+    //handle death event
+    function receivedDeathMessage({ event, payload }){
+      const { userId } = payload
+      if (userId !== userID){
+        // Check if we already have a sprite for this user.
+        let onion = otherOnions.find(onion => onion.userId === userId)
+        if (onion){
+          destroy(onion)
+          otherOnions.splice(otherOnions.indexOf(onion), 1)
+        }
+      }
+    }
+
+    //create a function that prints all onion users
+    // this should add a number in the corner to display how many onions are on, and the uptime
+    //this could include each user
+    function printOnions(presences){
+      //create a for loop that removes the previous onion text from screen
+      for (var i = 0; i < 20; i++){
+        add([
+          text(` `, { size: 20 }),
+          pos(10, 10 + (i * 20)),
+          layer("ui"),
+          fixed(),
+        ])
+      }
+      var k = 0;
+      for (const [userId, presence] of Object.entries(presences)) {
+        if(presence.userId){
+          allUserIds.push(presence.userId)
+        }
+        k++;
+      }
+      console.log(allUserIds)
+      for (var i = 0; i < allUserIds.length; i++){
+        add([
+          text(`Onion ${i + 1}: ${allUserIds[i]}`, { size: 20 }),
+          pos(canvasWidth - 200, 10 + (i * 20)),
+          layer("ui"),
+          fixed(),
+        ])
+      }
+    }
+
+    
+    
+
+    function receivedMoveLevels({ event, payload }) {
+      const { userId, level } = payload;
+      if (userId !== userID) {
+        let onion = otherOnions.find(onion => onion.userId === userId);
+        if (onion) {
+          onion.level = level;
+          // Check if the level matches the current player's level
+          if (level !== trackingLevelId) {
+            destroy(onion); // Remove sprite from view
+            otherOnions.splice(otherOnions.indexOf(onion), 1); // Remove from array
+          }
+        }
+      }
+    }
+
+    function receivedOnionPosition({ event, payload }) {
+      
+      const { userId, x, y, level } = payload;
+      if (userId !== userID) {
+        let onion = otherOnions.find(onion => onion.userId === userId);
+        if (level === trackingLevelId) { // Ensure the onion is in the same level
+          if (!onion) {
+            onion = add([
+              sprite("onion"),
+              pos(x, y),
+              area(),
+              body(),
+              { userId, level }
+            ]);
+            console.log("Added new onion", onion);
+            otherOnions.push(onion);
+          } else {
+            onion.pos.x = x;
+            onion.pos.y = y;
+          }
+        } else {
+          if (onion) {
+            destroy(onion.sprite); // Remove sprite from view
+            otherOnions.splice(otherOnions.indexOf(onion), 1); // Remove from array
+          }
+        }
+      }
+    }
+
+
+
+  
+    // Helper function for sending our own mouse position.
+    function sendOnionPosition(channel, userId, x, y, level){
+      return channel.send({
+        type: 'broadcast',
+        event: PLAYER_EVENT,
+        payload: { userId, x, y, level }
+      })
+    }
+    //what to do when the onion dies
+    function sendDeathMessage(channel, userId){
+      return channel.send({
+        type: 'broadcast',
+        event: 'player_died',
+        payload: { userId }
+      })
+    }
+
+    function sendMoveLevels(channel, userId, level){
+      return channel.send({
+        type: 'broadcast',
+        event: 'move_levels',
+        payload: { userId, level }
+      })
+    }
+    
+    // send a death message when the user leaves the page
+    window.addEventListener('beforeunload', () => {
+      sendDeathMessage(channel, userID)
+    })
+
+
+    
 
     let canvasWidth = document.documentElement.clientWidth;
     let canvasHeight = document.documentElement.clientHeight;
@@ -144,8 +335,16 @@
 
 
       addLevel(LEVELS[levelId ?? 0], levelConf)
-
-
+      function sendNewPlayer(){
+        // send a new player event
+        return channel.send({
+          type: 'broadcast',
+          event: 'new_player',
+          payload: { userId: userID, x: 120, y: 40, level: levelId }
+        })
+      }
+      printOnions(channel.presenceState())
+      sendNewPlayer()
       const music = play("OverworldlyFoe", {
         volume: 1,
         loop: true
@@ -234,6 +433,7 @@
 
             })
             levelId = levelId + 1
+            trackingLevelId = levelId;
             slctId = levelId
             setHighLevel(levelId)
           } else {
@@ -263,6 +463,7 @@
 
       function moveOnion(invert, distance){
           onion.move(!invert ? distance : -distance, 0)
+          sendOnionPosition(channel, userID, onion.pos.x, onion.pos.y, levelId);
       }
 
       if (isTouch()) {
@@ -472,11 +673,14 @@
         onKeyPress("up", () => {
           play("jump")
           onion.doubleJump()
+          sendOnionPosition(channel, userID, onion.pos.x, onion.pos.y, levelId);
         })
       } else if (levelId == 32) {
         onKeyPress("up", () => {
           play("jump")
           onion.jump()
+          sendOnionPosition(channel, userID, onion.pos.x, onion.pos.y, levelId);
+
         })
       }
 
@@ -567,6 +771,7 @@
           layer("ui"),
         ])
         setHighLevel(levelId);
+        sendDeathMessage(channel, userID);
       }
       function spawnCloud() {
 
@@ -618,6 +823,8 @@
       onion.onCollide("portal", () => {
         music.pause()
         play("portal")
+        sendMoveLevels(channel, userID, levelId + 1)
+        trackingLevelId = levelId + 1;
         if (levelId + 1 < LEVELS.length) {
           go("game", {
             levelId: levelId + 1,
@@ -625,6 +832,7 @@
 
           })
           levelId = levelId + 1
+          trackingLevelId = levelId;
           slctId = levelId
           setHighLevel(levelId)
         } else {
