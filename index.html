@@ -150,12 +150,12 @@
         volume: 1,
         loop: true
       })
-
+        var onionChoices = ["onion-red","onion-beach","onion-watermelon","onion-blue","onion-gold","onion-dark"]
+        var onionChoice = Math.floor(Math.random() * onionChoices.length);
       // add a character to screen
       const onion = add([
         // list of components
-        var onionChoices = ["onion-red","onion-beach","onion-watermelon","onion-blue","onion-gold","onion-dark"]
-        var onionChoice = Math.floor(Math.random() * onionChoices.length);
+        
         sprite(onionChoices[onionChoice]),
         pos(120, 40),
         area(),
