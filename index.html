@@ -121,6 +121,16 @@
       }
     }
 
+    function removeOnionListFromScreen(){
+      for(var i = 0; i < 20; i++){
+        add([
+          text(""),
+          pos(canvasWidth - 400, 10 + (i * 20)),
+          layer("ui"),
+          fixed(),
+        ])
+      }
+    }
     
 
     //create a function that prints all onion users
@@ -128,14 +138,8 @@
     //this could include each user
     function printOnions(presences){
       //create a for loop that removes the previous onion text from screen
-      for (var i = 0; i < 20; i++){
-        add([
-          text('', { size: 20 }),
-          pos(canvasWidth-400, 10 + (i * 20)),
-          layer("ui"),
-          fixed(),
-        ])
-      }
+      //do it by inserting clear text in the for 20 onions in the same position
+      removeOnionListFromScreen()
       var k = 0;
       for (const [userId, presence] of Object.entries(presences)) {
         if(presence.userId && presence.level){
@@ -358,8 +362,10 @@
           payload: { userId: userID, x: 120, y: 40, level: levelId }
         })
       }
+      removeOnionListFromScreen()
       printOnions(channel.presenceState())
       sendNewPlayer()
+      
       
       const music = play("OverworldlyFoe", {
         volume: 1,
