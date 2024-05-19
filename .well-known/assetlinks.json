@@ -1,0 +1,8 @@
+[{
+      "relation": ["delegate_permission/common.handle_all_urls"],
+      "target": {
+        "namespace": "android_app",
+        "package_name": "co.repl.sharmnten.onionsLife",
+        "sha256_cert_fingerprints": ["0D:1D:97:FE:A8:41:27:59:C7:09:39:14:43:98:D8:18:4B:A3:17:58:34:5B:B9:B5:59:55:DF:8F:23:38:F2:DA"]
+      }
+    }]

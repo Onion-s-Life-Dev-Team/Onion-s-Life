@@ -30,7 +30,7 @@
 <body>
   <script>
     if (typeof navigator.serviceWorker !== 'undefined') {
-      //navigator.serviceWorker.register('pwabuilder-sw.js')
+      navigator.serviceWorker.register('pwabuilder-sw.js')
     }
   </script>
   <script type="module">
@@ -48,20 +48,6 @@
     const userID = Math.floor(Math.random() * 1000000);
     var allUserIds = [];
     var otherOnions = [];
-    /*
-    async function updateGameState(newState) {
-      const { data, error } = await supabase
-          .from('players')
-          .update(newState)
-          .eq('userID', userID); // Assuming there's a single game state record with id 1
-
-      if (error) {
-          console.error('Error updating game state:', error);
-      } else {
-          console.log('Game state updated:', data);
-      }
-    }
-    */
 
     const channel = supabase.channel('player_locations', {
       config: {
@@ -755,7 +741,13 @@
           const sprites = [
             "onion",
             "heart",
-            "coin"
+            "coin",
+            "onion-watermelon",
+            "onion-beach",
+            "onion-watermelon2",
+            "onion-blue",
+            "onion-gold",
+            "onion-dark"
           ]
 
           sprites.forEach((spr) => {
