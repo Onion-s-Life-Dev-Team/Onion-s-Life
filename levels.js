@@ -1066,6 +1066,35 @@ const LEVELS = [
 "     l                           l             l             l         l",
 "iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii",
 ],
+	//We're Just Getting Started
+[
+"",
+	"",
+	"     =======================================================",
+	"       =                                         =     =",
+	"       =                                         =     =   O",
+	"                        ===     ^  ===   ===  ^",
+	"                  ^^    = ===   ====          =     ^     ^",
+	"          ^  ^    ==    =       =             =     =     =",
+	"     ^  llllllll  ==    =^^^^^^^=^^^^^^^^^^^^^=  ^  =  ^  =",
+	"===============================================lllllllllllll",
+	"",
+	"",
+	"",
+	"",
+	"",
+	"",
+	"",
+	"",
+	"",
+	"",
+	"",
+	"",
+	"",
+	"",
+	
+	
+]
   //end of level code 
 ]
 
