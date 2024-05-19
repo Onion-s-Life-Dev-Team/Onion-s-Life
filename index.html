@@ -122,9 +122,10 @@
     }
 
     function removeOnionListFromScreen(){
+      
       for(var i = 0; i < 20; i++){
         add([
-          text(""),
+          text("", { size: 20 }),
           pos(canvasWidth - 400, 10 + (i * 20)),
           layer("ui"),
           fixed(),
@@ -150,6 +151,7 @@
         }
         k++;
       }
+      removeOnionListFromScreen()
       for (var i = 0; i < allUserIds.length; i++){
         add([
           text(`Onion ${i + 1} (${allUserIds[i].userId}) - Level ${allUserIds[i].level}`, { size: 20 }),
