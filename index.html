@@ -56,6 +56,7 @@
     })
     const PLAYER_EVENT = 'player_moved'
     var trackingLevelId = 0;
+    var myCoords = { x: 120, y: 40, level: trackingLevelId };
 
     // Subscribe to mouse events.
     // Our second parameter filters only for mouse events.
@@ -68,7 +69,7 @@
     .on(
       'broadcast',
       { event: 'new_player' },
-      (event) => { receivedMoveLevels(event) }
+      (event) => { receivedNewPlayer(event) }
     )
     .on(
       'broadcast',
@@ -105,6 +106,14 @@
         }
         printOnions(channel.presenceState())
       }
+    }
+
+    //handle new players
+    //this should also handle a received move levels inside it
+    //it should send a move onion position event
+    function receivedNewPlayer({ event, payload }){
+      receivedMoveLevels({ event, payload })
+      sendOnionPosition(channel, userID, myCoords.x, myCoords.y, myCoords.level)
     }
 
     function removeOnionListFromScreen(){
@@ -180,11 +189,11 @@
               body(),
               { userId, level }
             ]);
-            console.log("Added new onion", onion);
             otherOnions.push(onion);
           } else {
             onion.pos.x = x;
             onion.pos.y = y;
+            
           }
         } else {
           if (onion) {
@@ -208,6 +217,8 @@
     }
     //what to do when the onion dies
     function sendDeathMessage(channel, userId){
+      //clear the other onions array
+      otherOnions = [];
       return channel.send({
         type: 'broadcast',
         event: 'player_died',
@@ -222,6 +233,7 @@
         payload: { userId, level }
       })
     }
+
     
     // send a death message when the user leaves the page
     window.addEventListener('beforeunload', () => {
@@ -475,6 +487,7 @@
       function moveOnion(invert, distance){
           onion.move(!invert ? distance : -distance, 0)
           sendOnionPosition(channel, userID, onion.pos.x, onion.pos.y, levelId);
+          myCoords = { x: onion.pos.x, y: onion.pos.y, level: levelId };
       }
 
       if (isTouch()) {
@@ -685,12 +698,14 @@
           play("jump")
           onion.doubleJump()
           sendOnionPosition(channel, userID, onion.pos.x, onion.pos.y, levelId);
+          myCoords = { x: onion.pos.x, y: onion.pos.y, level: levelId };
         })
       } else if (levelId == 32) {
         onKeyPress("up", () => {
           play("jump")
           onion.jump()
           sendOnionPosition(channel, userID, onion.pos.x, onion.pos.y, levelId);
+          myCoords = { x: onion.pos.x, y: onion.pos.y, level: levelId };
 
         })
       }
