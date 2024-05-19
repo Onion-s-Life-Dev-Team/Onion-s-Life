@@ -99,7 +99,7 @@
     })
     .on('presence', { event: 'sync' }, () => {
       printOnions(channel.presenceState())
-      updateOtherOnionPositions(channel.presenceState())
+      
     })
     .subscribe(async (status) => {
       if (status === 'SUBSCRIBED') {
