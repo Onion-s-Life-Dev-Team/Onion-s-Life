@@ -394,7 +394,7 @@
       "DROP ~ 24","Tower of Pain ~ 25","Tricky timing ~ 26","Insane Precision ~ 27",
       "It's Not That Simple ~ 28","It's a long drop ~ 29","Into the Abyss ~ 30",
       "Enter the Labyrinth ~ 31","The Labyrinth ~ 32","Onion's Demise ~ 33",
-      "Allan Mode ~ 34", "fR3EkKy dE3eKkKkkyYyY ~ 35"
+      "Allan Mode ~ 34", "fR3EkKy dE3eKkKkkyYyY ~ 35", "We're Just Getting Started ~ 36"
     ];
   
     var notRColor = 255*(levelId/levelNames.length);
@@ -908,7 +908,7 @@
         go("game", {
           levelId: levelId,
         });
-        //caleb is cool
+        //dont call me that
       });
       //}
 
@@ -1248,6 +1248,20 @@
         }
       });
     }) 
+
+    scene("customization", () -> {
+      onKeyPress('b', () => {
+        go("title");
+      })
+      
+      add([
+         text("Customization", {size: 120}),
+         layer("title"),
+         color(255, 255, 255),
+         fixed(),
+         pos(width() / 2, height() * 0.10),
+       ])
+    })
     */
     // if ((window.matchMedia('(display-mode: fullscreen)').matches || window.navigator.fullscreen) || (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone)) {
     go("title");
