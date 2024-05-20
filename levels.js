@@ -1183,11 +1183,11 @@ const levelConf = {
     area(),
     "jumpy",
   ],
-/*"h": () => [
+"h": () => [
     sprite("invisdanger"),
     origin("bot"),
     area(),
-    "jumpy",*/
+    "jumpy",
   ],
   "D": () => [
     sprite("door"),
