@@ -48,7 +48,6 @@
     const userID = Math.floor(Math.random() * 1000000);
     var allUserIds = [];
     var otherOnions = [];
-
     const channel = supabase.channel('player_locations', {
       config: {
         presence: { userId: userID},
@@ -57,6 +56,7 @@
     const PLAYER_EVENT = 'player_moved'
     var trackingLevelId = 0;
     var myCoords = { x: 120, y: 40, level: trackingLevelId };
+    var isDeathAnimEnabled = true;
 
     // Subscribe to mouse events.
     // Our second parameter filters only for mouse events.
@@ -751,8 +751,12 @@
 
       //})
     */
+      //write code so that if the d button is clicked, death animation is disabled
+      onKeyPress("d", () => {
+        isDeathAnimEnabled = !isDeathAnimEnabled;
+      })
       function die(){
-        if (!isTouch()) {
+        if (!isTouch() && isDeathAnimEnabled) {
           loops = 0;
           const sprites = [
             "onion",
