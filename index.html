@@ -261,28 +261,14 @@
     }
     import loadAssets from "./assets.js"
     import {LEVELS, levelConf} from './levels.js';
-    //var scale = 1;
-    //if (canvasWidth < 800){
-    //scale = .5;
-    //} 
     //initializing
     kaboom({
       background: [153, 204, 255],
-      //scale: scale,
       width: canvasWidth,
       height: canvasHeight + heightStretch,
-      //crisp: true,
     })
     // load assets
     loadAssets()
-
-
-    //if(savedId != null){
-    //  savedId = 0;
-    //} else {
-    //  highestId = getData(savedId);
-    //}
-    //}
     var rEnabled = true
     var loops = 0;
     var lvlWidth = 0;
@@ -810,7 +796,7 @@
         setHighLevel(levelId);
         sendDeathMessage(channel, userID);
       }
-      function spawnCloud() {
+     /* function spawnCloud() {
 
         const dir = choose([LEFT, RIGHT])
 
@@ -823,8 +809,8 @@
           area(),
           z(-50),
         ])
-      }
-      setInterval(spawnCloud, 1000000)
+      }*/
+      //setInterval(spawnCloud, 1000000)
 
       const score = add([
         text("Score: 0"),
