@@ -894,7 +894,6 @@
       onion.onCollide("jumpy", () => {
         play("jumpy")
         onion.jump(1200)
-        //shake()
       })
       onion.onCollide("right", () => {
         moveOnion(false, 100)
@@ -907,17 +906,12 @@
         onion.move(0, 0)
       })
 
-      //if(rEnabled == true){
       onKeyDown("r", () => {
         music.pause()
         go("game", {
           levelId: levelId,
         });
-        //dont call me that
       });
-      //}
-
-
     });
 
     scene("title", () => {
