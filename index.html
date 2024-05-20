@@ -755,9 +755,10 @@
       //})
     */
       //write code so that if the d button is clicked, death animation is disabled
-      onKeyPress("d", () => {
-        isDeathAnimEnabled = !isDeathAnimEnabled;
-      })
+      //onKeyPress("d", () => {
+        //isDeathAnimEnabled = !isDeathAnimEnabled;
+      //})
+      deathAnimEnabled = false;
       function die(){
         if (!isTouch() && isDeathAnimEnabled) {
           loops = 0;
