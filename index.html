@@ -48,6 +48,10 @@
     const userID = Math.floor(Math.random() * 1000000);
     var allUserIds = [];
     var otherOnions = [];
+    var onions = [
+        "onion","onion-beach","onion-blue","onion-dark","onion-gold",
+        "onion-watermelon",
+      ];
     const channel = supabase.channel('player_locations', {
       config: {
         presence: { userId: userID},
@@ -261,14 +265,28 @@
     }
     import loadAssets from "./assets.js"
     import {LEVELS, levelConf} from './levels.js';
+    //var scale = 1;
+    //if (canvasWidth < 800){
+    //scale = .5;
+    //} 
     //initializing
     kaboom({
       background: [153, 204, 255],
+      //scale: scale,
       width: canvasWidth,
       height: canvasHeight + heightStretch,
+      //crisp: true,
     })
     // load assets
     loadAssets()
+
+
+    //if(savedId != null){
+    //  savedId = 0;
+    //} else {
+    //  highestId = getData(savedId);
+    //}
+    //}
     var rEnabled = true
     var loops = 0;
     var lvlWidth = 0;
@@ -298,6 +316,7 @@
       return null;
     }
     var slctId = 0;
+    var onionId = 0;
     // Set a high score cookie
     function setHighLevel(score) {
       const existingHighLevel = getCookie("highLevel");
@@ -357,13 +376,11 @@
         volume: 1,
         loop: true
       })
-        var onionChoices = ["onion-red","onion-beach","onion-watermelon","onion-blue","onion-gold","onion-dark","onion"]
-        var onionChoice = Math.floor(Math.random() * onionChoices.length);
       // add a character to screen
       const onion = add([
         // list of components
         
-        sprite(onionChoices[onionChoice]),
+        sprite(onions[onionId]),
         pos(120, 40),
         area(),
         body(),
@@ -750,10 +767,10 @@
             "coin",
             "onion-watermelon",
             "onion-beach",
+            // "onion-watermelon2", (seems to be bugged)
             "onion-blue",
             "onion-gold",
-            "onion-dark",
-            "onion-red"
+            "onion-dark"
           ]
 
           sprites.forEach((spr) => {
@@ -796,7 +813,7 @@
         setHighLevel(levelId);
         sendDeathMessage(channel, userID);
       }
-     /* function spawnCloud() {
+      function spawnCloud() {
 
         const dir = choose([LEFT, RIGHT])
 
@@ -809,8 +826,8 @@
           area(),
           z(-50),
         ])
-      }*/
-      //setInterval(spawnCloud, 1000000)
+      }
+      setInterval(spawnCloud, 1000000)
 
       const score = add([
         text("Score: 0"),
@@ -880,6 +897,7 @@
       onion.onCollide("jumpy", () => {
         play("jumpy")
         onion.jump(1200)
+        //shake()
       })
       onion.onCollide("right", () => {
         moveOnion(false, 100)
@@ -892,12 +910,17 @@
         onion.move(0, 0)
       })
 
+      //if(rEnabled == true){
       onKeyDown("r", () => {
         music.pause()
         go("game", {
           levelId: levelId,
         });
+        //dont call me that
       });
+      //}
+
+
     });
 
     scene("title", () => {
@@ -925,13 +948,22 @@
         pos(width() / 2 - 464, height() * 0.10),
       ])
 
+      const skinsBtn = add([
+        sprite("lvlSelect"),
+        layer("title"),
+        "skins",
+        fixed(),
+        area(),
+        pos(width() / 2 - 309, height() * 0.85),
+      ])
+
       const startBtn = add([
         sprite("startbtn"),
         layer("title"),
         "start",
         fixed(),
         area(),
-        pos(width() / 2 - 255, height() * 0.85),
+        pos(width() / 2 - 201, height() * 0.85),
       ])
 
       const lvlSelect = add([
@@ -940,13 +972,13 @@
         "lvlSelect",
         fixed(),
         area(),
-        pos(width() / 2 + 153, height() * 0.85),
+        pos(width() / 2 + 207, height() * 0.85),
       ])
 
       add([
         text("PLAY"),
         fixed(),
-        pos(width() / 2 - 141, height() * 0.87)
+        pos(width() / 2 - 87, height() * 0.87)
       ])
 
       onClick("start", () => {
@@ -959,6 +991,10 @@
 
       onClick("lvlSelect", () => {
         go("select");
+      })
+
+      onClick("skins", () => {
+        go("skins");
       })
       //registers touch 
       if (isTouch()) {
@@ -1134,6 +1170,74 @@
 
 
     })
+
+    scene("skins", () => {
+      onKeyPress('b', () => {
+        go("title");
+      })
+      
+      add([
+         text("Customization", {size: 120}),
+         layer("title"),
+         color(255, 255, 255),
+         fixed(),
+         pos(width() / 2 - 468, height() * 0.05),
+       ])
+
+       const skinSelectBtn = add([
+        // list of components
+        sprite("lvlbtn"),
+        "btn",
+        pos(width() / 2 - 128, height() / 2 - 128),
+        area(),
+
+      ])
+      const onionSelect = add([
+        // list of components
+        sprite(onions[onionId]),
+        "btn",
+        pos(width() / 2 - 38, height() / 2 - 50),
+        area(),
+
+      ])
+
+      const leftArrow = add([
+        sprite("arrowl"),
+        "l",
+
+        area({scale: 2, }),
+        pos(width() * 0.3 - 32, height() / 2 - 64),
+      ])
+      
+      var rightArrow = add([
+          sprite("arrowr"),
+          "r",
+          area({scale: 2, }),
+          pos(width() * 0.7 - 32, height() / 2 - 64),
+        ])
+
+      onClick("r", () => {
+        if(onionId == (onions.length - 1)){
+          onionId = 0;
+        } else {
+          onionId++;
+        }
+        go("skins");
+      })
+      onClick("l", () => {
+        if(onionId == 0){
+          onionId = (onions.length - 1);
+        } else {
+          onionId--;
+        }
+        go("skins");
+      })
+
+      onClick("btn", () => {
+        go("game");
+      })
+
+    })
     var highestId = 0;
     // scene("piracy", () => {
     //   add([
@@ -1233,24 +1337,15 @@
         }
       });
     }) 
-
-    scene("customization", () -> {
-      onKeyPress('b', () => {
-        go("title");
-      })
-      
-      add([
-         text("Customization", {size: 120}),
-         layer("title"),
-         color(255, 255, 255),
-         fixed(),
-         pos(width() / 2, height() * 0.10),
-       ])
-    })
     */
+
+    
+    
     // if ((window.matchMedia('(display-mode: fullscreen)').matches || window.navigator.fullscreen) || (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone)) {
     go("title");
     // }
+
+    
 
   </script>
 
