@@ -1053,12 +1053,26 @@
         "l",
 
         area({scale: 2, }),
-        pos(width() * 0.3 - 32, height() / 2 - 64),
+        pos(width() * 0.4 - 32, height() / 2 - 64),
       ])
       if (slctId < highestId) {
         var rightArrow = add([
           sprite("arrowr"),
           "r",
+          area({scale: 2, }),
+          pos(width() * 0.6 - 32, height() / 2 - 64),
+        ])
+      }
+      const superLeftArrow = add([
+        sprite("arrowl"),
+        "sl",
+        area({scale: 2, }),
+        pos(width() * 0.3 - 32, height() / 2 - 64),
+      ])
+      if (slctId < highestId) {
+        var superRightArrow = add([
+          sprite("arrowr"),
+          "sr",
           area({scale: 2, }),
           pos(width() * 0.7 - 32, height() / 2 - 64),
         ])
@@ -1103,6 +1117,19 @@
           }
         }
       })
+      onClick("sr", () => {
+        if (slctId + 10 <= LEVELS.length - 1) {
+          if (slctId + 10 <= highestId) {
+            slctId += 10;
+          } else {
+            slctId = highestId;
+          }
+          go("select");
+        } else {
+          slctId = highestId;
+          go("select");
+        }
+      })
       onClick("b", () => {
         go("title");
       });
@@ -1111,6 +1138,14 @@
           slctId--;
           go("select");
         }
+      })
+      onClick("sl", () => {
+        if (slctId - 10 >= 0) {
+          slctId -= 10;
+        } else {
+          slctId = 0;
+        }
+        go("select");
       })
 
       onClick("btn", () => {
