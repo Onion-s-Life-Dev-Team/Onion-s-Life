@@ -1186,7 +1186,7 @@ const levelConf = {
     solid(),
     scale(1),
     origin("bot"),
-    offscreen({ destroy: true }),
+    
     "ground"
   ],
   "?": () => [
@@ -1194,14 +1194,14 @@ const levelConf = {
     area(),
     scale(1),
     origin("bot"),
-    offscreen({ destroy: true }),
+    
     "ground"
   ],
   "$": () => [
     sprite("coin"),
     area(),
     origin("bot"),
-    offscreen({ destroy: true }),
+    
     "coin",
   ],
   "^": () => [
@@ -1209,7 +1209,7 @@ const levelConf = {
     area(),
     solid(),
     origin("bot"),
-    offscreen({ destroy: true }),
+    
     "danger",
   ], 
   "v": () => [
@@ -1217,7 +1217,7 @@ const levelConf = {
     area(),
     solid(),
     origin("top"),
-    offscreen({ destroy: true }),
+    
     "danger",
   ],
   "O": () => [
@@ -1225,21 +1225,21 @@ const levelConf = {
     area({ scale: 0.5, }),
     pos(0, -12),
     origin("bot"),
-    offscreen({ destroy: true }),
+    
     "portal",
   ],
   "l": () => [
     sprite("jumpy"),
     origin("bot"),
     area(),
-    offscreen({ destroy: true }),
+    
     "jumpy",
   ],
 "h": () => [
     sprite("invisdanger"),
     origin("bot"),
     area(),
-    offscreen({ destroy: true }),
+    
     "jumpy",
   ],
   "D": () => [
@@ -1247,14 +1247,14 @@ const levelConf = {
     area(),
     solid(),
     origin("bot"),
-    offscreen({ destroy: true }),
+    
     "door",
   ],
   "k": () => [
     sprite("key"),
     area(),
     origin("bot"),
-    offscreen({ destroy: true }),
+    
     "key",
   ],
   ">": () => [
@@ -1262,7 +1262,7 @@ const levelConf = {
     area(),
     solid(),
     origin("bot"),
-    offscreen({ destroy: true }),
+    
     "right",
   ],
   "<": () => [
@@ -1270,53 +1270,53 @@ const levelConf = {
     area(),
     solid(),
     origin("bot"),
-    offscreen({ destroy: true }),
+    
     "left",
   ],
   ".": () => [
     sprite("block"),
     area(),
     solid(),
-    offscreen({ destroy: true }),
+    
     origin("bot"),
   ],
   "{": () => [
     sprite("signpostl"),
     area(),
-    offscreen({ destroy: true }),
+    
     origin("bot"), 
   ],
     "}": () => [
     sprite("signpostr"),
     area(),
-    offscreen({ destroy: true }),
+    
     origin("bot"), 
   ],
     "-": () => [
     sprite("signposte"),
     area(),
-    offscreen({ destroy: true }),
+    
     origin("bot"), 
   ],
     "i": () => [
     sprite("invisdanger"),
     area(),
     "danger",
-    offscreen({ destroy: true }),
+    
     origin("bot"), 
   ],
   "S": () => [
     sprite("invisdanger"),
     area(),
     "spawn",
-    offscreen({ destroy: true }),
+    
     origin("bot"), 
   ],
   "Q": () => [
     sprite("invisdanger"),
     area(),
     "arg",
-    offscreen({ destroy: true }),
+    
     origin("bot"),
   ],
   "G": () => [
@@ -1326,13 +1326,12 @@ const levelConf = {
     origin("bot"),
     area(), 
     body(), 
-    offscreen({ destroy: true }),
+    
     ],
   "!": () => [
     sprite("darrow"),
     origin("bot"),
     area(),
-    offscreen({ destroy: true }),
   ],
   
 }
