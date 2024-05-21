@@ -1174,8 +1174,8 @@ const LEVELS = [
 ],
 	//dodging and weaving
 [
-"               =",
-"               =",
+"=              =",
+"=              =",
 "=              =",
 "=              =",
 "=              =",	
