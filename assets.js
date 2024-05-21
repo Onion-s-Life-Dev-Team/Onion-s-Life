@@ -51,4 +51,5 @@ export default function loadAssets() {
   loadSprite("onion-blue","sprites/onion-blue.png")
   loadSprite("onion-gold","sprites/onion-gold.png")
   loadSprite("onion-dark","sprites/onion-dark.png")
+  
 }
