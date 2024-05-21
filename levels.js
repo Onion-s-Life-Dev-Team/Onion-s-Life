@@ -1172,6 +1172,20 @@ const LEVELS = [
 "i     l                           l             l  ==          l         l         i",
 "iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii",
 ],
+	//dodging and weaving
+[
+"=              =",
+"=              =",
+"=              =",	
+"=              =",
+"============   =",
+"           = ^^=",
+"           =   =",
+"           =^  =",
+"           =   =",
+"           =   =",
+"           =  l=",
+],
   //end of level code 
 ]
 
