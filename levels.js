@@ -1160,7 +1160,7 @@ const LEVELS = [
 	"          ^  ^    ==    =       =             ?     =     =     =",
 "",
 "",
-"        ^   G   ^                                                    iiiiiiiiiiiiiiii ",
+"        ^   G   ^                                                    iiiiiiiiiiii===i ",
 "i       ===hh===  ====        ==??=        =??==        ===                         i",
 "                                                                                    O",
 "i    ^     l    ^^^^lllll^^^ ^ ^^l^ ^ ^ l ^ l ^ l ^     ^ h ^                            i",
