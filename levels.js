@@ -1098,7 +1098,7 @@ const LEVELS = [
 "=                  ==",
 "=                ^^==",
 "=====================",
-		]
+		],
 	//Freaky Deeky	
 [
 "i    G                    iiiiii                                                   i",
