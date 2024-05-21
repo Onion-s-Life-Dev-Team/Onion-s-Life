@@ -1165,7 +1165,7 @@ const LEVELS = [
 "                                                                                    O",
 "i    ^     l    ^^^^lllll^^^ ^ ^^l^ ^ ^ l ^ l ^ l ^     ^ h ^                            i",
 "i                                                                                 h      i",
-"i                                                                                        i",
+"i                                                                                  iiiiiii",
 "i                      v      l                                                    i",
 "i                  ^v^v^v^v^v           G                    v   v                 i",
 "i====   ==  i===i =  ==  =  =  ===  ^=======^ == ^ ??  ?=  ==  =  =  =??==  =  h   i",
