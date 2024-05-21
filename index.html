@@ -337,21 +337,11 @@
       levelName: "Intro",
     }) => {
 
-      if (first) {
-        levelId = slctId;
-        first = false;
-        trackingLevelId = slctId;
-        channel.track({ userId: userID, level: levelId })
-      }
-      if (!first) {
-        levelId = slctId;
-        trackingLevelId = slctId;
-        channel.track({ userId: userID, level: levelId })
+      levelId = slctId;
+      trackingLevelId = slctId;
+      channel.track({ userId: userID, level: levelId })
 
-      }
-      if (levelId > highestId) {
-        highestId = levelId;
-      }
+      highestId = levelId > highestId ? levelId : highestId;
 
       //if(levelId > savedId) {
       //  setData(savedId, levelId)
@@ -458,7 +448,7 @@
               coins: coins,
 
             })
-            levelId = levelId + 1
+            levelId++
             trackingLevelId = levelId;
             slctId = levelId
             setHighLevel(levelId)
@@ -491,8 +481,6 @@
 
       function moveOnion(invert, distance){
           onion.move(!invert ? distance : -distance, 0)
-          sendOnionPosition(channel, userID, onion.pos.x, onion.pos.y, levelId);
-          myCoords = { x: onion.pos.x, y: onion.pos.y, level: levelId };
       }
 
       if (isTouch()) {
@@ -562,10 +550,6 @@
         let touching = false;
         let arrowClicked = null;
         let maxJumps = 2;
-
-        if (levelId === 32) {
-          maxJumps = Infinity;
-        }
         let djRotation = 0; // Variable to track the rotation angle
         let isDjAnimating = false; // Variable to track the animation state
 
@@ -696,22 +680,16 @@
 
       }
 
-     
-
       if (levelId != 32) {
         onKeyPress("up", () => {
           play("jump")
           onion.doubleJump()
-          sendOnionPosition(channel, userID, onion.pos.x, onion.pos.y, levelId);
-          myCoords = { x: onion.pos.x, y: onion.pos.y, level: levelId };
+          
         })
       } else if (levelId == 32) {
         onKeyPress("up", () => {
           play("jump")
           onion.jump()
-          sendOnionPosition(channel, userID, onion.pos.x, onion.pos.y, levelId);
-          myCoords = { x: onion.pos.x, y: onion.pos.y, level: levelId };
-
         })
       }
 
@@ -731,6 +709,8 @@
       // camera follows player
       onion.onUpdate(() => {
         camPos(onion.pos)
+        sendOnionPosition(channel, userID, onion.pos.x, onion.pos.y, levelId);
+        myCoords = { x: onion.pos.x, y: onion.pos.y, level: levelId };
       })
     
       //spike code
