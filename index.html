@@ -384,7 +384,7 @@
       "Da Brick Wall ~ 12","Leap O' Faith ~ 13","Descending Tomfoolery ~ 14",
       "Now this is Hard ~ 15","DON'T GET SPIKED ~ 16","Platform Chaos ~ 17",
       "Enter the Secret Lair ~ 18","Secret Lair ~ 19","Rollercoaster ~ 20",
-      "Onion's got HOPS ~ 21","Cruisin' for a Bruisin' ~ 22","Mount Scallion ~ 23",
+      "Onion's got AIDS ~ 21","Cruisin' for a Bruisin' ~ 22","Mount Scallion ~ 23",
       "DROP ~ 24","Tower of Pain ~ 25","Tricky timing ~ 26","Insane Precision ~ 27",
       "It's Not That Simple ~ 28","It's a long drop ~ 29","Into the Abyss ~ 30",
       "Enter the Labyrinth ~ 31","The Labyrinth ~ 32","Onion's Demise ~ 33",
@@ -1011,10 +1011,6 @@
       if (slctId == highestId) {
         add([
           sprite("lockedarrowr"),
-          pos(width() * 0.65 - 32, height() / 2 - 64),
-        ])
-        add([
-          sprite("lockedarrowr"),
           pos(width() * 0.7 - 32, height() / 2 - 64),
         ])
       }
@@ -1057,14 +1053,14 @@
         "l",
 
         area({scale: 2, }),
-        pos(width() * 0.45 - 32, height() / 2 - 64),
+        pos(width() * 0.4 - 32, height() / 2 - 64),
       ])
       if (slctId < highestId) {
         var rightArrow = add([
           sprite("arrowr"),
           "r",
           area({scale: 2, }),
-          pos(width() * 0.65 - 32, height() / 2 - 64),
+          pos(width() * 0.6 - 32, height() / 2 - 64),
         ])
       }
       const superLeftArrow = add([
@@ -1191,7 +1187,10 @@
         text("Eli - Lead App Developer"),
         pos(80, height() * 0.65),
       ])
-
+    add([
+        text("Kavin - Lead FR3EkKY Developer"),
+        pos(80, height() * 0.65),
+      ])
 
     })
 
