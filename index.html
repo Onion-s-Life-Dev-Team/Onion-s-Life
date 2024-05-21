@@ -1011,6 +1011,10 @@
       if (slctId == highestId) {
         add([
           sprite("lockedarrowr"),
+          pos(width() * 0.65 - 32, height() / 2 - 64),
+        ])
+        add([
+          sprite("lockedarrowr"),
           pos(width() * 0.7 - 32, height() / 2 - 64),
         ])
       }
@@ -1053,14 +1057,14 @@
         "l",
 
         area({scale: 2, }),
-        pos(width() * 0.4 - 32, height() / 2 - 64),
+        pos(width() * 0.45 - 32, height() / 2 - 64),
       ])
       if (slctId < highestId) {
         var rightArrow = add([
           sprite("arrowr"),
           "r",
           area({scale: 2, }),
-          pos(width() * 0.6 - 32, height() / 2 - 64),
+          pos(width() * 0.65 - 32, height() / 2 - 64),
         ])
       }
       const superLeftArrow = add([
