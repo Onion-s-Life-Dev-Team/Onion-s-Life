@@ -1195,6 +1195,7 @@ const LEVELS = [
 "          =    =",
 "          =^   =",
 "          =OOOO=",
+"          =====",
 
 ],
   //end of level code 
