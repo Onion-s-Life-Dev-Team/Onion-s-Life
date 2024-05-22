@@ -1274,13 +1274,13 @@ const levelConf = {
     "ground"
   ],
 "+": ()=> [
-	sprite("grass"),
+	sprite("grass5"),
 	rect(32 * 5, 32),
 	area(),
 	solid(),
 	scale(1),
 	origin("bot"),
-	"ground"
+	"ground",
 	outline(2),
 ],
   "?": () => [
