@@ -19,7 +19,7 @@ const LEVELS = [
     '=                                                       =',
     '=                                                       =',
     '=         l }  $$$      G ^      l     $$      }       O=',
-    '--+----+----+----+----+----+----+----+----+----+----+--==',
+    'xx+xxxx+xxxx+xxxx+xxxx+xxxx+xxxx+xxxx+xxxx+xxxx+xxxx+xx==',
 
   ],
   //Classic
