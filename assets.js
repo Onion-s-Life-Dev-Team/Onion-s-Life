@@ -1,5 +1,6 @@
 export default function loadAssets() {
   loadSprite("onion", "sprites/onion.png")
+  loadSprite("grass5", "sprites/grass5.png")
   loadSprite("bigonion", "sprites/bigonion.png")
   loadSprite("grass", "sprites/grass.png")
   loadSprite("coin", "sprites/coin.png")
