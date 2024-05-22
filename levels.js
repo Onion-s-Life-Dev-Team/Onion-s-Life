@@ -1279,6 +1279,7 @@ const levelConf = {
 	rect(32 * 5, 32),
 	area(),
 	solid(),
+	scale(1),
 	origin("bot"),
 	"ground",
 ],
@@ -1287,7 +1288,6 @@ const levelConf = {
     area(),
     scale(1),
     origin("bot"),
-    
     "ground"
   ],
   "$": () => [
