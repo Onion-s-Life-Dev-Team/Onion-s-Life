@@ -13,3 +13,7 @@ This is the best new viral platformer game and we just added multiplayer. Onion'
 > "Surprisingly Addicting! No better way to spend your day."
 >     
 > ~The Regal Eagle
+
+> "The last level was so hard, but I couldn't stop playing it!"
+>
+> -Onion's Life player
