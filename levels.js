@@ -1281,7 +1281,7 @@ const levelConf = {
 	scale(1),
 	origin("bot"),
 	"ground"
-
+	outline(2),
 ],
   "?": () => [
     sprite("fake"),
