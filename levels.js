@@ -1274,7 +1274,7 @@ const levelConf = {
     
     "ground"
   ],
-"+": ()=> [
+"xx+xx": ()=> [
 	sprite("grass5"),
 	rect(32 * 5, 32),
 	area(),
