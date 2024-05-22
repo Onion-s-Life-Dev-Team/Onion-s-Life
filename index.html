@@ -349,7 +349,7 @@
       //}
       //test of effency mode. this is gonna be a rough development
 
-      drawUVQuad(LEVELS[levelId ?? 0], levelConf)
+      addLevel(LEVELS[levelId ?? 0], levelConf)
       function sendNewPlayer(){
         // send a new player event
         return channel.send({
