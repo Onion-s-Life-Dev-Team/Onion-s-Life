@@ -58,6 +58,7 @@
     var trackingLevelId = 0;
     var myCoords = { x: 120, y: 40, level: trackingLevelId };
     var isDeathAnimEnabled = true;
+    var multiplayer = true;
 
     // Subscribe to mouse events.
     // Our second parameter filters only for mouse events.
@@ -920,6 +921,10 @@
         go("credits");
       })
 
+      onKeyPress("m", () => {
+        go("multiplayer");
+      })
+
       add([
         text("Onion's Life!", {size: 120}),
         layer("title"),
@@ -1260,6 +1265,52 @@
         go("game");
       })
 
+    })
+
+    scene("multiplayer", () => {
+      onKeyPress('b', () => {
+        go("title");
+      })
+      
+      add([
+         text("Multiplayer", {size: 120}),
+         layer("title"),
+         color(255, 255, 255),
+         fixed(),
+         pos(width() / 2 - 468, height() * 0.05),
+       ])
+
+      const onOffBtn = add([
+        // list of components
+        sprite("lvlbtn"),
+        "btn",
+        pos(width() / 2 - 128, height() / 2 - 128),
+        area(),
+
+      ])
+      if(multiplayer){
+        const onOffText = add([
+        // list of components
+        text("ON", {size: 100}),
+        "btn",
+        pos(width() / 2 - 38, height() / 2 - 50),
+        area(),
+
+      ])
+      } else {
+        const onOffText = add([
+        // list of components
+        text("OFF", {size: 100}),
+        "btn",
+        pos(width() / 2 - 38, height() / 2 - 50),
+        area(),
+      ])
+      }
+
+      onClick("btn", () => {
+        multiplayer = !multiplayer;
+        go("multiplayer);
+      })
     })
     var highestId = 0;
     // scene("piracy", () => {
