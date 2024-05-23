@@ -1307,12 +1307,26 @@
       ])
       }
 
-      onClick("btn", () => {
+      const leftArrow = add([
+        sprite("arrowl"),
+        "l",
+
+        area({scale: 2, }),
+        pos(width() * 0.3 - 32, height() / 2 - 64),
+      ])
+      
+      var rightArrow = add([
+          sprite("arrowr"),
+          "r",
+          area({scale: 2, }),
+          pos(width() * 0.7 - 32, height() / 2 - 64),
+        ])
+
+      onClick("r", () => {
         multiplayer = !multiplayer;
         go("multiplayer");
       })
-
-      onClick("txt", () => {
+      onClick("l", () => {
         multiplayer = !multiplayer;
         go("multiplayer");
       })
