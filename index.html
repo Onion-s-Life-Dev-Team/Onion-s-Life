@@ -1007,6 +1007,18 @@
         go("piracy");
       })
 
+      onKeyPress('q', () => {
+        onKeyPress('m', () => {
+          onKeyPress('p', () => {
+            levelId = levelNames.length;
+            trackingLevelId = levelId;
+            slctId = levelId;
+            setHighLevel(levelId);
+            channel.track({ userId: userID, level: levelId })
+          })
+        })
+      })
+
     })
 
     scene("select", () => {
