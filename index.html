@@ -60,41 +60,49 @@
     var isDeathAnimEnabled = true;
     var multiplayerEnabled = true;
 
-    // Subscribe to mouse events.
-    // Our second parameter filters only for mouse events.
-    channel
-    .on(
-      'broadcast',
-      { event: PLAYER_EVENT },
-      (event) => { receivedOnionPosition(event) }
-    )
-    .on(
-      'broadcast',
-      { event: 'new_player' },
-      (event) => { receivedNewPlayer(event) }
-    )
-    .on(
-      'broadcast',
-      { event: 'player_died' },
-      (event) => { receivedDeathMessage(event) }
-    )
-    .on(
-      'broadcast',
-      { event: 'move_levels' },
-      (event) => { receivedMoveLevels(event) }
-    )
-    .on('presence', { event: 'join' }, ({ newPresences }) => {
-      printOnions(newPresences)
-    })
-    .on('presence', { event: 'sync' }, () => {
-      printOnions(channel.presenceState())
-      
-    })
-    .subscribe(async (status) => {
-      if (status === 'SUBSCRIBED') {
-        await channel.track({ userId: userID, level: trackingLevelId, x: 120, y: 40 })
-      }
-    })
+    function subscribeToChannel(){
+      // Subscribe to mouse events.
+      // Our second parameter filters only for mouse events.
+      channel
+      .on(
+        'broadcast',
+        { event: PLAYER_EVENT },
+        (event) => { receivedOnionPosition(event) }
+      )
+      .on(
+        'broadcast',
+        { event: 'new_player' },
+        (event) => { receivedNewPlayer(event) }
+      )
+      .on(
+        'broadcast',
+        { event: 'player_died' },
+        (event) => { receivedDeathMessage(event) }
+      )
+      .on(
+        'broadcast',
+        { event: 'move_levels' },
+        (event) => { receivedMoveLevels(event) }
+      )
+      .on('presence', { event: 'join' }, ({ newPresences }) => {
+        printOnions(newPresences)
+      })
+      .on('presence', { event: 'sync' }, () => {
+        printOnions(channel.presenceState())
+        
+      })
+      .subscribe(async (status) => {
+        if (status === 'SUBSCRIBED') {
+          await channel.track({ userId: userID, level: trackingLevelId, x: 120, y: 40 })
+        }
+      })
+    }
+
+    subscribeToChannel();
+
+    function removeChannel(){
+      const channel = supabase.removeChannel(channel);
+    }
 
     //handle death event
     function receivedDeathMessage({ event, payload }){
@@ -135,27 +143,29 @@
     // this should add a number in the corner to display how many onions are on, and the uptime
     //this could include each user
     function printOnions(presences){
-      //create a for loop that removes the previous onion text from screen
-      //do it by inserting clear text in the for 20 onions in the same position
-      removeOnionListFromScreen()
-      var k = 0;
-      for (const [userId, presence] of Object.entries(presences)) {
-        if(presence.userId && presence.level){
-          if(allUserIds.find(user => user.userId === presence.userId)){
-            allUserIds.splice(allUserIds.indexOf(allUserIds.find(user => user.userId === presence.userId)), 1)
+      if (multiplayerEnabled){
+        //create a for loop that removes the previous onion text from screen
+        //do it by inserting clear text in the for 20 onions in the same position
+        removeOnionListFromScreen()
+        var k = 0;
+        for (const [userId, presence] of Object.entries(presences)) {
+          if(presence.userId && presence.level){
+            if(allUserIds.find(user => user.userId === presence.userId)){
+              allUserIds.splice(allUserIds.indexOf(allUserIds.find(user => user.userId === presence.userId)), 1)
+            }
+            allUserIds.push({ userId: presence.userId, level: presence.level })
           }
-          allUserIds.push({ userId: presence.userId, level: presence.level })
+          k++;
         }
-        k++;
-      }
-      removeOnionListFromScreen()
-      for (var i = 0; i < allUserIds.length; i++){
-        add([
-          text(`Onion ${i + 1} (${allUserIds[i].userId}) - Level ${allUserIds[i].level}`, { size: 20 }),
-          pos(canvasWidth - 400, 10 + (i * 20)),
-          layer("ui"),
-          fixed(),
-        ])
+        removeOnionListFromScreen()
+        for (var i = 0; i < allUserIds.length; i++){
+          add([
+            text(`Onion ${i + 1} (${allUserIds[i].userId}) - Level ${allUserIds[i].level}`, { size: 20 }),
+            pos(canvasWidth - 400, 10 + (i * 20)),
+            layer("ui"),
+            fixed(),
+          ])
+        }
       }
     }
 
@@ -211,29 +221,35 @@
   
     // Helper function for sending our own mouse position.
     function sendOnionPosition(channel, userId, x, y, level){
-      return channel.send({
-        type: 'broadcast',
-        event: PLAYER_EVENT,
-        payload: { userId, x, y, level }
-      })
+      if (multiplayerEnabled){
+        return channel.send({
+          type: 'broadcast',
+          event: PLAYER_EVENT,
+          payload: { userId, x, y, level }
+        })
+      }
     }
     //what to do when the onion dies
     function sendDeathMessage(channel, userId){
       //clear the other onions array
       otherOnions = [];
-      return channel.send({
-        type: 'broadcast',
-        event: 'player_died',
-        payload: { userId }
-      })
+      if (multiplayerEnabled){
+        return channel.send({
+          type: 'broadcast',
+          event: 'player_died',
+          payload: { userId }
+        })
+      }
     }
 
     function sendMoveLevels(channel, userId, level){
-      return channel.send({
-        type: 'broadcast',
-        event: 'move_levels',
-        payload: { userId, level }
-      })
+      if (multiplayerEnabled){
+        return channel.send({
+          type: 'broadcast',
+          event: 'move_levels',
+          payload: { userId, level }
+        })
+      }
     }
 
     
@@ -350,14 +366,18 @@
       addLevel(LEVELS[levelId ?? 0], levelConf)
       function sendNewPlayer(){
         // send a new player event
-        return channel.send({
-          type: 'broadcast',
-          event: 'new_player',
-          payload: { userId: userID, x: 120, y: 40, level: levelId }
-        })
+        if(multiplayerEnabled){
+          return channel.send({
+            type: 'broadcast',
+            event: 'new_player',
+            payload: { userId: userID, x: 120, y: 40, level: levelId }
+          })
+        }
       }
       removeOnionListFromScreen()
-      printOnions(channel.presenceState())
+      if(multiplayerEnabled){
+        printOnions(channel.presenceState())
+      }
       sendNewPlayer()
       
       
@@ -990,7 +1010,7 @@
           if (lvlSelect.hasPoint(pos)) {
             go("select");
           }
-          if (skins.hasPoint(pos)) {
+          if (skinsBtn.hasPoint(pos)) {
             go("skins");
           }
         })
