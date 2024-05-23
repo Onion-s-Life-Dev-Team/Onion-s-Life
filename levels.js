@@ -920,7 +920,7 @@ const LEVELS = [
     "=   =                                                      =      =            xx+xx====^^^^^^^^^^^",//hardest
     "=   =                                                      =      =            =       xx+xxxx+xx==",//possible
     "=   xx+xxxx+xxxx+xxxx+xxxx+xxxx+xxxx+xxxx+xxxx+xx==        =      =            =       =",//jump :) (not anymore)
-    "=   ^                              =              =        =      =                    =",
+    "=   v                              =              =        =      =                    =",
     "=                    }   ^         =       ^^^^^  xx+xxxx+xxxx+xx====                  =",
     "=                $   =   =         =       xx+xx                    =         l        =",
     "=                ^   =          =  $  ^                             =^^^^^^^^^=        =",
