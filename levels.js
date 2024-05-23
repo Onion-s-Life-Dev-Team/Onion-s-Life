@@ -1247,7 +1247,6 @@ const levelConf = {
     area(),
     solid(),
     scale(1),
-    offscreen({ hide: true, pause: true }),
     origin("bot"),
     "ground"
   ],
@@ -1256,14 +1255,12 @@ const levelConf = {
     area(),
     scale(1),
     origin("bot"),
-    offscreen({ hide: true, pause: true }),
     "ground"
   ],
   "$": () => [
     sprite("coin"),
     area(),
     origin("bot"),
-    offscreen({ hide: true, pause: true }),
     "coin",
   ],
   "^": () => [
@@ -1271,7 +1268,6 @@ const levelConf = {
     area(),
     solid(),
     origin("bot"),
-    offscreen({ hide: true, pause: true }),
     "danger",
   ], 
   "v": () => [
@@ -1279,7 +1275,6 @@ const levelConf = {
     area(),
     solid(),
     origin("top"),
-    offscreen({ hide: true, pause: true }),
     "danger",
   ],
   "O": () => [
@@ -1287,14 +1282,12 @@ const levelConf = {
     area({ scale: 0.5, }),
     pos(0, -12),
     origin("bot"),
-    offscreen({ hide: true, pause: true }),
     "portal",
   ],
   "l": () => [
     sprite("jumpy"),
     origin("bot"),
     area(),
-    offscreen({ hide: true, pause: true }),
     "jumpy",
   ],
   "D": () => [
@@ -1302,14 +1295,12 @@ const levelConf = {
     area(),
     solid(),
     origin("bot"),
-    offscreen({ hide: true, pause: true }),
     "door",
   ],
   "k": () => [
     sprite("key"),
     area(),
     origin("bot"),
-    offscreen({ hide: true, pause: true }),
     "key",
   ],
   ">": () => [
@@ -1317,7 +1308,6 @@ const levelConf = {
     area(),
     solid(),
     origin("bot"),
-    offscreen({ hide: true, pause: true }),
     "right",
   ],
   "<": () => [
@@ -1325,7 +1315,6 @@ const levelConf = {
     area(),
     solid(),
     origin("bot"),
-    offscreen({ hide: true, pause: true }),
     "left",
   ],
   ".": () => [
@@ -1333,53 +1322,39 @@ const levelConf = {
     area(),
     solid(),
     origin("bot"),
-    offscreen({ hide: true, pause: true }),
-
   ],
   "{": () => [
     sprite("signpostl"),
     area(),
     origin("bot"), 
-    offscreen({ hide: true, pause: true }),
-
   ],
     "}": () => [
     sprite("signpostr"),
     area(),
     origin("bot"), 
-    offscreen({ hide: true, pause: true }),
-
   ],
     "-": () => [
     sprite("signposte"),
     area(),
     origin("bot"), 
-    offscreen({ hide: true, pause: true }),
-
   ],
     "i": () => [
     sprite("invisdanger"),
     area(),
     "danger",
     origin("bot"), 
-    offscreen({ hide: true, pause: true }),
-
   ],
   "S": () => [
     sprite("invisdanger"),
     area(),
     "spawn",
     origin("bot"), 
-    offscreen({ hide: true, pause: true }),
-
   ],
   "Q": () => [
     sprite("invisdanger"),
     area(),
     "arg",
     origin("bot"),
-    offscreen({ hide: true, pause: true }),
-
   ],
   "G": () => [
     sprite("ghost"),
@@ -1387,15 +1362,11 @@ const levelConf = {
     "enemy",
     origin("bot"),
     area(),
-    offscreen({ hide: true, pause: true }),
-
     body(),
   ],
   "!": () => [
     sprite("darrow"),
     origin("bot"),
-    offscreen({ hide: true, pause: true }),
-
     area(),
   ],
   
