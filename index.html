@@ -1277,7 +1277,7 @@
          layer("title"),
          color(255, 255, 255),
          fixed(),
-         pos(width() / 2 - 468, height() * 0.05),
+         pos(width() / 2 - 395, height() * 0.05),
        ])
 
       const onOffBtn = add([
@@ -1292,8 +1292,8 @@
         const onOffText = add([
         // list of components
         text("ON", {size: 100}),
-        "btn",
-        pos(width() / 2 - 38, height() / 2 - 50),
+        "txt",
+        pos(width() / 2 - 56, height() / 2 - 34),
         area(),
 
       ])
@@ -1301,13 +1301,18 @@
         const onOffText = add([
         // list of components
         text("OFF", {size: 100}),
-        "btn",
-        pos(width() / 2 - 38, height() / 2 - 50),
+        "txt",
+        pos(width() / 2 - 86, height() / 2 - 34),
         area(),
       ])
       }
 
       onClick("btn", () => {
+        multiplayer = !multiplayer;
+        go("multiplayer");
+      })
+
+      onClick("txt", () => {
         multiplayer = !multiplayer;
         go("multiplayer");
       })
