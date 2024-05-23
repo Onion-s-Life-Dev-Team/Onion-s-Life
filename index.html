@@ -58,7 +58,7 @@
     var trackingLevelId = 0;
     var myCoords = { x: 120, y: 40, level: trackingLevelId };
     var isDeathAnimEnabled = true;
-    var multiplayer = true;
+    var multiplayerEnabled = true;
 
     // Subscribe to mouse events.
     // Our second parameter filters only for mouse events.
@@ -1288,7 +1288,7 @@
         area(),
 
       ])
-      if(multiplayer){
+      if(multiplayerEnabled){
         const onOffText = add([
         // list of components
         text("ON", {size: 100}),
@@ -1323,11 +1323,11 @@
         ])
 
       onClick("r", () => {
-        multiplayer = !multiplayer;
+        multiplayerEnabled = !multiplayerEnabled;
         go("multiplayer");
       })
       onClick("l", () => {
-        multiplayer = !multiplayer;
+        multiplayerEnabled = !multiplayerEnabled;
         go("multiplayer");
       })
     })
