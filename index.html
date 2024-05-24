@@ -61,6 +61,8 @@
     var myCoords = { x: 120, y: 40, level: trackingLevelId };
     var isDeathAnimEnabled = true;
     var multiplayerEnabled = true;
+    var speedCap = 400; // raising this raises the max speed
+    var friction = 4; // decreasing this increases the rate of acceleration
 
     function subscribeToChannel(){
       // Subscribe to mouse events.
@@ -496,13 +498,25 @@
         music.pause()
         go("title");
       })
+
+      var accel = 1.1;
       keyDown('left', () => {
-          moveOnion(true, 400)
+          moveOnion(true, accel)
+            accel = accel * (1 - dt() * friction) + speedCap * (dt() * friction)
+      })
+
+      onKeyRelease('left', () => {
+        accel = 1.1;
       })
 
       keyDown('right', () => {
-        moveOnion(false, 400)
+        moveOnion(false, accel)
+          accel = accel * (1 - dt() * friction) + speedCap * (dt() * friction) 
       });
+
+      onKeyRelease('right', () => {
+        accel = 1.1;
+      })
 
       function moveOnion(invert, distance){
           onion.move(!invert ? distance : -distance, 0)
