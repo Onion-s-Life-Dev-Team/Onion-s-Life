@@ -45,7 +45,6 @@
     const supabase = createClient(SUPABASE_URL, SUPABASE_KEY)
     //generate random ID
     const userID = Math.floor(Math.random() * 1000000);
-    var speedCap = 400;
     var allUserIds = [];
     var otherOnions = [];
     var onions = [
@@ -62,6 +61,8 @@
     var myCoords = { x: 120, y: 40, level: trackingLevelId };
     var isDeathAnimEnabled = true;
     var multiplayerEnabled = true;
+    var speedCap = 400; // raising this raises the max speed
+    var friction = 4; // decreasing this increases the rate of acceleration
 
     function subscribeToChannel(){
       // Subscribe to mouse events.
@@ -498,7 +499,7 @@
       var accel = 1.1;
       keyDown('left', () => {
           moveOnion(true, accel)
-            accel = accel * (1 - dt() * 4) + speedCap * (dt() * 4)
+            accel = accel * (1 - dt() * friction) + speedCap * (dt() * friction)
       })
 
       onKeyRelease('left', () => {
@@ -507,7 +508,7 @@
 
       keyDown('right', () => {
         moveOnion(false, accel)
-          accel = accel * (1 - dt() * 4) + speedCap * (dt() * 4) 
+          accel = accel * (1 - dt() * friction) + speedCap * (dt() * friction) 
       });
 
       onKeyRelease('right', () => {
