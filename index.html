@@ -43,6 +43,7 @@
     const supabase = createClient(SUPABASE_URL, SUPABASE_KEY)
     //generate random ID
     const userID = Math.floor(Math.random() * 1000000);
+    var speedCap = 400;
     var allUserIds = [];
     var otherOnions = [];
     var onions = [
@@ -491,13 +492,25 @@
         music.pause()
         go("title");
       })
+
+      var accel = 1.1;
       keyDown('left', () => {
-          moveOnion(true, 400)
+          moveOnion(true, accel)
+            accel = accel * (1 - dt() * 4) + speedCap * (dt() * 4)
+      })
+
+      onKeyRelease('left', () => {
+        accel = 1.1;
       })
 
       keyDown('right', () => {
-        moveOnion(false, 400)
+        moveOnion(false, accel)
+          accel = accel * (1 - dt() * 4) + speedCap * (dt() * 4) 
       });
+
+      onKeyRelease('right', () => {
+        accel = 1.1;
+      })
 
       function moveOnion(invert, distance){
           onion.move(!invert ? distance : -distance, 0)
