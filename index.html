@@ -344,6 +344,9 @@
 
     // Get the high score
     function getHighLevel() {
+      if (getCookie("highLevel") > LEVELS.length - 1) {
+        return LEVELS.length - 1;
+      }
       return getCookie("highLevel");
     }
     var first = true;
@@ -720,6 +723,23 @@
         onion.move(0, 0)
       })
 
+      //add code that opens a text box if the key l is pressed
+      //the text box allows the user to manually import level code
+      onKeyPress("l", () => {
+        const levelCode = prompt("Enter level code:");
+        if (levelCode) {
+         const level = levelCode.split("\n");
+          addLevel(level, levelConf);
+          //update level names to put this at the end
+          levelNames.push("Custom Level");
+          //update the LEVELS array
+          LEVELS.push(level);
+          go("game", {
+            levelId: levelNames.length - 1,
+            coins: 0,
+          });
+        }
+      });
       //if(rEnabled == true){
       onKeyDown("r", () => {
         music.pause()
