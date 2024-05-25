@@ -2,12 +2,12 @@
  const LEVELS = [
   //intro
   [
-    '^                                                       =',
-    '^                                                       =',
-    '^                                                       =',
-    '^                                                       =',
-    '^                                                       =',
-    '^                                                       =',
+    '     = =                                         =',
+    '     = =                                        =',
+    '                                                =',
+    '     ===                                              =',
+    '    =   =                                          =',
+    '                                                        =',
     '=                                                       =',
     '=                                                       =',
     '=                                                       =',
@@ -1312,136 +1312,140 @@
 ]
 
 const levelConf = {
-  width: 64,
-  height: 64,
+  tileWidth: 64,
+  tileHeight: 64,
 
-  "=": () => [
-    sprite("grass"),
-    area(),
-    solid(),
-    scale(1),
-    origin("bot"),
-    "ground"
-  ],
-  "?": () => [
-    sprite("fake"),
-    area(),
-    scale(1),
-    origin("bot"),
-    "ground"
-  ],
-  "$": () => [
-    sprite("coin"),
-    area(),
-    origin("bot"),
-    "coin",
-  ],
-  "^": () => [
-    sprite("spike"),
-    area(),
-    solid(),
-    origin("bot"),
-    "danger",
-  ], 
-  "v": () => [
-    sprite("dspike"),
-    area(),
-    solid(),
-    origin("top"),
-    "danger",
-  ],
-  "O": () => [
-    sprite("portal"),
-    area({ scale: 0.5, }),
-    pos(0, -12),
-    origin("bot"),
-    "portal",
-  ],
-  "l": () => [
-    sprite("jumpy"),
-    origin("bot"),
-    area(),
-    "jumpy",
-  ],
-  "D": () => [
-    sprite("door"),
-    area(),
-    solid(),
-    origin("bot"),
-    "door",
-  ],
-  "k": () => [
-    sprite("key"),
-    area(),
-    origin("bot"),
-    "key",
-  ],
-  ">": () => [
-    sprite("block"),
-    area(),
-    solid(),
-    origin("bot"),
-    "right",
-  ],
-  "<": () => [
-    sprite("block"),
-    area(),
-    solid(),
-    origin("bot"),
-    "left",
-  ],
-  ".": () => [
-    sprite("block"),
-    area(),
-    solid(),
-    origin("bot"),
-  ],
-  "{": () => [
-    sprite("signpostl"),
-    area(),
-    origin("bot"), 
-  ],
-    "}": () => [
-    sprite("signpostr"),
-    area(),
-    origin("bot"), 
-  ],
-    "-": () => [
-    sprite("signposte"),
-    area(),
-    origin("bot"), 
-  ],
-    "i": () => [
-    sprite("invisdanger"),
-    area(),
-    "danger",
-    origin("bot"), 
-  ],
-  "S": () => [
-    sprite("invisdanger"),
-    area(),
-    "spawn",
-    origin("bot"), 
-  ],
-  "Q": () => [
-    sprite("invisdanger"),
-    area(),
-    "arg",
-    origin("bot"),
-  ],
-  "G": () => [
-    sprite("ghost"),
-    patrol(),
-    "enemy",
-    origin("bot"),
-    area(),
-    body(),
-  ],
-  "!": () => [
-    sprite("darrow"),
-    origin("bot"),
-    area(),
-  ],
+  tiles:{
+    "=": () => [
+      sprite("grass"),
+      area(),
+      body({ isStatic: true }),
+      scale(1),
+      anchor("bot"),
+      offscreen({ hidden: true}),
+      "ground"
+    ],
+    "?": () => [
+      sprite("fake"),
+      area(),
+      scale(1),
+      anchor("bot"),
+      "ground"
+    ],
+    "$": () => [
+      sprite("coin"),
+      area(),
+      anchor("bot"),
+      "coin",
+    ],
+    "^": () => [
+      sprite("spike"),
+      area(),
+      body({ isStatic: true }),
+      anchor("bot"),
+      "danger",
+    ], 
+    "v": () => [
+      sprite("dspike"),
+      area(),
+      body({ isStatic: true }),
+      anchor("top"),
+      "danger",
+    ],
+    "O": () => [
+      sprite("portal"),
+      area({ scale: 0.5, }),
+      pos(0, -12),
+      anchor("bot"),
+      "portal",
+    ],
+    "l": () => [
+      sprite("jumpy"),
+      anchor("bot"),
+      area(),
+      "jumpy",
+    ],
+    "D": () => [
+      sprite("door"),
+      area(),
+      body({ isStatic: true }),
+      anchor("bot"),
+      "door",
+    ],
+    "k": () => [
+      sprite("key"),
+      area(),
+      anchor("bot"),
+      "key",
+    ],
+    ">": () => [
+      sprite("block"),
+      area(),
+      body({ isStatic: true }),
+      anchor("bot"),
+      "right",
+    ],
+    "<": () => [
+      sprite("block"),
+      area(),
+      body({ isStatic: true }),
+      anchor("bot"),
+
+      "left",
+    ],
+    ".": () => [
+      sprite("block"),
+      area(),
+      body({ isStatic: true }),
+      anchor("bot"),
+    ],
+    "{": () => [
+      sprite("signpostl"),
+      area(),
+      anchor("bot"), 
+    ],
+      "}": () => [
+      sprite("signpostr"),
+      area(),
+      anchor("bot"), 
+    ],
+      "-": () => [
+      sprite("signposte"),
+      area(),
+      anchor("bot"), 
+    ],
+      "i": () => [
+      sprite("invisdanger"),
+      area(),
+      "danger",
+      anchor("bot"), 
+    ],
+    "S": () => [
+      sprite("invisdanger"),
+      area(),
+      "spawn",
+      anchor("bot"), 
+    ],
+    "Q": () => [
+      sprite("invisdanger"),
+      area(),
+      "arg",
+      anchor("bot"),
+    ],
+    "G": () => [
+      sprite("ghost"),
+      patrol(),
+      "enemy",
+      anchor("bot"),
+      area(), 
+      body(), 
+      ],
+    "!": () => [
+      sprite("darrow"),
+      anchor("bot"),
+      area(),
+    ],
+  },
   
 }
 function patrol(speed = 60, dir = 1) {
