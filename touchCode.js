@@ -1,5 +1,5 @@
 export default function registerTouchControls(onion, moveOnion, levelId, setHighLevel, rEnabled, music, applyRandomEffects, continuouslyChangeEffects, jumpCount) {
-    if (isTouch()) {
+    if (isTouchscreen()) {
         const leftArrow = add([
             sprite("leftmove"),
             "leftArrow",
@@ -7,61 +7,61 @@ export default function registerTouchControls(onion, moveOnion, levelId, setHigh
             fixed(),
             scale(2),
             area(),
-        ]);
-        const rightArrow = add([
+          ]);
+          const rightArrow = add([
             sprite("rightmove"),
             "rightArrow",
             pos(120, height() * 0.8),
             fixed(),
             scale(2),
             area(),
-        ]);
-        const jump = add([
+          ]);
+          const jump = add([
             sprite("jumpbutton"),
             "jump",
             pos(width() * 0.8, height() * 0.8),
             fixed(),
             scale(2),
             area(),
-        ]);
-        const jumpright = add([
+          ]);
+          const jumpright = add([
             sprite("jumpright"),
             "jumpright",
             pos(120, height() * 0.7),
             fixed(),
             scale(2),
             area(),
-        ]);
-        const jumpleft = add([
+          ]);
+          const jumpleft = add([
             sprite("jumpleft"),
             "jumpleft",
             pos(20, height() * 0.7),
             fixed(),
             scale(2),
             area(),
-        ]);
-        const restart = add([
+          ]);
+          const restart = add([
             sprite("restart"),
             pos(width() * 0.8, height() * 0.15),
             fixed(),
             area(),
             scale(2),
-        ]);
-        const home = add([
+          ]);
+          const home = add([
             sprite("home"),
             "b",
             area(),
             fixed(),
             scale(2),
             pos(width() * 0.9, height() * 0.15),
-        ]);
-        const dj = add([
+          ]);
+          const dj = add([
             sprite("dj"),
             area(),
             fixed(),
             scale(2),
             pos(width() * 0.7, height() * 0.15),
-        ]);
+          ]);
 
         let touching = false;
         let arrowClicked = null;
@@ -69,18 +69,19 @@ export default function registerTouchControls(onion, moveOnion, levelId, setHigh
         let djRotation = 0; // Variable to track the rotation angle
         let isDjAnimating = false; // Variable to track the animation state
 
-        onTouchStart((id, pos) => {
+        onTouchStart((pos, id) => {
         touching = true;
         if (rightArrow.hasPoint(pos)) {
             arrowClicked = "right";
             rightArrow.scale = vec2(1.8); // Scale down the right arrow
+            
         }
         //basically replicate the crazy music behavior
         if (dj.hasPoint(pos)) {
             if (!isDjAnimating) {
             isDjAnimating = true;
             const startTime = time(); // Store the start time of the animation
-            action(() => {
+            onUpdate(() => {
                 const elapsedTime = time() - startTime; // Calculate the elapsed time since the animation started
                 djRotation += dt() * 360; // Increase the rotation angle per frame
                 dj.angle = djRotation; // Apply the rotation angle to the button
@@ -102,7 +103,7 @@ export default function registerTouchControls(onion, moveOnion, levelId, setHigh
                 }
             });
             }
-            if (music && music.isPaused()) {
+            if (music && music.paused) {
             applyRandomEffects();
             } else {
             applyRandomEffects();
@@ -151,20 +152,20 @@ export default function registerTouchControls(onion, moveOnion, levelId, setHigh
         }
         if (rEnabled) {
             if (restart.hasPoint(pos)) {
-            music.pause();
+            music.stop();
             go("game", {
                 levelId: levelId,
             });
             }
         }
         if (home.hasPoint(pos)) {
-            music.pause();
+            music.stop();
             setHighLevel(levelId);
             go("title");
         }
         });
 
-        action(() => {
+        onUpdate(() => {
         if (touching) {
             if (arrowClicked == "left") {
             moveOnion(true, 400)

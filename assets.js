@@ -53,4 +53,33 @@ export default function loadAssets() {
   loadSprite("onion-gold","sprites/onion-gold.png")
   loadSprite("onion-dark","sprites/onion-dark.png")
   
+  loadFont('apl386', 'apl386.ttf', { outline: 4, filter: 'linear'})
+
+  // Custom loading screen
+  // Runs the callback every frame during loading
+  onLoading((progress) => {
+
+    // Black background
+    drawRect({
+      width: width(),
+      height: height(),
+      color: rgb(0, 0, 0),
+    })
+
+    // A pie representing current load progress
+    drawCircle({
+      pos: center(),
+      radius: 32,
+      end: map(progress, 0, 1, 0, 360),
+    })
+
+    drawText({
+      text: "Loading" + ".".repeat(wave(1, 4, time() * 12)),
+      font: "monospace",
+      size: 24,
+      anchor: "center",
+      pos: center().add(0, 70),
+    })
+
+  })
 }
