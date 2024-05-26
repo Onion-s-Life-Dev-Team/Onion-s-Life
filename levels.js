@@ -1351,6 +1351,22 @@ const levelConf = {
       anchor("bot"),
       "ground"
     ],
+    "+": () => [
+      sprite("grass5"),
+      area(new Rect(vec2(), 160, 32)),
+      body({ isStatic: true }),
+      scale(1),
+      anchor("bot"),
+      "ground"
+    ],
+    "_": () => [
+      sprite("grass25"),
+      area(new Rect(vec2(), 800, 32)),
+      body({ isStatic: true }),
+      scale(1),
+      anchor("bot"),
+      "ground"
+    ],
     "?": () => [
       sprite("fake"),
       area(),
@@ -1443,6 +1459,12 @@ const levelConf = {
       "i": () => [
       sprite("invisdanger"),
       area(),
+      "danger",
+      anchor("bot"), 
+    ],
+    "~": () => [
+      sprite("invis25"),
+      area(new Rect(vec2(), 800, 32)),
       "danger",
       anchor("bot"), 
     ],

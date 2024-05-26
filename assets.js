@@ -1,6 +1,7 @@
 export default function loadAssets() {
   loadSprite("onion", "sprites/onion.png")
   loadSprite("grass5", "sprites/grass5.png")
+  loadSprite("grass25", "sprites/grass25.png")
   loadSprite("bigonion", "sprites/bigonion.png")
   loadSprite("grass", "sprites/grass.png")
   loadSprite("coin", "sprites/coin.png")
@@ -8,6 +9,7 @@ export default function loadAssets() {
   loadSprite("spike", "sprites/spike.png")
   loadSprite("dspike", "sprites/dspike.png")
   loadSprite("invisdanger", "sprites/invisdanger.png")
+  loadSprite("invis25", "sprites/invis25.png")
   loadSprite("jumpy", "sprites/jumpy.png")
   loadSprite("heart", "sprites/heart.png")
   loadSprite("cloud", "sprites/cloud.png")
@@ -53,7 +55,7 @@ export default function loadAssets() {
   loadSprite("onion-gold","sprites/onion-gold.png")
   loadSprite("onion-dark","sprites/onion-dark.png")
   
-  loadFont('apl386', 'apl386.ttf', { outline: 4, filter: 'linear'})
+  loadFont('apl386', 'apl386.woff2', { outline: 4, filter: 'linear'})
 
   // Custom loading screen
   // Runs the callback every frame during loading
