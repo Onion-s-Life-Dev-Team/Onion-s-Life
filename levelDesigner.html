@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kaboom.js Level Editor</title>
+    <style>
+        #levelDisplay {
+            position: relative;
+            width: 2048px; /* Adjust based on your level width and tile size */
+            height: 1345px; /* Adjust based on your level height and tile size */
+            border: 2px solid #000;
+            background-color: #99CCFF;
+        }
+        .tile {
+            position: absolute;
+            width: 32px;  /* Adjust to match your tile size */
+            height: 32px;  /* Adjust to match your tile size */
+            border: 1px solid #ccc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            background-size: cover;  /* Ensures the image covers the whole tile */
+            font-family: monospace;
+            font-size: 0;  /* Hide text */
+            object-fit: contain;
+        }
+
+        #tools {
+            padding: 10px;
+            background-color: #e9e9e9;
+            margin-top: 10px;
+        }
+        button {
+            margin-right: 10px;
+            padding: 5px 10px;
+        }
+    </style>
+</head>
+<body>
+    <div id="levelDesigner">
+        <div id="levelDisplay"></div>
+        <div id="tools">
+            <button data-tile="=">Ground (=)</button>
+            <button data-tile="?">Fake Ground (?)</button>
+            <button data-tile="$">Coin ($)</button>
+            <button data-tile="^">Spike (^)</button>
+            <button data-tile="v">Downward Spike (v)</button>
+            <button data-tile="O">Portal (O)</button>
+            <button data-tile="l">Jumpy (l)</button>
+            <button data-tile="D">Door (D)</button>
+            <button data-tile="k">Key (k)</button>
+            <button data-tile=">">Right Block (>)</button>
+            <button data-tile="<">Left Block (<)</button>
+            <button data-tile=".">Block (.)</button>
+            <button data-tile="{">Left Signpost ({)</button>
+            <button data-tile="}">Right Signpost (})</button>
+            <button data-tile="-">Signpost (-)</button>
+            <button data-tile="i">Invisible Danger (i)</button>
+            <button data-tile="S">Spawn (S)</button>
+            <button data-tile="Q">Invisible Danger (Q)</button>
+            <button data-tile="G">Ghost (G)</button>
+            <button data-tile="!">Down Arrow (!)</button>
+            <!-- Add more buttons for additional tile types -->
+        </div>
+        <button id="saveLevel">Save Level</button>
+        <button id="loadLevel">Load Level</button>
+        <button id="exportLevel">Export Level</button>
+    </div>
+
+    <script>
+        const tools = document.getElementById('tools');
+        const levelDisplay = document.getElementById('levelDisplay');
+        let selectedTile = ' '; // Default to empty space
+
+        tools.addEventListener('click', function(event) {
+            if (event.target.tagName === 'BUTTON') {
+                selectedTile = event.target.getAttribute('data-tile');
+            }
+        });
+
+        const LEVELS = [
+            Array.from({length: 42}, () => Array(64).fill(' ')) // Create 20 rows of 64 columns filled with empty space
+        ];
+        
+        function getImageUrl(tile) {
+            switch(tile) {
+                case '=': return 'sprites/grass.png';
+                case '^': return 'sprites/spike.png';
+                case '$': return 'sprites/coin.png';
+                case 'O': return 'sprites/portal.png';
+                case 'l': return 'sprites/jumpy.png';
+                case 'D': return 'sprites/door.png';
+                case 'k': return 'sprites/key.png';
+                case '>': return 'sprites/rect.png';
+                case '<': return 'sprites/rect.png';
+                case '.': return 'sprites/rect.png';
+                case '{': return 'sprites/signpostl.png';
+                case '}': return 'sprites/signpostr.png';
+                case '-': return 'sprites/signposte.png';
+                case 'i': return 'sprites/invisdanger.png';
+                case 'S': return 'sprites/spawn.png';
+                case 'Q': return 'sprites/invisdanger.png';
+                case 'G': return 'sprites/ghosty.png';
+                case '!': return 'sprites/darrow.png';
+                case 'v': return 'sprites/dspike.png';
+                case '?': return 'sprites/fake.png'; // Add paths for each tile type
+                default: return ''; // Default image for unknown types
+            }
+        }
+
+        function drawLevel(level) {
+            levelDisplay.innerHTML = '';
+            level.forEach((row, y) => {
+                row.forEach((tile, x) => {
+                    const tileElement = document.createElement('div');
+                    tileElement.className = 'tile';
+                    tileElement.style.left = `${x * 32}px`;
+                    tileElement.style.top = `${y * 32}px`;
+                    tileElement.style.backgroundImage = `url('${getImageUrl(tile)}')`;
+                    tileElement.addEventListener('click', () => {
+                        LEVELS[0][y][x] = selectedTile === tile ? ' ' : selectedTile;
+                        drawLevel(LEVELS[0]);
+                    });
+                    levelDisplay.appendChild(tileElement);
+                });
+            });
+        }
+
+
+
+        let currentLevel = 0;
+        drawLevel(LEVELS[currentLevel]);
+
+        document.getElementById('saveLevel').addEventListener('click', () => {
+            localStorage.setItem('savedLevel', JSON.stringify(LEVELS[currentLevel]));
+        });
+
+        document.getElementById('loadLevel').addEventListener('click', () => {
+            const loadedLevel = JSON.parse(localStorage.getItem('savedLevel'));
+            if (loadedLevel) {
+                LEVELS[currentLevel] = loadedLevel;
+                drawLevel(LEVELS[currentLevel]);
+            }
+        });
+
+        document.getElementById('exportLevel').addEventListener('click', () => {
+            const exportText = LEVELS[currentLevel].map(row => "'" + row.join('') + "'").join(",\n");
+            navigator.clipboard.writeText(exportText).then(() => {
+                alert('Level code copied to clipboard! Use it in your game by pasting and processing it.');
+            });
+        });
+    </script>
+</body>
+</html>
