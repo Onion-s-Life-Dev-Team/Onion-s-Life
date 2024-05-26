@@ -462,7 +462,7 @@
     var notRColor = 255*(levelId/levelNames.length);
     console.log(levelNames[levelId]);
     add([
-        text(levelNames[levelId]),
+        text(levelNames[levelId], {size: 64}),
         color(255, 255-notRColor, 255-notRColor),
         fixed(),
         pos(80, 40),
@@ -840,10 +840,11 @@
       })
 
       add([
-        text("Onion's Life!", {size: 120}),
+        text("Onion's Life", {size: 120, align: "center"}),
         color(0, 255, 0),
         fixed(),
-        pos(width() / 2 - 464, height() * 0.10),
+        anchor("center"),
+        pos(width() / 2, height() * 0.10),
       ])
 
       const startBtn = add([
@@ -851,7 +852,8 @@
         "start",
         fixed(),
         area(),
-        pos(width() / 2 - 201, height() * 0.85),
+        anchor("center"),
+        pos(width() / 2, height() * 0.9),
       ])
 
       const lvlSelect = add([
@@ -859,7 +861,8 @@
         "lvlSelect",
         fixed(),
         area(),
-        pos(width() / 2 + 207, height() * 0.85),
+        anchor("center"),
+        pos(width() / 2 + 300, height() * 0.9),
       ])
 
       const skinsBtn = add([
@@ -867,18 +870,18 @@
         "skins",
         fixed(),
         area(),
-        pos(width() / 2 - 309, height() * 0.85),
+        anchor("center"),
+        pos(width() / 2 - 300, height() * 0.9),
       ])
 
       onClick("skins", () => {
         go("skins");
       })
 
-      add([
-        text("PLAY", {size: 50}),
+      startBtn.add([
+        text("PLAY", {size: 64}),
         fixed(),
-        
-        pos(width() / 2 - 75, height() * 0.87)
+        anchor("center"),
       ])
 
       onClick("start", () => {
