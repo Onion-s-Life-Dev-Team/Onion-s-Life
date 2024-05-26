@@ -684,14 +684,20 @@
         add([
           sprite("cloud", {flipX: dir.eq(LEFT)}),
           move(dir, rand(20, 60)),
-          offscreen({destroy: true}),
-          pos(dir.eq(LEFT) ? width() : 0, rand(-20, 480)),
+          offscreen({hidden: true}),
+          pos(rand(-20 + onion.pos.x, width() + onion.pos.x + 300), rand(-20, 480)),
           anchor("top"),
           area(),
           z(-50),
         ])
       }
-      setInterval(spawnCloud, 1000000)
+      //spawnCloud()
+      //spawn 10 clouds to start
+      for (let i = 0; i < 10; i++) {
+        spawnCloud()
+      }
+      setInterval(spawnCloud, 3000)
+
 
       const score = add([
         text("Score: 0"),
