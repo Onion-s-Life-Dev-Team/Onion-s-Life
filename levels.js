@@ -1392,7 +1392,23 @@ const levelConf = {
       offscreen({ hide: true }),
       anchor("bot"),
       "danger",
-    ], 
+    ],
+    "`": () => [
+      sprite("spike3"),
+      area(),
+      body({ isStatic: true }),
+      offscreen({ hide: true, distance: 96 }),
+      anchor("bot"),
+      "danger",
+    ],
+    "&": () => [
+      sprite("spike9"),
+      area(),
+      body({ isStatic: true }),
+      offscreen({ hide: true, distance: 288 }),
+      anchor("bot"),
+      "danger",
+    ],
     "v": () => [
       sprite("dspike"),
       area(),
@@ -1483,9 +1499,17 @@ const levelConf = {
     "~": () => [
       sprite("invis25"),
       area(new Rect(vec2(), 800, 32)),
-      offscreen({ hide: true, distance: 800 }),
+      offscreen({ hide: true, distance: 1 }),
       "danger",
       anchor("bot"), 
+    ],
+    "#": () => [
+      rect(2400, 32),
+      area(new Rect(vec2(), 2400, 32)),
+      offscreen({ hide: true, distance: 1 }),
+      "danger",
+      anchor("bot"), 
+      opacity(0),
     ],
     "S": () => [
       sprite("invisdanger"),

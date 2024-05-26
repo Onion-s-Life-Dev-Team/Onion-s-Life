@@ -7,6 +7,8 @@ export default function loadAssets() {
   loadSprite("coin", "sprites/coin.png")
   loadSprite("portal", "sprites/portal.png")
   loadSprite("spike", "sprites/spike.png")
+  loadSprite("spike3", "sprites/spike3.png")
+  loadSprite("spike9", "sprites/spike9.png")
   loadSprite("dspike", "sprites/dspike.png")
   loadSprite("invisdanger", "sprites/invisdanger.png")
   loadSprite("invis25", "sprites/invis25.png")
