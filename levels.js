@@ -1322,7 +1322,6 @@ const levelConf = {
       body({ isStatic: true }),
       scale(1),
       anchor("bot"),
-      offscreen({ hidden: true}),
       "ground"
     ],
     "?": () => [
