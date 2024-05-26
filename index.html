@@ -434,7 +434,7 @@
         sprite(onions[onionId]),
         pos(120, 40),
         area(),
-        body(),
+        body({ maxVelocity: 1000 }),
       ])
 
       var levelNames = ["Intro","Classic ~ 1","Flying For Coins ~ 2",
@@ -502,6 +502,7 @@
 
       //movement or controls
       onKeyPress('p', () => {
+        music.stop()
         onKeyPress('z', () => {
           music.stop()
           if (levelId + 1 < LEVELS.length) {
@@ -694,8 +695,7 @@
       ])
       onion.onCollide("key", (key) => {
         //write a for loop to get all doors and remove them
-        console.log(get("door"))
-        get("door").forEach((door) => {
+        get("door", {recursive: true, liveUpdate: true}).forEach((door) => {
           destroy(door)
         })
         
