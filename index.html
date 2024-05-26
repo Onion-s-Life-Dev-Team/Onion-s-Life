@@ -64,7 +64,6 @@
     var isDeathAnimEnabled = false;
     var multiplayerEnabled = true;
     var speedCap = 400; // raising this raises the max speed
-    var friction = 4; // decreasing this increases the rate of acceleration
 
     function subscribeToChannel(){
       // Subscribe to mouse events.
@@ -370,6 +369,9 @@
     function getHighLevel() {
       if (getCookie("highLevel") > LEVELS.length - 1) {
         return LEVELS.length - 1;
+      } else {
+        return getCookie("highLevel");
+      
       }
     }
     var first = true;
@@ -379,7 +381,7 @@
       coins: 0,
       levelName: "Intro",
     }) => {
-      setGravity(1600)
+      setGravity(2400)
       if (first) {
         levelId = slctId;
         first = false;
@@ -531,23 +533,14 @@
         go("title");
         music.paused = true;
       })
-      var accel = 1.1;
       onKeyDown('left', () => {
-          moveOnion(true, accel)
-            accel = accel * (1 - dt() * friction) + speedCap * (dt() * friction)
+        moveOnion(true, 400)
       })
 
-      onKeyRelease('left', () => {
-        accel = 1.1;
-      })
 
       onKeyDown('right', () => {
-        moveOnion(false, accel)
-          accel = accel * (1 - dt() * friction) + speedCap * (dt() * friction) 
+        moveOnion(false, 400)
       });
-      onKeyRelease('right', () => {
-        accel = 1.1;
-      })
 
       function moveOnion(invert, distance){
           onion.move(!invert ? distance : -distance, 0)
