@@ -36,7 +36,7 @@
   <script type="module">
 
     // import kaboom.js
-    import kaboom from "https://unpkg.com/kaboom@3000.1.17/dist/kaboom.mjs"
+    import kaboom from "https://unpkg.com/kaplay@3000.1.17/dist/kaboom.mjs"
     import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
     import registerTouchControls from "./touchCode.js";
     import loadAssets from "./assets.js";
@@ -692,9 +692,14 @@
         {value: 0},
         fixed(),
       ])
-      onion.onCollide("key", () => {
-        destroyAll("door");
-        destroyAll("key");
+      onion.onCollide("key", (key) => {
+        //write a for loop to get all doors and remove them
+        console.log(get("door"))
+        get("door").forEach((door) => {
+          destroy(door)
+        })
+        
+        destroy(key);
         shake();
       })
       onion.onCollide("coin", (coin) => {
