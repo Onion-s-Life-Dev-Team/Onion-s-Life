@@ -212,7 +212,7 @@
           }
         } else {
           if (onion) {
-            destroy(onion.sprite); // Remove sprite from view
+            destroy(onion); // Remove sprite from view
             otherOnions.splice(otherOnions.indexOf(onion), 1); // Remove from array
           }
         }
@@ -677,26 +677,33 @@
         setHighLevel(levelId);
         sendDeathMessage(channel, userID);
       }
+      var clouds = []
       function spawnCloud() {
-
-        const dir = choose([LEFT, RIGHT])
-
-        add([
-          sprite("cloud", {flipX: dir.eq(LEFT)}),
+        const dir = choose([LEFT, RIGHT]);
+        var cloud = add([
+          sprite("cloud", { flipX: dir === LEFT }),
           move(dir, rand(20, 60)),
-          offscreen({hidden: true}),
+          offscreen({ destroy: true }),
           pos(rand(-20 + onion.pos.x, width() + onion.pos.x + 300), rand(-20, 480)),
           anchor("top"),
           area(),
           z(-50),
-        ])
+        ]);
+        clouds.push(cloud);
+
+        if (clouds.length > 10) {
+          
+          destroy(clouds[0]);
+          destroy(clouds[0].sprite);
+          clouds.shift();
+        }
       }
       //spawnCloud()
       //spawn 10 clouds to start
       for (let i = 0; i < 10; i++) {
         spawnCloud()
       }
-      setInterval(spawnCloud, 3000)
+      setInterval(spawnCloud, 15000)
 
 
       const score = add([
