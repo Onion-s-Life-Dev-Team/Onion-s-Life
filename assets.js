@@ -53,5 +53,5 @@ export default function loadAssets() {
   loadSprite("onion-gold","sprites/onion-gold.png")
   loadSprite("onion-dark","sprites/onion-dark.png")
   
-  loadFont('apl386', 'apl386.ttf')
+  loadFont('apl386', 'apl386.ttf', { outline: 4, filter: 'linear'})
 }

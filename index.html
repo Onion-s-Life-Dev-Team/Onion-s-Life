@@ -61,7 +61,7 @@
     const PLAYER_EVENT = 'player_moved'
     var trackingLevelId = 0;
     var myCoords = { x: 120, y: 40, level: trackingLevelId };
-    var isDeathAnimEnabled = true;
+    var isDeathAnimEnabled = false;
     var multiplayerEnabled = true;
     var speedCap = 400; // raising this raises the max speed
     var friction = 4; // decreasing this increases the rate of acceleration
@@ -465,7 +465,7 @@
         if (music.paused) {
           music.play()
         } else {
-          music.pause = !music.pause;
+          music.stop()
         }
       })
       //music.detune(-2000)
@@ -501,7 +501,7 @@
       //movement or controls
       onKeyPress('p', () => {
         onKeyPress('z', () => {
-          music.paused = !music.paused;
+          music.stop()
           if (levelId + 1 < LEVELS.length) {
             go("game", {
               levelId: levelId + 1,
@@ -783,7 +783,7 @@
 
       //if(rEnabled == true){
       onKeyDown("r", () => {
-        music.paused = !music.paused;
+        music.stop()
         go("game", {
           levelId: levelId,
         });
