@@ -1,5 +1,5 @@
 export default function registerTouchControls(onion, moveOnion, levelId, setHighLevel, rEnabled, music, applyRandomEffects, continuouslyChangeEffects, jumpCount) {
-    if (isTouch()) {
+    if (isTouchscreen()) {
         const leftArrow = add([
             sprite("leftmove"),
             "leftArrow",
