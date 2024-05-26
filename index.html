@@ -834,7 +834,7 @@
         pos(width() / 2 + 207, height() * 0.85),
       ])
 
-      const skinsBtn = title.add([
+      const skinsBtn = add([
         sprite("skinsBtn"),
         "skins",
         fixed(),
@@ -946,7 +946,7 @@
 
       add([
         text(slctId, {
-          size: 200,
+          size: 150,
           width: lvlWidth,
           height: 180,
         }),
@@ -1101,7 +1101,7 @@
         go("title");
       })
 
-      title.add([
+      add([
          text("Customization", {size: 120}),
          color(255, 255, 255),
          fixed(),
@@ -1168,7 +1168,7 @@
         go("title");
       })
 
-      title.add([
+      add([
          text("Multiplayer", {size: 120}),
          color(255, 255, 255),
          fixed(),
