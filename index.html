@@ -4,7 +4,6 @@
 
 <head>
   <title>Onion's Life</title>
-  <link rel="stylesheet" href="styles.css">
   <link rel="shortcut icon" type="image/png" href="sprites/onion.png" />
   <link rel="manifest" href="manifest.json" />
   <meta charset="utf-8">
@@ -21,6 +20,22 @@
       overflow: hidden;
     }
 
+    body {
+      -webkit-tap-highlight-color: transparent;
+      -webkit-user-select: none;
+      /* Safari */
+      -ms-user-select: none;
+      /* IE 10 and IE 11 */
+      user-select: none;
+      /* Standard syntax */
+      touch-action: manipulation;
+      /*sus stack 
+      overflow code*/
+      height: 110%;
+      width: 100%;
+      overflow: auto;
+    }
+
     canvas {
       display: block;
     }
@@ -29,9 +44,26 @@
 
 <body>
   <script>
-    if (typeof navigator.serviceWorker !== 'undefined') {
-      navigator.serviceWorker.register('pwabuilder-sw.js')
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.getRegistrations().then(registrations => {
+        for (let registration of registrations) {
+          registration.unregister()
+            .then(success => {
+              if (success) {
+                console.log('Service worker unregistered successfully');
+              } else {
+                console.log('Service worker unregistration failed');
+              }
+            })
+            .catch(error => {
+              console.error('Error during service worker unregistration:', error);
+            });
+        }
+      }).catch(error => {
+        console.error('Error retrieving service worker registrations:', error);
+      });
     }
+
   </script>
   <script type="module">
 
@@ -50,12 +82,12 @@
     var allUserIds = [];
     var otherOnions = [];
     var onions = [
-        "onion","onion-beach","onion-blue","onion-dark","onion-gold",
-        "onion-watermelon",
-      ];
+      "onion", "onion-beach", "onion-blue", "onion-dark", "onion-gold",
+      "onion-watermelon",
+    ];
     const channel = supabase.channel('player_locations', {
       config: {
-        presence: { userId: userID},
+        presence: { userId: userID },
       },
     })
     const PLAYER_EVENT = 'player_moved'
@@ -65,57 +97,57 @@
     var multiplayerEnabled = true;
     var speedCap = 400; // raising this raises the max speed
 
-    function subscribeToChannel(){
+    function subscribeToChannel() {
       // Subscribe to mouse events.
       // Our second parameter filters only for mouse events.
       channel
-      .on(
-        'broadcast',
-        { event: PLAYER_EVENT },
-        (event) => { receivedOnionPosition(event) }
-      )
-      .on(
-        'broadcast',
-        { event: 'new_player' },
-        (event) => { receivedNewPlayer(event) }
-      )
-      .on(
-        'broadcast',
-        { event: 'player_died' },
-        (event) => { receivedDeathMessage(event) }
-      )
-      .on(
-        'broadcast',
-        { event: 'move_levels' },
-        (event) => { receivedMoveLevels(event) }
-      )
-      .on('presence', { event: 'join' }, ({ newPresences }) => {
-        printOnions(newPresences)
-      })
-      .on('presence', { event: 'sync' }, () => {
-        printOnions(channel.presenceState())
+        .on(
+          'broadcast',
+          { event: PLAYER_EVENT },
+          (event) => { receivedOnionPosition(event) }
+        )
+        .on(
+          'broadcast',
+          { event: 'new_player' },
+          (event) => { receivedNewPlayer(event) }
+        )
+        .on(
+          'broadcast',
+          { event: 'player_died' },
+          (event) => { receivedDeathMessage(event) }
+        )
+        .on(
+          'broadcast',
+          { event: 'move_levels' },
+          (event) => { receivedMoveLevels(event) }
+        )
+        .on('presence', { event: 'join' }, ({ newPresences }) => {
+          printOnions(newPresences)
+        })
+        .on('presence', { event: 'sync' }, () => {
+          printOnions(channel.presenceState())
 
-      })
-      .subscribe(async (status) => {
-        if (status === 'SUBSCRIBED') {
-          await channel.track({ userId: userID, level: trackingLevelId, x: 120, y: 40 })
-        }
-      })
+        })
+        .subscribe(async (status) => {
+          if (status === 'SUBSCRIBED') {
+            await channel.track({ userId: userID, level: trackingLevelId, x: 120, y: 40 })
+          }
+        })
     }
 
     subscribeToChannel();
 
-    function removeChannel(){
+    function removeChannel() {
       const channel = supabase.removeChannel(channel);
     }
 
     //handle death event
-    function receivedDeathMessage({ event, payload }){
+    function receivedDeathMessage({ event, payload }) {
       const { userId } = payload
-      if (userId !== userID){
+      if (userId !== userID) {
         // Check if we already have a sprite for this user.
         let onion = otherOnions.find(onion => onion.userId === userId)
-        if (onion){
+        if (onion) {
           destroy(onion)
           otherOnions.splice(otherOnions.indexOf(onion), 1)
         }
@@ -126,14 +158,14 @@
     //handle new players
     //this should also handle a received move levels inside it
     //it should send a move onion position event
-    function receivedNewPlayer({ event, payload }){
+    function receivedNewPlayer({ event, payload }) {
       receivedMoveLevels({ event, payload })
       sendOnionPosition(channel, userID, myCoords.x, myCoords.y, myCoords.level)
     }
 
-    function removeOnionListFromScreen(){
-      
-      for(var i = 0; i < 20; i++){
+    function removeOnionListFromScreen() {
+
+      for (var i = 0; i < 20; i++) {
         add([
           text("", { size: 20 }),
           pos(canvasWidth - 400, 10 + (i * 20)),
@@ -141,28 +173,28 @@
         ])
       }
     }
-    
+
 
     //create a function that prints all onion users
     // this should add a number in the corner to display how many onions are on, and the uptime
     //this could include each user
-    function printOnions(presences){
-      if (multiplayerEnabled){
+    function printOnions(presences) {
+      if (multiplayerEnabled) {
         //create a for loop that removes the previous onion text from screen
         //do it by inserting clear text in the for 20 onions in the same position
         removeOnionListFromScreen()
         var k = 0;
         for (const [userId, presence] of Object.entries(presences)) {
-          if(presence.userId && presence.level){
-            if(allUserIds.find(user => user.userId === presence.userId)){
+          if (presence.userId && presence.level) {
+            if (allUserIds.find(user => user.userId === presence.userId)) {
               allUserIds.splice(allUserIds.indexOf(allUserIds.find(user => user.userId === presence.userId)), 1)
             }
             allUserIds.push({ userId: presence.userId, level: presence.level })
+          }
+          k++;
         }
-        k++;
-      }
         removeOnionListFromScreen()
-        for (var i = 0; i < allUserIds.length; i++){
+        for (var i = 0; i < allUserIds.length; i++) {
           add([
             text(`Onion ${i + 1} (${allUserIds[i].userId}) - Level ${allUserIds[i].level}`, { size: 20 }),
             pos(canvasWidth - 400, 10 + (i * 20)),
@@ -171,8 +203,8 @@
         }
       }
     }
-    
-    
+
+
 
     function receivedMoveLevels({ event, payload }) {
       const { userId, level } = payload;
@@ -190,7 +222,7 @@
     }
 
     function receivedOnionPosition({ event, payload }) {
-      
+
       const { userId, x, y, level } = payload;
       if (userId !== userID) {
         let onion = otherOnions.find(onion => onion.userId === userId);
@@ -208,7 +240,7 @@
           } else {
             onion.pos.x = x;
             onion.pos.y = y;
-            
+
           }
         } else {
           if (onion) {
@@ -221,10 +253,10 @@
 
 
 
-  
+
     // Helper function for sending our own mouse position.
-    function sendOnionPosition(channel, userId, x, y, level){
-      if (multiplayerEnabled){
+    function sendOnionPosition(channel, userId, x, y, level) {
+      if (multiplayerEnabled) {
         return channel.send({
           type: 'broadcast',
           event: PLAYER_EVENT,
@@ -233,10 +265,10 @@
       }
     }
     //what to do when the onion dies
-    function sendDeathMessage(channel, userId){
+    function sendDeathMessage(channel, userId) {
       //clear the other onions array
       otherOnions = [];
-      if (multiplayerEnabled){
+      if (multiplayerEnabled) {
         return channel.send({
           type: 'broadcast',
           event: 'player_died',
@@ -245,8 +277,8 @@
       }
     }
 
-    function sendMoveLevels(channel, userId, level){
-      if (multiplayerEnabled){
+    function sendMoveLevels(channel, userId, level) {
+      if (multiplayerEnabled) {
         return channel.send({
           type: 'broadcast',
           event: 'move_levels',
@@ -255,7 +287,7 @@
       }
     }
 
-    
+
     // send a death message when the user leaves the page
     window.addEventListener('beforeunload', () => {
       sendDeathMessage(channel, userID)
@@ -263,7 +295,7 @@
     })
 
 
-    
+
 
     let canvasWidth = document.documentElement.clientWidth;
     let canvasHeight = document.documentElement.clientHeight;
@@ -280,8 +312,9 @@
       // Code for non-PWA behavior or other platforms
       deviceMode = "Other";
     }
-    
-    import {LEVELS, levelConf} from './levels.js';
+
+    import { LEVELS, levelConf } from './levels.js';
+    import optimizeLevel from "./levelOptimizer.js";
     //var scale = 1;
     //if (canvasWidth < 800){
     //scale = .5;
@@ -306,8 +339,8 @@
 
     //convert the layers to kaboom js 3000
     const bg = add([
-        fixed(),
-        z(200),
+      fixed(),
+      z(200),
     ])
     const obj = add([
       fixed(),
@@ -377,11 +410,11 @@
         return LEVELS.length - 1;
       } else {
         return getCookie("highLevel");
-      
+
       }
     }
     var first = true;
-    scene("game", ({levelId, coins} = {
+    scene("game", ({ levelId, coins } = {
       jumpCount: 0,
       levelId: 0,
       coins: 0,
@@ -411,10 +444,10 @@
       //}
 
 
-      addLevel(LEVELS[levelId ?? 0], levelConf)
-      function sendNewPlayer(){
+      addLevel(optimizeLevel(LEVELS[levelId ?? 0]), levelConf)
+      function sendNewPlayer() {
         // send a new player event
-        if(multiplayerEnabled){
+        if (multiplayerEnabled) {
           return channel.send({
             type: 'broadcast',
             event: 'new_player',
@@ -423,12 +456,12 @@
         }
       }
       removeOnionListFromScreen()
-      if(multiplayerEnabled){
+      if (multiplayerEnabled) {
         printOnions(channel.presenceState())
       }
       sendNewPlayer()
-      
-      
+
+
       const music = play("OverworldlyFoe", {
         volume: 1,
         loop: true
@@ -443,31 +476,31 @@
         body({ maxVelocity: 1000 }),
       ])
 
-      var levelNames = ["Intro","Classic ~ 1","Flying For Coins ~ 2",
-      "Bouncy House ~ 3","Booby Trap ~ 4","Staircase of Doom ~ 5",
-      "Boucin' Around ~ 6","Look Out Below ~ 7","Whoop de doo ~ 8",
-      "Healthy Hurdles ~ 9","Onion Can Fly ~ 10","Free Fallin' ~ 11",
-      "Da Brick Wall ~ 12","Leap O' Faith ~ 13","Descending Tomfoolery ~ 14",
-      "Now this is Hard ~ 15","DON'T GET SPIKED ~ 16","Platform Chaos ~ 17",
-      "Enter the Secret Lair ~ 18","Secret Lair ~ 19","Rollercoaster ~ 20",
-      "Onion's got HOPS ~ 21","Cruisin' for a Bruisin' ~ 22","Mount Scallion ~ 23",
-      "DROP ~ 24","Tower of Pain ~ 25","Tricky timing ~ 26","Insane Precision ~ 27",
-      "It's Not That Simple ~ 28","It's a long drop ~ 29","Into the Abyss ~ 30",
-      "Enter the Labyrinth ~ 31","The Labyrinth ~ 32","Onion's Demise ~ 33",
-      "The Heist ~ 34", "We're Just Getting Started ~ 35",
-      "Box of Terror ~ 36", "THE CHALLENGE ~ 37", "Zigzaggy ~ 38", "GET DOWN ~ 39",
-      "fR3EkKy dE3eKkKkkyYyY ~ 40", "Dodging and weaving ~ 41", "THE TUBE ~ 42"
-    ];
-  
-    var notRColor = 255*(levelId/levelNames.length);
-    console.log(levelNames[levelId]);
-    add([
-        text(levelNames[levelId]),
-        color(255, 255-notRColor, 255-notRColor),
+      var levelNames = ["Intro", "Classic ~ 1", "Flying For Coins ~ 2",
+        "Bouncy House ~ 3", "Booby Trap ~ 4", "Staircase of Doom ~ 5",
+        "Boucin' Around ~ 6", "Look Out Below ~ 7", "Whoop de doo ~ 8",
+        "Healthy Hurdles ~ 9", "Onion Can Fly ~ 10", "Free Fallin' ~ 11",
+        "Da Brick Wall ~ 12", "Leap O' Faith ~ 13", "Descending Tomfoolery ~ 14",
+        "Now this is Hard ~ 15", "DON'T GET SPIKED ~ 16", "Platform Chaos ~ 17",
+        "Enter the Secret Lair ~ 18", "Secret Lair ~ 19", "Rollercoaster ~ 20",
+        "Onion's got HOPS ~ 21", "Cruisin' for a Bruisin' ~ 22", "Mount Scallion ~ 23",
+        "DROP ~ 24", "Tower of Pain ~ 25", "Tricky timing ~ 26", "Insane Precision ~ 27",
+        "It's Not That Simple ~ 28", "It's a long drop ~ 29", "Into the Abyss ~ 30",
+        "Enter the Labyrinth ~ 31", "The Labyrinth ~ 32", "Onion's Demise ~ 33",
+        "The Heist ~ 34", "We're Just Getting Started ~ 35",
+        "Box of Terror ~ 36", "THE CHALLENGE ~ 37", "Zigzaggy ~ 38", "GET DOWN ~ 39",
+        "fR3EkKy dE3eKkKkkyYyY ~ 40", "Dodging and weaving ~ 41", "THE TUBE ~ 42"
+      ];
+
+      var notRColor = 255 * (levelId / levelNames.length);
+      console.log(levelNames[levelId]);
+      add([
+        text(levelNames[levelId], { size: 64 }),
+        color(255, 255 - notRColor, 255 - notRColor),
         fixed(),
         pos(80, 40),
       ])
-  
+
       //that music annoys me
       onKeyPress('s', () => {
         if (music.paused) {
@@ -549,15 +582,15 @@
         moveOnion(false, 400)
       });
 
-      function moveOnion(invert, distance){
-          onion.move(!invert ? distance : -distance, 0)
-          sendOnionPosition(channel, userID, onion.pos.x, onion.pos.y, levelId);
-          myCoords = { x: onion.pos.x, y: onion.pos.y, level: levelId };
+      function moveOnion(invert, distance) {
+        onion.move(!invert ? distance : -distance, 0)
+        sendOnionPosition(channel, userID, onion.pos.x, onion.pos.y, levelId);
+        myCoords = { x: onion.pos.x, y: onion.pos.y, level: levelId };
       }
 
       registerTouchControls(onion, moveOnion, levelId, setHighLevel, rEnabled, music, applyRandomEffects, continuouslyChangeEffects, jumpCount);
 
-     
+
 
       if (levelId != 32) {
         onKeyPress("up", () => {
@@ -595,7 +628,7 @@
         sendOnionPosition(channel, userID, onion.pos.x, onion.pos.y, levelId);
         myCoords = { x: onion.pos.x, y: onion.pos.y, level: levelId };
       })
-    
+
       //spike code
       onion.onCollide("danger", (danger) => {
         die()
@@ -607,9 +640,9 @@
           shake()
           onion.jump(1200)
           destroy("enemy")
-          
+
         }
-        else if(!col.isBottom()){
+        else if (!col.isBottom()) {
           die()
         }
       })
@@ -623,7 +656,7 @@
         isDeathAnimEnabled = !isDeathAnimEnabled;
       })
       var shownYouLose = false
-      function die(){
+      function die() {
         if (!isTouchscreen() && isDeathAnimEnabled) {
           loops = 0;
           const sprites = [
@@ -650,10 +683,10 @@
                 anchor("center"),
                 scale(rand(0.25, 0.5)),
                 area(),
-                body({solid: false, }),
-                lifespan(0.75, {fade: 0.5}),
+                body({ solid: false, }),
+                lifespan(0.75, { fade: 0.5 }),
                 move(choose([LEFT, RIGHT]), rand(60, 240)),
-                offscreen({hidden: true}),
+                offscreen({ hidden: true }),
               ])
 
             }
@@ -692,7 +725,7 @@
         clouds.push(cloud);
 
         if (clouds.length > 10) {
-          
+
           destroy(clouds[0]);
           destroy(clouds[0].sprite);
           clouds.shift();
@@ -709,15 +742,15 @@
       const score = add([
         text("Score: 0"),
         pos(80, 100),
-        {value: 0},
+        { value: 0 },
         fixed(),
       ])
       onion.onCollide("key", (key) => {
         //write a for loop to get all doors and remove them
-        get("door", {recursive: true, liveUpdate: true}).forEach((door) => {
+        get("door", { recursive: true, liveUpdate: true }).forEach((door) => {
           destroy(door)
         })
-        
+
         destroy(key);
         shake();
       })
@@ -778,7 +811,7 @@
       })
       onion.onCollide("left", () => {
         moveOnion(true, 100)
-        
+
       })
 
 
@@ -792,7 +825,7 @@
       onKeyPress("l", () => {
         const levelCode = prompt("Enter level code:");
         if (levelCode) {
-         const level = levelCode.split("\n");
+          const level = levelCode.split("\n");
           addLevel(level, levelConf);
           //update level names to put this at the end
           levelNames.push("Custom Level");
@@ -806,7 +839,7 @@
       });
 
       //if(rEnabled == true){
-      onKeyDown("r", () => {
+      onKeyPress("r", () => {
         music.stop()
         go("game", {
           levelId: levelId,
@@ -840,10 +873,11 @@
       })
 
       add([
-        text("Onion's Life!", {size: 120}),
+        text("Onion's Life", { size: 120, align: "center" }),
         color(0, 255, 0),
         fixed(),
-        pos(width() / 2 - 464, height() * 0.10),
+        anchor("center"),
+        pos(width() / 2, height() * 0.10),
       ])
 
       const startBtn = add([
@@ -851,7 +885,8 @@
         "start",
         fixed(),
         area(),
-        pos(width() / 2 - 201, height() * 0.85),
+        anchor("center"),
+        pos(width() / 2, height() * 0.9),
       ])
 
       const lvlSelect = add([
@@ -859,7 +894,8 @@
         "lvlSelect",
         fixed(),
         area(),
-        pos(width() / 2 + 207, height() * 0.85),
+        anchor("center"),
+        pos(width() / 2 + 300, height() * 0.9),
       ])
 
       const skinsBtn = add([
@@ -867,18 +903,18 @@
         "skins",
         fixed(),
         area(),
-        pos(width() / 2 - 309, height() * 0.85),
+        anchor("center"),
+        pos(width() / 2 - 300, height() * 0.9),
       ])
 
       onClick("skins", () => {
         go("skins");
       })
 
-      add([
-        text("PLAY", {size: 50}),
+      startBtn.add([
+        text("PLAY", { size: 64 }),
         fixed(),
-        
-        pos(width() / 2 - 75, height() * 0.87)
+        anchor("center"),
       ])
 
       onClick("start", () => {
@@ -986,28 +1022,28 @@
         sprite("arrowl"),
         "l",
 
-        area({scale: 2, }),
+        area({ scale: 2, }),
         pos(width() * 0.35 - 32, height() / 2 - 64),
       ])
       if (slctId < highestId) {
         var rightArrow = add([
           sprite("arrowr"),
           "r",
-          area({scale: 2, }),
+          area({ scale: 2, }),
           pos(width() * 0.65 - 32, height() / 2 - 64),
         ])
       }
       const superLeftArrow = add([
         sprite("arrowl"),
         "sl",
-        area({scale: 2, }),
+        area({ scale: 2, }),
         pos(width() * 0.2 - 32, height() / 2 - 64),
       ])
       if (slctId < highestId) {
         var superRightArrow = add([
           sprite("arrowr"),
           "sr",
-          area({scale: 2, }),
+          area({ scale: 2, }),
           pos(width() * 0.8 - 32, height() / 2 - 64),
         ])
       }
@@ -1017,7 +1053,7 @@
             var rightArrow = add([
               sprite("arrowr"),
               "r",
-              area({scale: 2, }),
+              area({ scale: 2, }),
             ])
             rightArrow.pos = vec2(width() * 0.7 - 32, height() / 2 - 64);
             if (rightArrow.hasPoint(pos)) {
@@ -1131,13 +1167,13 @@
       })
 
       add([
-         text("Customization", {size: 120}),
-         color(255, 255, 255),
-         fixed(),
-         pos(width() / 2 - 468, height() * 0.05),
-       ])
+        text("Customization", { size: 120 }),
+        color(255, 255, 255),
+        fixed(),
+        pos(width() / 2 - 468, height() * 0.05),
+      ])
 
-       const skinSelectBtn = add([
+      const skinSelectBtn = add([
         // list of components
         sprite("lvlbtn"),
         "btn",
@@ -1158,19 +1194,19 @@
         sprite("arrowl"),
         "l",
 
-        area({scale: 2, }),
+        area({ scale: 2, }),
         pos(width() * 0.3 - 32, height() / 2 - 64),
       ])
 
       var rightArrow = add([
-          sprite("arrowr"),
-          "r",
-          area({scale: 2, }),
-          pos(width() * 0.7 - 32, height() / 2 - 64),
-        ])
+        sprite("arrowr"),
+        "r",
+        area({ scale: 2, }),
+        pos(width() * 0.7 - 32, height() / 2 - 64),
+      ])
 
       onClick("r", () => {
-        if(onionId == (onions.length - 1)){
+        if (onionId == (onions.length - 1)) {
           onionId = 0;
         } else {
           onionId++;
@@ -1178,7 +1214,7 @@
         go("skins");
       })
       onClick("l", () => {
-        if(onionId == 0){
+        if (onionId == 0) {
           onionId = (onions.length - 1);
         } else {
           onionId--;
@@ -1198,11 +1234,11 @@
       })
 
       add([
-         text("Multiplayer", {size: 120}),
-         color(255, 255, 255),
-         fixed(),
-         pos(width() / 2 - 395, height() * 0.05),
-       ])
+        text("Multiplayer", { size: 120 }),
+        color(255, 255, 255),
+        fixed(),
+        pos(width() / 2 - 395, height() * 0.05),
+      ])
 
       const onOffBtn = add([
         // list of components
@@ -1212,39 +1248,39 @@
         area(),
 
       ])
-      if(multiplayerEnabled){
+      if (multiplayerEnabled) {
         const onOffText = add([
-        // list of components
-        text("ON", {size: 100}),
-        "txt",
-        pos(width() / 2 - 56, height() / 2 - 34),
-        area(),
+          // list of components
+          text("ON", { size: 100 }),
+          "txt",
+          pos(width() / 2 - 56, height() / 2 - 34),
+          area(),
 
-      ])
+        ])
       } else {
         const onOffText = add([
-        // list of components
-        text("OFF", {size: 100}),
-        "txt",
-        pos(width() / 2 - 86, height() / 2 - 34),
-        area(),
-      ])
+          // list of components
+          text("OFF", { size: 100 }),
+          "txt",
+          pos(width() / 2 - 86, height() / 2 - 34),
+          area(),
+        ])
       }
 
       const leftArrow = add([
         sprite("arrowl"),
         "l",
 
-        area({scale: 2, }),
+        area({ scale: 2, }),
         pos(width() * 0.3 - 32, height() / 2 - 64),
       ])
 
       var rightArrow = add([
-          sprite("arrowr"),
-          "r",
-          area({scale: 2, }),
-          pos(width() * 0.7 - 32, height() / 2 - 64),
-        ])
+        sprite("arrowr"),
+        "r",
+        area({ scale: 2, }),
+        pos(width() * 0.7 - 32, height() / 2 - 64),
+      ])
 
       onClick("r", () => {
         multiplayerEnabled = !multiplayerEnabled;
