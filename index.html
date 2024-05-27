@@ -806,11 +806,11 @@
         onion.jump(1200)
         //shake()
       })
-      onion.onCollide("right", () => {
-        moveOnion(false, 100)
+      onion.onCollideUpdate("right", () => {
+        moveOnion(false, 300)
       })
-      onion.onCollide("left", () => {
-        moveOnion(true, 100)
+      onion.onCollideUpdate("left", () => {
+        moveOnion(true, 300)
 
       })
 
