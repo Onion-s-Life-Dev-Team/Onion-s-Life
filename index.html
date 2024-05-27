@@ -612,7 +612,7 @@
 
 
       onKeyPress("f", (c) => {
-        fullscreen(!isFullscreen())
+        setFullscreen(!isFullscreen())
       })
 
       //devkey
@@ -699,7 +699,7 @@
         destroy(onion)
         shake();
         music.paused = !music.paused;
-        play("death")
+        play("death", { volume: 0.2 })
         if (shownYouLose == false) {
           shownYouLose = true
           add([
