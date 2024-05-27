@@ -44,9 +44,26 @@
 
 <body>
   <script>
-    if (typeof navigator.serviceWorker !== 'undefined') {
-      navigator.serviceWorker.register('pwabuilder-sw.js')
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.getRegistrations().then(registrations => {
+        for (let registration of registrations) {
+          registration.unregister()
+            .then(success => {
+              if (success) {
+                console.log('Service worker unregistered successfully');
+              } else {
+                console.log('Service worker unregistration failed');
+              }
+            })
+            .catch(error => {
+              console.error('Error during service worker unregistration:', error);
+            });
+        }
+      }).catch(error => {
+        console.error('Error retrieving service worker registrations:', error);
+      });
     }
+
   </script>
   <script type="module">
 
