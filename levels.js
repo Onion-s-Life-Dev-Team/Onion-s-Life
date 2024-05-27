@@ -1448,7 +1448,7 @@ const levelConf = {
       "key",
     ],
     ">": () => [
-      sprite("block"),
+      sprite("coasterRight"),
       area(),
       body({ isStatic: true }),
       offscreen({ hide: true }),
@@ -1456,12 +1456,11 @@ const levelConf = {
       "right",
     ],
     "<": () => [
-      sprite("block"),
+      sprite("coasterLeft"),
       area(),
       body({ isStatic: true }),
       offscreen({ hide: true }),
       anchor("bot"),
-
       "left",
     ],
     ".": () => [
