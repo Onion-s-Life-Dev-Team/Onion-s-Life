@@ -725,6 +725,20 @@
         setHighLevel(levelId);
         sendDeathMessage(channel, userID);
       }
+      //write a function to dtermine if there is are clouds in the camera view
+      //if there are not, spawn a cloud
+      function checkClouds() {
+        var camPosition = camPos();
+        var clouds = get("cloud");
+        var cloudPositions = clouds.map(cloud => cloud.pos);
+        var cloudInCamera = cloudPositions.filter(cloudPos => {
+          return cloudPos.x > camPosition.x - 100 && cloudPos.x < camPosition.x + width() + 100
+        })
+        if (cloudInCamera.length <= 2) {
+          spawnCloud()
+        }
+
+      }
       var clouds = []
       function spawnCloud() {
         const dir = choose([LEFT, RIGHT]);
@@ -736,21 +750,23 @@
           anchor("top"),
           area(),
           z(-50),
+          "cloud",
         ]);
         clouds.push(cloud);
 
         if (clouds.length > 10) {
-          destroy(clouds[0]);
-          destroy(clouds[0].sprite);
-          clouds.shift();
+          destroy(clouds[0]);  // Just destroy the cloud object
+          clouds.shift();      // Remove the first element from the array after it's destroyed
         }
       }
-      //spawnCloud()
+
       //spawn 10 clouds to start
       for (let i = 0; i < 10; i++) {
         spawnCloud()
       }
       setInterval(spawnCloud, 15000)
+      setInterval(checkClouds, 1000)
+
 
 
       const score = add([
