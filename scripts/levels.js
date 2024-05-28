@@ -1335,6 +1335,49 @@
 
 
 		 ],
+	 //Electric Boogaloo
+	 [
+	
+"=                 ^",
+"=               ^",
+"=     ",
+"=                   ",
+"xx+xx==== ",
+"vvvvv    x`xx`x   l",
+"   xx+xx",
+"k",
+"",
+"",
+"",
+"",
+"",
+"ll===",
+"",
+"               ====",
+"",
+"         l^^^^^",
+"",
+" ",
+"l^^xx+xxxx+xx=",
+"",
+"",
+		 
+"         xxxx&xxxxx`x",
+"                 ",
+"  xx+xx",
+"",
+"",
+
+"          =  ^  ^  =",
+"          =  =ll=  =",
+"          =        =",
+"          DDDDDDDDDD",
+"          =        =",
+"",
+"",
+"",
+"         ^^^^=O=^^^^",
+	 ],
   //end of level code 
 ]
 
@@ -1448,7 +1491,7 @@ const levelConf = {
       "key",
     ],
     ">": () => [
-      sprite("block"),
+      sprite("coasterRight"),
       area(),
       body({ isStatic: true }),
       offscreen({ hide: true }),
@@ -1456,12 +1499,11 @@ const levelConf = {
       "right",
     ],
     "<": () => [
-      sprite("block"),
+      sprite("coasterLeft"),
       area(),
       body({ isStatic: true }),
       offscreen({ hide: true }),
       anchor("bot"),
-
       "left",
     ],
     ".": () => [

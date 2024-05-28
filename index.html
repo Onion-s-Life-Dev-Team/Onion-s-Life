@@ -70,8 +70,8 @@
     // import kaboom.js
     import kaboom from "https://unpkg.com/kaplay@3000.1.17/dist/kaboom.mjs"
     import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
-    import registerTouchControls from "./touchCode.js";
-    import loadAssets from "./assets.js";
+    import registerTouchControls from "./scripts/touchCode.js";
+    import loadAssets from "./scripts/assets.js";
 
     const SUPABASE_URL = 'https://ihrdqbqvoflutgbzhqqo.supabase.co'
     const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlocmRxYnF2b2ZsdXRnYnpocXFvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTYwNDI1ODIsImV4cCI6MjAzMTYxODU4Mn0.d3Vac0lv5CicW-FF_NfZ7j3BAkaXEDLctg47V64S2NE'
@@ -313,8 +313,8 @@
       deviceMode = "Other";
     }
 
-    import { LEVELS, levelConf } from './levels.js';
-    import optimizeLevel from "./levelOptimizer.js";
+    import { LEVELS, levelConf } from './scripts/levels.js';
+    import optimizeLevel from "./scripts/levelOptimizer.js";
     //var scale = 1;
     //if (canvasWidth < 800){
     //scale = .5;
@@ -489,7 +489,7 @@
         "Enter the Labyrinth ~ 31", "The Labyrinth ~ 32", "Onion's Demise ~ 33",
         "The Heist ~ 34", "We're Just Getting Started ~ 35",
         "Box of Terror ~ 36", "THE CHALLENGE ~ 37", "Zigzaggy ~ 38", "GET DOWN ~ 39",
-        "fR3EkKy dE3eKkKkkyYyY ~ 40", "Dodging and weaving ~ 41", "THE TUBE ~ 42"
+        "fR3EkKy dE3eKkKkkyYyY ~ 40", "Dodging and weaving ~ 41", "THE TUBE ~ 42", "Electric Boogaloo ~ 43"
       ];
 
       var notRColor = 255 * (levelId / levelNames.length);
@@ -498,7 +498,7 @@
         text(levelNames[levelId], { size: 64 }),
         color(255, 255 - notRColor, 255 - notRColor),
         fixed(),
-        pos(80, 40),
+        pos(40, 40),
       ])
 
       //that music annoys me
@@ -562,6 +562,7 @@
               text("You Win!"),
               color(0, 255, 0),
               pos(onion.pos),
+              anchor("center"),
             ])
             setHighLevel(levelId)
 
@@ -611,7 +612,7 @@
 
 
       onKeyPress("f", (c) => {
-        fullscreen(!isFullscreen())
+        setFullscreen(!isFullscreen())
       })
 
       //devkey
@@ -640,7 +641,7 @@
           shake()
           onion.jump(1200)
           destroy(col.target)
-          
+
         }
         else if (!col.isBottom()) {
           die()
@@ -698,14 +699,28 @@
         destroy(onion)
         shake();
         music.paused = !music.paused;
-        play("death")
+        play("death", { volume: 0.2 })
         if (shownYouLose == false) {
           shownYouLose = true
           add([
-            text("You lose"),
+            text("You Lose", { size: 48 }),
             pos(onion.pos),
+            anchor("center"),
             color(255, 0, 0),
           ])
+          // Can someone figure out how to get the pos of this correct
+          /*
+          const respawn = add([
+            sprite("keyboardR"),
+            pos(onion.pos),
+            anchor("center"),
+            fixed(),
+          ])
+          respawn.add([
+            text("Respawn"),
+            fixed(),
+            pos(75, 13),
+          ])*/
         }
         setHighLevel(levelId);
         sendDeathMessage(channel, userID);
@@ -725,7 +740,6 @@
         clouds.push(cloud);
 
         if (clouds.length > 10) {
-
           destroy(clouds[0]);
           destroy(clouds[0].sprite);
           clouds.shift();
@@ -741,7 +755,7 @@
 
       const score = add([
         text("Score: 0"),
-        pos(80, 100),
+        pos(40, 100),
         { value: 0 },
         fixed(),
       ])
@@ -998,6 +1012,16 @@
 
       ])
 
+      const backKeybind = add([
+        sprite("keyboardB"),
+        pos(width() * 0.02, height() * 0.9)
+      ])
+
+      backKeybind.add([
+        text("Back"),
+        pos(75, 13),
+      ])
+
       if (slctId > 9) {
         lvlWidth = 250;
         subX = 120;
@@ -1125,9 +1149,9 @@
 
 
       add([
-        text("Level Select"),
+        text("Level Select", { size: 64 }),
         fixed(),
-        pos(80, 40),
+        pos(40, 40),
       ])
     })
 
@@ -1167,10 +1191,20 @@
       })
 
       add([
-        text("Customization", { size: 120 }),
+        text("Customization", { size: 64 }),
         color(255, 255, 255),
         fixed(),
-        pos(width() / 2 - 468, height() * 0.05),
+        pos(40, 40),
+      ])
+
+      const backKeybind = add([
+        sprite("keyboardB"),
+        pos(width() * 0.02, height() * 0.9)
+      ])
+
+      backKeybind.add([
+        text("Back"),
+        pos(75, 13),
       ])
 
       const skinSelectBtn = add([
