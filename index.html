@@ -68,7 +68,7 @@
   <script type="module">
 
     // import kaboom.js
-    import kaboom from "https://unpkg.com/kaplay@3000.1.17/dist/kaboom.mjs"
+    import kaboom from "https://unpkg.com/kaplay@3001.0.0-alpha.4/dist/kaboom.mjs"
     import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
     import registerTouchControls from "./scripts/touchCode.js";
     import loadAssets from "./scripts/assets.js";
@@ -577,9 +577,15 @@
       onKeyDown('left', () => {
         moveOnion(true, 400)
       })
+      onKeyDown('a', () => {
+        moveOnion(true, 400)
+      })
 
 
       onKeyDown('right', () => {
+        moveOnion(false, 400)
+      });
+      onKeyDown('d', () => {
         moveOnion(false, 400)
       });
 
@@ -600,13 +606,36 @@
           sendOnionPosition(channel, userID, onion.pos.x, onion.pos.y, levelId);
           myCoords = { x: onion.pos.x, y: onion.pos.y, level: levelId };
         })
+        onKeyPress("w", () => {
+          play("jump")
+          onion.doubleJump()
+          sendOnionPosition(channel, userID, onion.pos.x, onion.pos.y, levelId);
+          myCoords = { x: onion.pos.x, y: onion.pos.y, level: levelId };
+        })
+        onKeyPress("space", () => {
+          play("jump")
+          onion.doubleJump()
+          sendOnionPosition(channel, userID, onion.pos.x, onion.pos.y, levelId);
+          myCoords = { x: onion.pos.x, y: onion.pos.y, level: levelId };
+        })
       } else if (levelId == 32) {
         onKeyPress("up", () => {
           play("jump")
           onion.jump()
           sendOnionPosition(channel, userID, onion.pos.x, onion.pos.y, levelId);
           myCoords = { x: onion.pos.x, y: onion.pos.y, level: levelId };
-
+        })
+        onKeyPress("w", () => {
+          play("jump")
+          onion.jump()
+          sendOnionPosition(channel, userID, onion.pos.x, onion.pos.y, levelId);
+          myCoords = { x: onion.pos.x, y: onion.pos.y, level: levelId };
+        })
+        onKeyPress("space", () => {
+          play("jump")
+          onion.jump()
+          sendOnionPosition(channel, userID, onion.pos.x, onion.pos.y, levelId);
+          myCoords = { x: onion.pos.x, y: onion.pos.y, level: levelId };
         })
       }
 

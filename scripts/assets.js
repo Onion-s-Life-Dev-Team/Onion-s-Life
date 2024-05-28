@@ -46,7 +46,7 @@ export default function loadAssets() {
   loadSprite("dj", "assets/sprites/dj.png")
   loadSprite("skinsBtn", "assets/sprites/skinsBtn.png")
   // load sound
-  loadSound("OverworldlyFoe", "assets/sounds/OtherworldlyFoe.mp3")
+  loadMusic("OverworldlyFoe", "assets/sounds/OtherworldlyFoe.mp3")
   loadSound("death", "assets/sounds/bug.mp3")
   loadSound("portal", "assets/sounds/portal.mp3")
   loadSound("score", "assets/sounds/score.mp3")
