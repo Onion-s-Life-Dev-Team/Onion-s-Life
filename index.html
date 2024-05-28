@@ -783,14 +783,14 @@
         ]);
         clouds.push(cloud);
 
-        if (clouds.length > 10) {
+        if (clouds.length > 3) {
           destroy(clouds[0]);  // Just destroy the cloud object
           clouds.shift();      // Remove the first element from the array after it's destroyed
         }
       }
 
-      //spawn 10 clouds to start
-      for (let i = 0; i < 10; i++) {
+      //spawn 3 clouds to start
+      for (let i = 0; i < 3; i++) {
         spawnCloud()
       }
       setInterval(spawnCloud, 15000)
