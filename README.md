@@ -1,7 +1,7 @@
 **WELCOME TO THE ONIONVERSE**  
 In our largest update yet, we have now implemented multiplayer. Have fun with your friends!
 
-![Image](sprites/onion.png)
+![Image](assets/sprites/onion.png)
 
 ## Onion's Life ##
 
@@ -17,6 +17,9 @@ This is the best new viral platformer game and we just added multiplayer. Onion'
 > "The last level was so hard, but I couldn't stop playing it!"
 >
 > -Onion's Life player
+
+
+## DO YOU WANT YOUR OWN LEVEL TO BE ADDED TO ONION'S LIFE? ##
 
 ## Develop New Levels ##
 

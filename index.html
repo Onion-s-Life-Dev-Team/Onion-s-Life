@@ -68,7 +68,7 @@
   <script type="module">
 
     // import kaboom.js
-    import kaboom from "https://unpkg.com/kaplay@3000.1.17/dist/kaboom.mjs"
+    import kaboom from "https://unpkg.com/kaplay@3001.0.0-alpha.4/dist/kaboom.mjs"
     import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
     import registerTouchControls from "./scripts/touchCode.js";
     import loadAssets from "./scripts/assets.js";
@@ -489,7 +489,10 @@
         "Enter the Labyrinth ~ 31", "The Labyrinth ~ 32", "Onion's Demise ~ 33",
         "The Heist ~ 34", "We're Just Getting Started ~ 35",
         "Box of Terror ~ 36", "THE CHALLENGE ~ 37", "Zigzaggy ~ 38", "GET DOWN ~ 39",
-        "fR3EkKy dE3eKkKkkyYyY ~ 40", "Dodging and weaving ~ 41", "THE TUBE ~ 42", "Electric Boogaloo ~ 43"
+        "fR3EkKy dE3eKkKkkyYyY ~ 40", "Dodging and weaving ~ 41", "THE TUBE ~ 42", 
+        "Electric Boogaloo ~ 43", "Caleb went insane", "Perilous Path (ChatGPT Trial 1) ~ 44", 
+        "Treacherous Terrains (ChatGPT Trial 2) ~ 45", "Diabolical Descent (ChatGPT Trial 3) ~ 46", 
+        "Inferno Maze (ChatGPT Trial 4) ~ 47", "Hell's Gauntlet (ChatGPT Trial 5) ~ 48" 
       ];
 
       var notRColor = 255 * (levelId / levelNames.length);
@@ -577,9 +580,15 @@
       onKeyDown('left', () => {
         moveOnion(true, 400)
       })
+      onKeyDown('a', () => {
+        moveOnion(true, 400)
+      })
 
 
       onKeyDown('right', () => {
+        moveOnion(false, 400)
+      });
+      onKeyDown('d', () => {
         moveOnion(false, 400)
       });
 
@@ -600,13 +609,36 @@
           sendOnionPosition(channel, userID, onion.pos.x, onion.pos.y, levelId);
           myCoords = { x: onion.pos.x, y: onion.pos.y, level: levelId };
         })
+        onKeyPress("w", () => {
+          play("jump")
+          onion.doubleJump()
+          sendOnionPosition(channel, userID, onion.pos.x, onion.pos.y, levelId);
+          myCoords = { x: onion.pos.x, y: onion.pos.y, level: levelId };
+        })
+        onKeyPress("space", () => {
+          play("jump")
+          onion.doubleJump()
+          sendOnionPosition(channel, userID, onion.pos.x, onion.pos.y, levelId);
+          myCoords = { x: onion.pos.x, y: onion.pos.y, level: levelId };
+        })
       } else if (levelId == 32) {
         onKeyPress("up", () => {
           play("jump")
           onion.jump()
           sendOnionPosition(channel, userID, onion.pos.x, onion.pos.y, levelId);
           myCoords = { x: onion.pos.x, y: onion.pos.y, level: levelId };
-
+        })
+        onKeyPress("w", () => {
+          play("jump")
+          onion.jump()
+          sendOnionPosition(channel, userID, onion.pos.x, onion.pos.y, levelId);
+          myCoords = { x: onion.pos.x, y: onion.pos.y, level: levelId };
+        })
+        onKeyPress("space", () => {
+          play("jump")
+          onion.jump()
+          sendOnionPosition(channel, userID, onion.pos.x, onion.pos.y, levelId);
+          myCoords = { x: onion.pos.x, y: onion.pos.y, level: levelId };
         })
       }
 
@@ -754,14 +786,14 @@
         ]);
         clouds.push(cloud);
 
-        if (clouds.length > 10) {
+        if (clouds.length > 3) {
           destroy(clouds[0]);  // Just destroy the cloud object
           clouds.shift();      // Remove the first element from the array after it's destroyed
         }
       }
 
-      //spawn 10 clouds to start
-      for (let i = 0; i < 10; i++) {
+      //spawn 3 clouds to start
+      for (let i = 0; i < 3; i++) {
         spawnCloud()
       }
       setInterval(spawnCloud, 15000)
