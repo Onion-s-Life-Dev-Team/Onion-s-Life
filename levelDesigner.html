@@ -66,6 +66,7 @@
         </div>
         <button id="saveLevel">Save Level</button>
         <button id="loadLevel">Load Level</button>
+        <button id="importLevel">Import Level</button>
         <button id="exportLevel">Export Level</button>
     </div>
 
@@ -128,6 +129,16 @@
             });
         }
 
+        function importLevel(levelArray) {
+            const newLevel = levelArray.map(row => row.split(''));
+            LEVELS[0] = newLevel;
+            drawLevel(LEVELS[0]);
+            document.getElementById('levelDisplay').style.height = `${newLevel.length * 32}px`;
+            document.getElementById('levelDisplay').style.width = `${newLevel[0].length * 32}px`;
+            document.getElementById('levelDisplay').style.border = '2px solid #000';
+
+        }
+
 
 
         let currentLevel = 0;
@@ -144,6 +155,14 @@
                 drawLevel(LEVELS[currentLevel]);
             }
         });
+
+        document.getElementById('importLevel').addEventListener('click', () => {
+            const levelString = prompt("Paste the level string here (remove the last comma in the array first, if there is one after the last string):");
+            // Replace single quotes with double quotes before parsing
+            const levelArray = JSON.parse(levelString.replace(/'/g, '"'));
+            importLevel(levelArray);
+        });
+
 
         document.getElementById('exportLevel').addEventListener('click', () => {
             const exportText = LEVELS[currentLevel].map(row => "'" + row.join('') + "'").join(",\n");
