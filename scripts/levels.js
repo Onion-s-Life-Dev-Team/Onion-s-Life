@@ -1575,8 +1575,8 @@
 "=                                            O =",
 "=                                              =",
 "=                                              =",
-"=      =G =              =G =           =G =   =",
-"===     ==                ==             ==    =",
+"=      =G =          =G =          =G =    =  G=",
+"===     ==            ==            ==      ====",
 "iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii",
 ]
 
