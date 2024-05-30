@@ -663,6 +663,14 @@
         sendOnionPosition(channel, userID, onion.pos.x, onion.pos.y, levelId);
         myCoords = { x: onion.pos.x, y: onion.pos.y, level: levelId };
       })
+      onDraw(() => {
+    drawText({
+        text: debug.fps(),
+        pos: vec2(width() / 2, height() / 2),
+        anchor: "center",
+        color: rgb(255, 127, 255),
+        });
+}    );
 
       //spike code
       onion.onCollide("danger", (danger) => {
