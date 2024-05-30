@@ -133,11 +133,18 @@
             const newLevel = levelArray.map(row => row.split(''));
             LEVELS[0] = newLevel;
             drawLevel(LEVELS[0]);
+        
+            // Calculate the height based on the number of rows
             document.getElementById('levelDisplay').style.height = `${newLevel.length * 32}px`;
-            document.getElementById('levelDisplay').style.width = `${newLevel[0].length * 32}px`;
+        
+            // Find the maximum length of any row
+            const maxWidth = newLevel.reduce((max, row) => Math.max(max, row.length), 0);
+        
+            // Set the width based on the maximum length
+            document.getElementById('levelDisplay').style.width = `${maxWidth * 32}px`;
             document.getElementById('levelDisplay').style.border = '2px solid #000';
-
         }
+
 
 
 
