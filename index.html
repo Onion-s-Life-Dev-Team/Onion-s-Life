@@ -96,6 +96,7 @@
     var isDeathAnimEnabled = false;
     var multiplayerEnabled = true;
     var speedCap = 400; // raising this raises the max speed
+    let fpsTextPosition = { x: width() - 10, y: height() - 10 };
 
     function subscribeToChannel() {
       // Subscribe to mouse events.
@@ -598,6 +599,16 @@
         onion.move(!invert ? distance : -distance, 0)
         sendOnionPosition(channel, userID, onion.pos.x, onion.pos.y, levelId);
         myCoords = { x: onion.pos.x, y: onion.pos.y, level: levelId };
+        fpsTextPosition = { x: width() - 100, y: height() - 100 };
+
+        clear();
+        
+        drawText({
+        text: debug.fps(),
+        pos: fpsTextPosition,
+        anchor: "bottomright", // Align text to the bottom right corner
+        color: rgb(255, 127, 255),
+       });
       }
 
       registerTouchControls(onion, moveOnion, levelId, setHighLevel, rEnabled, music, applyRandomEffects, continuouslyChangeEffects, jumpCount);
