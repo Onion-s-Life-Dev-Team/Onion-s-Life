@@ -4,7 +4,7 @@
 
 <head>
   <title>Onion's Life</title>
-  <link rel="shortcut icon" type="image/png" href="sprites/onion.png" />
+  <link rel="shortcut icon" type="image/png" href="/assets/sprites/onion.png" />
   <link rel="manifest" href="manifest.json" />
   <meta charset="utf-8">
 
@@ -595,7 +595,7 @@
         moveOnion(false, 400)
       });
 
-      let fpsTextPosition = { x: width() - 10, y: height() - 10 };
+      
       function moveOnion(invert, distance) {
     if (typeof invert !== 'boolean' || typeof distance !== 'number') {
         console.error('Invalid parameters for moveOnion');
@@ -607,20 +607,12 @@
         onion.move(moveDistance, 0);
         sendOnionPosition(channel, userID, onion.pos.x, onion.pos.y, levelId);
         const myCoords = { x: onion.pos.x, y: onion.pos.y, level: levelId };
-        const fpsTextPosition = { x: width() - 100, y: height() - 100 };
 
         clear();
-        
-        drawText({
-            text: debug.fps(),
-            pos: fpsTextPosition,
-            anchor: "bottomright", // Align text to the bottom right corner
-            color: rgb(255, 127, 255),
-        });
     } catch (error) {
         console.error('Error in moveOnion:', error);
         // Optionally handle the error further or throw it to the caller
-    }
+    }}
 
       registerTouchControls(onion, moveOnion, levelId, setHighLevel, rEnabled, music, applyRandomEffects, continuouslyChangeEffects, jumpCount);
 
@@ -686,13 +678,15 @@
         myCoords = { x: onion.pos.x, y: onion.pos.y, level: levelId };
       })
       onDraw(() => {
-    drawText({
-        text: debug.fps(),
-        pos: vec2(width() / 2, height() / 2),
-        anchor: "center",
-        color: rgb(255, 127, 255),
-        });
-}    );
+          let fpsTextPosition = { x: width() - 50, y: height() - 50 };
+          drawText({
+              text: debug.fps(),
+              pos: vec2(fpsTextPosition.x, fpsTextPosition.y),
+              anchor: "center",
+              fixed: true,
+              color: rgb(255, 127, 255),
+              });
+      }    );
 
       //spike code
       onion.onCollide("danger", (danger) => {
@@ -715,7 +709,7 @@
       play("jump")
 
       //})
-    */
+      */
       //write code so that if the d button is clicked, death animation is disabled
       onKeyPress("d", () => {
         isDeathAnimEnabled = !isDeathAnimEnabled;
