@@ -96,6 +96,7 @@
     var isDeathAnimEnabled = false;
     var multiplayerEnabled = true;
     var speedCap = 400; // raising this raises the max speed
+    
 
     function subscribeToChannel() {
       // Subscribe to mouse events.
@@ -594,11 +595,32 @@
         moveOnion(false, 400)
       });
 
+      let fpsTextPosition = { x: width() - 10, y: height() - 10 };
       function moveOnion(invert, distance) {
-        onion.move(!invert ? distance : -distance, 0)
+    if (typeof invert !== 'boolean' || typeof distance !== 'number') {
+        console.error('Invalid parameters for moveOnion');
+        return;
+    }
+
+    try {
+        const moveDistance = invert ? -distance : distance;
+        onion.move(moveDistance, 0);
         sendOnionPosition(channel, userID, onion.pos.x, onion.pos.y, levelId);
-        myCoords = { x: onion.pos.x, y: onion.pos.y, level: levelId };
-      }
+        const myCoords = { x: onion.pos.x, y: onion.pos.y, level: levelId };
+        const fpsTextPosition = { x: width() - 100, y: height() - 100 };
+
+        clear();
+        
+        drawText({
+            text: debug.fps(),
+            pos: fpsTextPosition,
+            anchor: "bottomright", // Align text to the bottom right corner
+            color: rgb(255, 127, 255),
+        });
+    } catch (error) {
+        console.error('Error in moveOnion:', error);
+        // Optionally handle the error further or throw it to the caller
+    }
 
       registerTouchControls(onion, moveOnion, levelId, setHighLevel, rEnabled, music, applyRandomEffects, continuouslyChangeEffects, jumpCount);
 
@@ -663,6 +685,14 @@
         sendOnionPosition(channel, userID, onion.pos.x, onion.pos.y, levelId);
         myCoords = { x: onion.pos.x, y: onion.pos.y, level: levelId };
       })
+      onDraw(() => {
+    drawText({
+        text: debug.fps(),
+        pos: vec2(width() / 2, height() / 2),
+        anchor: "center",
+        color: rgb(255, 127, 255),
+        });
+}    );
 
       //spike code
       onion.onCollide("danger", (danger) => {
@@ -761,6 +791,7 @@
       }
       //write a function to dtermine if there is are clouds in the camera view
       //if there are not, spawn a cloud
+      /*
       function checkClouds() {
         var camPosition = camPos();
         var clouds = get("cloud");
@@ -800,7 +831,7 @@
       }
       setInterval(spawnCloud, 15000)
       setInterval(checkClouds, 1000)
-
+      */
 
 
       const score = add([
