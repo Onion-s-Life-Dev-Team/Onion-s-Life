@@ -96,7 +96,7 @@
     var isDeathAnimEnabled = false;
     var multiplayerEnabled = true;
     var speedCap = 400; // raising this raises the max speed
-    let fpsTextPosition = { x: width() - 10, y: height() - 10 };
+    
 
     function subscribeToChannel() {
       // Subscribe to mouse events.
@@ -595,6 +595,7 @@
         moveOnion(false, 400)
       });
 
+      let fpsTextPosition = { x: width() - 10, y: height() - 10 };
       function moveOnion(invert, distance) {
         onion.move(!invert ? distance : -distance, 0)
         sendOnionPosition(channel, userID, onion.pos.x, onion.pos.y, levelId);
