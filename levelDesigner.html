@@ -68,6 +68,7 @@
         <button id="loadLevel">Load Level</button>
         <button id="importLevel">Import Level</button>
         <button id="exportLevel">Export Level</button>
+        <button id="launchGame">Test Level in Game</button>
     </div>
 
     <script>
@@ -100,9 +101,9 @@
                 case '{': return 'assets/sprites/signpostl.png';
                 case '}': return 'assets/sprites/signpostr.png';
                 case '-': return 'assets/sprites/signposte.png';
-                case 'i': return 'assets/sprites/invisdanger.png';
-                case 'S': return 'assets/sprites/spawn.png';
-                case 'Q': return 'assets/sprites/invisdanger.png';
+                case 'i': return 'assets/sprites/invisspike.png';
+                case 'S': return 'assets/sprites/invisspike.png';
+                case 'Q': return 'assets/sprites/invisspike.png';
                 case 'G': return 'assets/sprites/ghosty.png';
                 case '!': return 'assets/sprites/darrow.png';
                 case 'v': return 'assets/sprites/dspike.png';
@@ -177,6 +178,16 @@
                 alert('Level code copied to clipboard! Use it in your game by pasting and processing it.');
             });
         });
+
+        //create a button to launch the game with the test level
+        //to do this, we need to save the level to local storage
+        //then go to the root of the page with the params ?test=true
+        document.getElementById('launchGame').addEventListener('click', () => {
+            const exportText = LEVELS[currentLevel].map(row => "'" + row.join('') + "'").join(",\n");
+            localStorage.setItem('levelToTest', exportText);
+            window.location.href = 'index.html?test=true';
+        });
+
     </script>
 </body>
 </html>

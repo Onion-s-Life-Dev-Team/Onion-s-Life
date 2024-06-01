@@ -445,36 +445,34 @@
       //  setData(savedId, levelId)
       //}
 
-      window.onload = function() {
-        // Retrieve the URL search string (the part after the '?')
-        const queryString = window.location.search;
 
-        // Create a URLSearchParams instance from the query string
-        const urlParams = new URLSearchParams(queryString);
-
-        // Log all parameters
-        for (const [key, value] of urlParams) {
-          if(key.equals("level")){
-            const level = value.split("\n");
-            addLevel(level, levelConf);
-            //update level names to put this at the end
-            levelNames.push("Custom Level");
-            //update the LEVELS array
-            LEVELS.push(level);
-            go("game", {
-              levelId: 0,
-              coins: 0,
-
-            })
-            levelId = 0;
-            trackingLevelId = levelId;
-            slctId = levelId
-            setHighLevel(levelId)
-          }
+      try {
+        //get the params from the url
+        const urlParams = new URLSearchParams(window.location.search);
+        const isTestMode = urlParams.get('test') === 'true';
+        //get local storage value of levelToTest
+        const levelToTest = localStorage.getItem("levelToTest");
+        if (levelToTest && isTestMode) {
+          console.log(levelToTest)
+          const level = levelToTest.split("\n");
+          addLevel(level, levelConf);
+          levelNames.push("Custom Level");
+          LEVELS.push(level);
+          go("game", {
+            levelId: 2,
+            coins: 0,
+          })
+          levelId = 2;
+          trackingLevelId = levelId;
+          slctId = levelId
+          setHighLevel(levelId)
+        } else {
+          //load the level
+          addLevel(optimizeLevel(LEVELS[levelId ?? 0]), levelConf);
         }
-        
-      };
-      addLevel(optimizeLevel(LEVELS[levelId ?? 0]), levelConf);
+      } catch(error ) {
+        console.error('Error in loading custom level:', error);
+      }
       function sendNewPlayer() {
         // send a new player event
         if (multiplayerEnabled) {
