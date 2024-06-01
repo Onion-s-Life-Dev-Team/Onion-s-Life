@@ -313,6 +313,7 @@
       // Code for non-PWA behavior or other platforms
       deviceMode = "Other";
     }
+    
 
     import { LEVELS, levelConf } from './scripts/levels.js';
     import optimizeLevel from "./scripts/levelOptimizer.js";
@@ -444,8 +445,36 @@
       //  setData(savedId, levelId)
       //}
 
+      window.onload = function() {
+        // Retrieve the URL search string (the part after the '?')
+        const queryString = window.location.search;
 
-      addLevel(optimizeLevel(LEVELS[levelId ?? 0]), levelConf)
+        // Create a URLSearchParams instance from the query string
+        const urlParams = new URLSearchParams(queryString);
+
+        // Log all parameters
+        for (const [key, value] of urlParams) {
+          if(key.equals("level")){
+            const level = value.split("\n");
+            addLevel(level, levelConf);
+            //update level names to put this at the end
+            levelNames.push("Custom Level");
+            //update the LEVELS array
+            LEVELS.push(level);
+            go("game", {
+              levelId: 0,
+              coins: 0,
+
+            })
+            levelId = 0;
+            trackingLevelId = levelId;
+            slctId = levelId
+            setHighLevel(levelId)
+          }
+        }
+        
+      };
+      addLevel(optimizeLevel(LEVELS[levelId ?? 0]), levelConf);
       function sendNewPlayer() {
         // send a new player event
         if (multiplayerEnabled) {
@@ -909,23 +938,6 @@
         onion.move(0, 0)
       })
 
-      //add code that opens a text box if the key l is pressed
-      //the text box allows the user to manually import level code
-      onKeyPress("l", () => {
-        const levelCode = prompt("Enter level code:");
-        if (levelCode) {
-          const level = levelCode.split("\n");
-          addLevel(level, levelConf);
-          //update level names to put this at the end
-          levelNames.push("Custom Level");
-          //update the LEVELS array
-          LEVELS.push(level);
-          go("game", {
-            levelId: levelNames.length - 1,
-            coins: 0,
-          });
-        }
-      });
 
       //if(rEnabled == true){
       onKeyPress("r", () => {
@@ -1060,6 +1072,7 @@
       })
 
     })
+    
 
     scene("select", () => {
 
