@@ -1,0 +1,20 @@
+{
+  "name": "onion-s-life",
+  "version": "1.0.0",
+  "description": "A fun, multiplayer game where you, the onion, goes on adventures",
+  "main": "index.html",
+  "scripts": {
+    "test": "npx eslint scripts/levels.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "github.com/sharmnten/onion-s-life"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@eslint/js": "^9.3.0",
+    "eslint": "^9.3.0",
+    "globals": "^15.3.0"
+  }
+}
