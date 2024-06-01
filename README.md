@@ -26,7 +26,7 @@ This is the best new viral platformer game and we just added multiplayer. Onion'
 Onion's Life has an intuitive level builder that you can access [here](https://sharmnten.github.io/Onion-s-Life/levelDesigner.html)! Here's how you can take your brand new creation and run it in Onion's Life:
 
 1. Go to the [builder](https://sharmnten.github.io/Onion-s-Life/levelDesigner.html)
-2. Click 'Save'
+2. Click `Save`
 3. Click `Test Level in Game`
 4. This should open Onion's Life with your custom level!
 
