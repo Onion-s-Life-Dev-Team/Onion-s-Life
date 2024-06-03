@@ -112,6 +112,10 @@ individual, or aggression toward or disparagement of classes of individuals.
 **Consequence**: A permanent ban from any sort of public interaction within
 the community.
 
+## Profanity Filter
+
+We employ a profanity filter to help protect against offensive and impolite language on this repository and help our contributors adhere to the code of conduct. <b>Please</b> don't make it trigger, but it will if needed.
+
 ## Attribution
 
 This Code of Conduct is adapted from the [Contributor Covenant][homepage],
