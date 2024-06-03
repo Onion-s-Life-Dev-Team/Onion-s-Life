@@ -1689,6 +1689,29 @@
        "==================^^^^^^^^^^^^^^^^^^=====",
 	
 	],
+// wrestling with problems
+['=                                                         v     ',
+'=                                                         v     ',
+'=              G  G   }                                   v     ',
+'=            DG GGGGGGD                                   v     ',
+'=            DDDDDDDDDD                                   v     ',
+'=                     =                                   v     ',
+'=                     =                                   v     ',
+'=                     =                                   v     ',
+'=    $    $           = ^^^^   ^^^^^         vvvvvvv      v     ',
+'=                $    =                                   v     ',
+'=           $         =     }                             v     ',
+'=         !   ^ G G=  =     =                 $           v     ',
+'==== ^^ =   =  == =   =      ? $           $     $        v     ',
+'                      =       ?         $          $      v     ',
+'             =        =        =           = =     = $    v     ',
+'             ==========         =}    $      =G G G=    $ v     ',
+'                                 =    =   =  =======      v O   ',
+'                            lllll                         v     ',
+'          k                                               v     ',
+'                                                          v     ',
+'       lllllll                         l   l    l  l    l   l   ',
+'iiiiiiiiiiiiiiiiiiiiiii                                         ',],
 
 
 
