@@ -9,8 +9,6 @@ on:
     types: [opened, edited, reopened]
   pull_request:
     types: [opened, edited, reopened]
-  push:
-    branches: [ "main" ]
 
 # Required permissions
 permissions:
