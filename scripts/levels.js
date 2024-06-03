@@ -1764,8 +1764,7 @@ const levelConf = {
       scale(1),
       offscreen({ hide: true }),
       anchor("bot"),
-      "ground",
-      "floor_thing",
+      "ground"
     ],
     "+": () => [
       sprite("grass5"),
@@ -1774,8 +1773,7 @@ const levelConf = {
       offscreen({ hide: true, distance: 160 }),
       scale(1),
       anchor("bot"),
-      "ground",
-      "floor_thing",
+      "ground"
     ],
     "_": () => [
       sprite("grass25"),
@@ -1784,8 +1782,7 @@ const levelConf = {
       offscreen({ hide: true, distance: 800 }),
       scale(1),
       anchor("bot"),
-      "ground",
-      "floor_thing",
+      "ground"
     ],
     "?": () => [
       sprite("fake"),
@@ -1793,8 +1790,7 @@ const levelConf = {
       scale(1),
       offscreen({ hide: true }),
       anchor("bot"),
-      "ground",
-      "floor_thing",
+      "ground"
     ],
     "$": () => [
       sprite("coin"),
@@ -1849,7 +1845,6 @@ const levelConf = {
       offscreen({ hide: true }),
       area(),
       "jumpy",
-      "floor_thing",
     ],
     "D": () => [
       sprite("door"),
@@ -1873,7 +1868,6 @@ const levelConf = {
       offscreen({ hide: true }),
       anchor("bot"),
       "right",
-      "floor_thing",
     ],
     "<": () => [
       sprite("coasterLeft"),
@@ -1882,7 +1876,6 @@ const levelConf = {
       offscreen({ hide: true }),
       anchor("bot"),
       "left",
-      "floor_thing",
     ],
     ".": () => [
       sprite("block"),
@@ -1890,7 +1883,6 @@ const levelConf = {
       offscreen({ hide: true }),
       body({ isStatic: true }),
       anchor("bot"),
-      "floor_thing",
     ],
     "{": () => [
       sprite("signpostl"),
@@ -1954,7 +1946,6 @@ const levelConf = {
       anchor("bot"),
       area(), 
       body(), 
-      "floor_thing",
       ],
     "!": () => [
       sprite("darrow"),
