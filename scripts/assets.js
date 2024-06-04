@@ -82,7 +82,7 @@ export default function loadAssets() {
     })
 
     drawText({
-      text: "Loading" + ".".repeat(wave(1, 4, time() * 12)),
+      text: "Loading " + Math.round(loadProgress() * 100) + "% " + ".".repeat(wave(1, 4, time() * 12)),
       font: "monospace",
       size: 24,
       anchor: "center",
