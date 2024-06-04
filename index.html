@@ -96,7 +96,7 @@
     var isDeathAnimEnabled = false;
     var multiplayerEnabled = true;
     var speedCap = 400; // raising this raises the max speed
-    
+    var canDoubleJump = false;
 
     function subscribeToChannel() {
       // Subscribe to mouse events.
@@ -423,6 +423,7 @@
       levelName: "Intro",
     }) => {
       setGravity(1300)
+      
       if (first) {
         levelId = slctId;
         first = false;
@@ -577,6 +578,7 @@
         music.stop()
         onKeyPress('z', () => {
           music.stop()
+          canDoubleJump = true
           if (levelId + 1 < LEVELS.length) {
             go("game", {
               levelId: levelId + 1,
@@ -648,19 +650,25 @@
       if (levelId != 32) {
         onKeyPress("up", () => {
           play("jump")
-          onion.doubleJump()
+          if(canDoubleJump){
+            onion.doubleJump()
+          }
           sendOnionPosition(channel, userID, onion.pos.x, onion.pos.y, levelId);
           myCoords = { x: onion.pos.x, y: onion.pos.y, level: levelId };
         })
         onKeyPress("w", () => {
           play("jump")
-          onion.doubleJump()
+          if(canDoubleJump){
+            onion.doubleJump()
+          }
           sendOnionPosition(channel, userID, onion.pos.x, onion.pos.y, levelId);
           myCoords = { x: onion.pos.x, y: onion.pos.y, level: levelId };
         })
         onKeyPress("space", () => {
           play("jump")
-          onion.doubleJump()
+          if(canDoubleJump){
+            onion.doubleJump()
+          }
           sendOnionPosition(channel, userID, onion.pos.x, onion.pos.y, levelId);
           myCoords = { x: onion.pos.x, y: onion.pos.y, level: levelId };
         })
@@ -689,6 +697,7 @@
       onKeyPress("f", (c) => {
         setFullscreen(!isFullscreen())
       })
+
 
       //devkey
       /*onKeyDown('q', () => {
@@ -731,6 +740,22 @@
         else if (!col.isBottom()) {
           die()
         }
+      })
+
+      onion.onCollide("ground", (ground) => {
+        canDoubleJump = true
+      })
+      onion.onCollide("jumpy", (ground) => {
+        canDoubleJump = true
+      })
+      onion.onCollide("left", (ground) => {
+        canDoubleJump = true
+      })
+      onion.onCollide("right", (ground) => {
+        canDoubleJump = true
+      })
+      onion.onCollide("block", (ground) => {
+        canDoubleJump = true
       })
       /*onion.onCollide("ground",(ground)=>{
       play("jump")
@@ -940,6 +965,7 @@
       //if(rEnabled == true){
       onKeyPress("r", () => {
         music.stop()
+        canDoubleJump = false
         go("game", {
           levelId: levelId,
         });
