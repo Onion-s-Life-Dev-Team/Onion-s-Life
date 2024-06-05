@@ -184,6 +184,7 @@
         //then go to the root of the page with the params ?test=true
         document.getElementById('launchGame').addEventListener('click', () => {
             const exportText = LEVELS[currentLevel].map(row => "'" + row.join('') + "'").join(",\n");
+            localStorage.setItem('savedLevel', JSON.stringify(LEVELS[currentLevel]));
             localStorage.setItem('levelToTest', exportText);
             window.location.href = 'index.html?test=true';
         });
