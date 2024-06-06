@@ -77,10 +77,18 @@
     const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlocmRxYnF2b2ZsdXRnYnpocXFvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTYwNDI1ODIsImV4cCI6MjAzMTYxODU4Mn0.d3Vac0lv5CicW-FF_NfZ7j3BAkaXEDLctg47V64S2NE'
 
     const supabase = createClient(SUPABASE_URL, SUPABASE_KEY)
-    //generate random ID
-    const userID = Math.floor(Math.random() * 1000000);
+    //write a function to generate a random name for the user
+    function randomNameGenerator(){
+      var adjectives = ["Cool", "Awesome", "Rad", "Epic", "Sick", "Dope", "Sweet", "Savage", "Lit", "Fire", "Chill", "Fresh", "Funky", "Groovy", "Swag", "Wavy"];
+      var nouns = ["Onion", "Tomato", "Potato", "Carrot", "Cucumber", "Broccoli", "Lettuce", "Pepper", "Radish", "Turnip", "Pumpkin", "Squash", "Zucchini", "Eggplant", "Cabbage", "Kale", "Spinach", "Arugula", "Romaine", "Iceberg", "Endive", "Chard", "Collard", "Mustard", "Bok Choy", "Watercress", "Dandelion", "Parsley", "Cilantro", "Basil", "Mint", "Thyme", "Rosemary", "Sage", "Oregano", "Marjoram", "Chives", "Dill", "Fennel", "Lavender", "Coriander", "Tarragon", "Bay", "Lemon", "Lime", "Orange", "Grapefruit", "Pomelo", "Tangerine", "Clementine", "Mandarin", "Kumquat", "Persimmon", "Peach", "Plum", "Apricot", "Cherry", "Apple", "Pear", "Quince", "Pomegranate", "Kiwi", "Banana", "Pineapple", "Mango", "Papaya", "Guava", "Passionfruit", "Dragonfruit", "Lychee", "Rambutan", "Longan", "Durian", "Jackfruit", "Coconut", "Date", "Fig", "Olive", "Grape", "Raspberry", "Blackberry", "Blueberry", "Strawberry", "Cranberry", "Gooseberry", "Currant", "Elderberry"];
+      var adjective = adjectives[Math.floor(Math.random() * adjectives.length)];
+      var noun = nouns[Math.floor(Math.random() * nouns.length)];
+      return adjective + " " + noun + " " + Math.floor(Math.random() * 1000);
+    }
+    var userID = randomNameGenerator();
     var allUserIds = [];
     var otherOnions = [];
+    var onionId = 0;
     var onions = [
       "onion", "onion-beach", "onion-blue", "onion-dark", "onion-gold",
       "onion-watermelon",
@@ -131,7 +139,7 @@
         })
         .subscribe(async (status) => {
           if (status === 'SUBSCRIBED') {
-            await channel.track({ userId: userID, level: trackingLevelId, x: 120, y: 40 })
+            await channel.track({ userId: userID, onionId: onionId, level: trackingLevelId, x: 120, y: 40 })
           }
         })
     }
@@ -161,7 +169,7 @@
     //it should send a move onion position event
     function receivedNewPlayer({ event, payload }) {
       receivedMoveLevels({ event, payload })
-      sendOnionPosition(channel, userID, myCoords.x, myCoords.y, myCoords.level)
+      sendOnionPosition(channel, userID, onionId, myCoords.x, myCoords.y, myCoords.level)
     }
 
     function removeOnionListFromScreen() {
@@ -197,7 +205,7 @@
         removeOnionListFromScreen()
         for (var i = 0; i < allUserIds.length; i++) {
           add([
-            text(`Onion ${i + 1} (${allUserIds[i].userId}) - Level ${allUserIds[i].level}`, { size: 20 }),
+            text(`Onion ${i + 1} (${allUserIds[i].userId}) - Level ${allUserIds[i].level}`, { size: 20, align: "right" }),
             pos(canvasWidth - 400, 10 + (i * 20)),
             fixed(),
           ])
@@ -224,18 +232,23 @@
 
     function receivedOnionPosition({ event, payload }) {
 
-      const { userId, x, y, level } = payload;
+      const { userId, onionId, x, y, level } = payload;
       if (userId !== userID) {
         let onion = otherOnions.find(onion => onion.userId === userId);
         if (level === trackingLevelId) { // Ensure the onion is in the same level
           if (!onion) {
             onion = add([
-              sprite("onion"),
+              sprite(onions[onionId]),
               pos(x, y),
               doubleJump(),
               area(),
               body(),
               { userId, level }
+            ]);
+            add([
+              text(onion.userId, { size: 15 }),
+              pos(0, 0),
+              follow(onion, vec2(0, -20)),
             ]);
             otherOnions.push(onion);
           } else {
@@ -256,12 +269,12 @@
 
 
     // Helper function for sending our own mouse position.
-    function sendOnionPosition(channel, userId, x, y, level) {
+    function sendOnionPosition(channel, userId, onionId, x, y, level) {
       if (multiplayerEnabled) {
         return channel.send({
           type: 'broadcast',
           event: PLAYER_EVENT,
-          payload: { userId, x, y, level }
+          payload: { userId, onionId, x, y, level }
         })
       }
     }
@@ -397,7 +410,6 @@
       return null;
     }
     var slctId = 0;
-    var onionId = 0;
     // Set a high score cookie
     function setHighLevel(score) {
       const existingHighLevel = getCookie("highLevel");
@@ -423,7 +435,11 @@
       levelName: "Intro",
     }) => {
       setGravity(1300)
-      
+      var storedName = getCookie("name");
+      if (storedName) {
+        userID = storedName;
+      }
+
       if (first) {
         levelId = slctId;
         first = false;
@@ -504,6 +520,15 @@
         area(),
         body({ maxVelocity: 1000 }),
       ])
+      if(multiplayerEnabled){
+        const onionIdFollower = add([
+          text(userID, { size: 15 }),
+          //make it follow the onion
+          pos(0, 0),
+          follow(onion, vec2(0, -20)),
+
+        ])
+      }
 
       var levelNames = ["Intro", "Classic ~ 1", "Flying For Coins ~ 2",
         "Bouncy House ~ 3", "Booby Trap ~ 4", "Staircase of Doom ~ 5",
@@ -636,8 +661,6 @@
         onion.move(moveDistance, 0);
         sendOnionPosition(channel, userID, onion.pos.x, onion.pos.y, levelId);
         const myCoords = { x: onion.pos.x, y: onion.pos.y, level: levelId };
-
-        clear();
     } catch (error) {
         console.error('Error in moveOnion:', error);
         // Optionally handle the error further or throw it to the caller
@@ -1007,6 +1030,10 @@
       onKeyPress("m", () => {
         go("multiplayer");
       })
+      onKeyPress("n", () => {
+        go("name");
+      })
+
 
       add([
         text("Onion's Life", { size: 120, align: "center" }),
@@ -1313,9 +1340,6 @@
     //the name should be saved as a cookie! delicious!!
 
     scene("name", () => {
-      onKeyPress('b', () => {
-        go("title");
-      })
 
       add([
         text("Name", { size: 64 }),
@@ -1335,12 +1359,76 @@
         nameInput.text = "Name";
       })
 
-      on("keydown", (e) => {
-        if (e.key === "Enter") {
-          setCookie("name", nameInput.text, 700);
-          go("title");
+      const input = add([
+          pos(40, 200),
+          // Render text with the text() component
+          text("Type! And try arrow keys!", {
+              // It'll wrap to next line if the text width exceeds the width option specified here
+              width: width() - 40 * 2,
+              // The height of character
+              size: 40,
+              // Text alignment ("left", "center", "right", default "left")
+              align: "center",
+              lineSpacing: 8,
+              letterSpacing: 4,
+              // Transform each character for special effects
+              transform: (idx, ch) => ({
+                  color: hsl2rgb((time() * 0.2 + idx * 0.1) % 1, 0.7, 0.8),
+                  pos: vec2(0, wave(-4, 4, time() * 4 + idx * 0.5)),
+                  
+                  angle: wave(-9, 9, time() * 3 + idx),
+              }),
+          }),
+      ]);
+
+      // Like onKeyPressRepeat() but more suitable for text input.
+      onCharInput((ch) => {
+          input.text += ch;
+      });
+
+      // Like onKeyPress() but will retrigger when key is being held (which is similar to text input behavior)
+      // Insert new line when user presses enter
+      onKeyPressRepeat("enter", () => {
+        console.log(allUserIds)
+          //if the name is in the user ids, throw an error
+          for (let userId of allUserIds) {
+            console.log(userId.userId)
+            if (userId.userId === input.text) {
+              alert("Name already in use!");
+              console.log("Name already in use!");
+              return;
+            }
+          }
+
+
+          saveName();
+          go("game");
+      });
+      // Delete last character
+      onKeyPressRepeat("backspace", () => {
+          input.text = input.text.substring(0, input.text.length - 1);
+      });
+
+      //write a func that saves the name to a cookie
+      function saveName() {
+        //get the name from the input
+        const name = input.text;
+        //save the name to a cookie
+        setCookie("name", name, 1000);
+      }
+
+      function getName() {
+        //get the name from the cookie
+        
+        const nameSoFar = getCookie("name");
+        if (nameSoFar) {
+          return nameSoFar;
+        } else {
+          return "Type to change your name!";
         }
-      })
+      }
+
+      input.text = getName();
 
     })
 
@@ -1457,6 +1545,7 @@
           "txt",
           pos(width() / 2 - 86, height() / 2 - 34),
           area(),
+          "onOff"
         ])
       }
 
@@ -1482,6 +1571,9 @@
       onClick("l", () => {
         multiplayerEnabled = !multiplayerEnabled;
         go("multiplayer");
+      })
+      onClick("onOff", () =>{
+        go("game");
       })
     })
     var highestId = 0;
