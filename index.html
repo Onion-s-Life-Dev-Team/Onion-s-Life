@@ -237,8 +237,12 @@
         let onion = otherOnions.find(onion => onion.userId === userId);
         if (level === trackingLevelId) { // Ensure the onion is in the same level
           if (!onion) {
+            var onionSpriteToAdd = "onion"
+            if(onions[onionId]){
+              onionSpriteToAdd = onions[onionId]
+            }
             onion = add([
-              sprite(onions[onionId]),
+              sprite(onionSpriteToAdd),
               pos(x, y),
               doubleJump(),
               area(),
