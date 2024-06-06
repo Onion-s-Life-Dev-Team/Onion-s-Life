@@ -889,8 +889,8 @@
         this.onHoverEnd(){
           
         }
-        */
-      }
+        
+      }*/
       const score = add([
         text("Score: 0"),
         pos(40, 100),
@@ -1305,6 +1305,42 @@
         pos(80, height() * 0.65),
       ])
 
+
+    })
+
+    //create a scene that allows users to change their name
+    //this should create an input space
+    //the name should be saved as a cookie! delicious!!
+
+    scene("name", () => {
+      onKeyPress('b', () => {
+        go("title");
+      })
+
+      add([
+        text("Name", { size: 64 }),
+        fixed(),
+        pos(40, 40),
+      ])
+
+      const nameInput = add([
+        // list of components
+        text(""),
+        pos(width() / 2 - 128, height() / 2 - 128),
+        area(),
+        fixed(),
+      ])
+
+      on("click", () => {
+        nameInput.text = "Name";
+      })
+
+      on("keydown", (e) => {
+        if (e.key === "Enter") {
+          setCookie("name", nameInput.text, 700);
+          go("title");
+        }
+      })
 
     })
 
