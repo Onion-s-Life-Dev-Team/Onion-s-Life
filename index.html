@@ -88,6 +88,7 @@
     var userID = randomNameGenerator();
     var allUserIds = [];
     var otherOnions = [];
+    var onionId = 0;
     var onions = [
       "onion", "onion-beach", "onion-blue", "onion-dark", "onion-gold",
       "onion-watermelon",
@@ -138,7 +139,7 @@
         })
         .subscribe(async (status) => {
           if (status === 'SUBSCRIBED') {
-            await channel.track({ userId: userID, level: trackingLevelId, x: 120, y: 40 })
+            await channel.track({ userId: userID, onionId: onionId, level: trackingLevelId, x: 120, y: 40 })
           }
         })
     }
@@ -168,7 +169,7 @@
     //it should send a move onion position event
     function receivedNewPlayer({ event, payload }) {
       receivedMoveLevels({ event, payload })
-      sendOnionPosition(channel, userID, myCoords.x, myCoords.y, myCoords.level)
+      sendOnionPosition(channel, userID, onionId, myCoords.x, myCoords.y, myCoords.level)
     }
 
     function removeOnionListFromScreen() {
@@ -231,13 +232,13 @@
 
     function receivedOnionPosition({ event, payload }) {
 
-      const { userId, x, y, level } = payload;
+      const { userId, onionId, x, y, level } = payload;
       if (userId !== userID) {
         let onion = otherOnions.find(onion => onion.userId === userId);
         if (level === trackingLevelId) { // Ensure the onion is in the same level
           if (!onion) {
             onion = add([
-              sprite("onion"),
+              sprite(onions[onionId]),
               pos(x, y),
               doubleJump(),
               area(),
@@ -245,9 +246,9 @@
               { userId, level }
             ]);
             add([
-              text(onion.userId, { size: 20 }),
+              text(onion.userId, { size: 15 }),
               pos(0, 0),
-              follow(onion),
+              follow(onion, vec2(0, -20)),
             ]);
             otherOnions.push(onion);
           } else {
@@ -268,12 +269,12 @@
 
 
     // Helper function for sending our own mouse position.
-    function sendOnionPosition(channel, userId, x, y, level) {
+    function sendOnionPosition(channel, userId, onionId, x, y, level) {
       if (multiplayerEnabled) {
         return channel.send({
           type: 'broadcast',
           event: PLAYER_EVENT,
-          payload: { userId, x, y, level }
+          payload: { userId, onionId, x, y, level }
         })
       }
     }
@@ -409,7 +410,6 @@
       return null;
     }
     var slctId = 0;
-    var onionId = 0;
     // Set a high score cookie
     function setHighLevel(score) {
       const existingHighLevel = getCookie("highLevel");
@@ -522,10 +522,10 @@
       ])
       if(multiplayerEnabled){
         const onionIdFollower = add([
-          text(userID, { size: 20 }),
+          text(userID, { size: 15 }),
           //make it follow the onion
           pos(0, 0),
-          follow(onion),
+          follow(onion, vec2(0, -20)),
 
         ])
       }
@@ -661,8 +661,6 @@
         onion.move(moveDistance, 0);
         sendOnionPosition(channel, userID, onion.pos.x, onion.pos.y, levelId);
         const myCoords = { x: onion.pos.x, y: onion.pos.y, level: levelId };
-
-        clear();
     } catch (error) {
         console.error('Error in moveOnion:', error);
         // Optionally handle the error further or throw it to the caller
@@ -1575,9 +1573,7 @@
         go("multiplayer");
       })
       onClick("onOff", () =>{
-        go("game", {
-          multiplayerEnabled: multiplayerEnabled,
-        })
+        go("game");
       })
     })
     var highestId = 0;
