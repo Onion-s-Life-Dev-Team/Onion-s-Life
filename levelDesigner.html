@@ -82,36 +82,76 @@
             }
         });
 
-        onKeyPress('187', () => { selectedTile = '=' })
-        onKeyPress('191', () => { selectedTile = '?' })
-        onKeyPress('52', () => { selectedTile = '$' })
-        onKeyPress('54', () => { selectedTile = '^' })
-        onKeyPress('86', () => { selectedTile = 'v' })
-        onKeyPress('79', () => { selectedTile = 'O' })
-        onKeyPress('76', () => { selectedTile = 'l' })
-        onKeyPress('68', () => { selectedTile = 'D' })
-        onKeyPress('75', () => { selectedTile = 'k' })
-        onKeyPress('188', () => { selectedTile = '<' })
-        onKeyPress('190', () => { selectedTile = '>' })
-        onKeyPress('219', () => { selectedTile = '{' })
-        onKeyPress('221', () => { selectedTile = '}' })
-        onKeyPress('189', () => { selectedTile = '-' })
-        onKeyPress('73', () => { selectedTile = 'i' })
-        onKeyPress('83', () => { selectedTile = 'S' })
-        onKeyPress('81', () => { selectedTile = 'Q' })
-        onKeyPress('71', () => { selectedTile = 'G' })
-        onKeyPress('49', () => { selectedTile = '!' })
-
-        const loadedLevel = JSON.parse(localStorage.getItem('savedLevel'));
-            if (loadedLevel) {
-                LEVELS[currentLevel] = loadedLevel;
-                drawLevel(LEVELS[currentLevel]);
+        // Key bindings for selecting tiles
+        document.addEventListener('keydown', function(event) {
+            switch(event.code) {
+                case 'Equal': // '=' key
+                    selectedTile = '=';
+                    break;
+                case 'Slash': // '/' key
+                    selectedTile = '?';
+                    break;
+                case 'Digit4': // '4' key
+                    selectedTile = '$';
+                    break;
+                case 'Digit6': // '6' key
+                    selectedTile = '^';
+                    break;
+                case 'KeyV': // 'V' key
+                    selectedTile = 'v';
+                    break;
+                case 'KeyO': // 'O' key
+                    selectedTile = 'O';
+                    break;
+                case 'KeyL': // 'L' key
+                    selectedTile = 'l';
+                    break;
+                case 'KeyD': // 'D' key
+                    selectedTile = 'D';
+                    break;
+                case 'KeyK': // 'K' key
+                    selectedTile = 'k';
+                    break;
+                case 'Comma': // ',' key
+                    selectedTile = '<';
+                    break;
+                case 'Period': // '.' key
+                    selectedTile = '>';
+                    break;
+                case 'BracketLeft': // '[' key
+                    selectedTile = '{';
+                    break;
+                case 'BracketRight': // ']' key
+                    selectedTile = '}';
+                    break;
+                case 'Minus': // '-' key
+                    selectedTile = '-';
+                    break;
+                case 'KeyI': // 'I' key
+                    selectedTile = 'i';
+                    break;
+                case 'KeyS': // 'S' key
+                    selectedTile = 'S';
+                    break;
+                case 'KeyQ': // 'Q' key
+                    selectedTile = 'Q';
+                    break;
+                case 'KeyG': // 'G' key
+                    selectedTile = 'G';
+                    break;
+                case 'Digit1': // '1' key
+                    selectedTile = '!';
+                    break;
+                // Add more cases for additional key bindings
+                default:
+                    break;
             }
+        });
 
         const LEVELS = [
             Array.from({length: 42}, () => Array(64).fill(' ')) // Create 20 rows of 64 columns filled with empty space
         ];
-        
+
         function getImageUrl(tile) {
             switch(tile) {
                 case '=': return 'assets/sprites/grass.png';
@@ -160,20 +200,17 @@
             const newLevel = levelArray.map(row => row.split(''));
             LEVELS[0] = newLevel;
             drawLevel(LEVELS[0]);
-        
+
             // Calculate the height based on the number of rows
             document.getElementById('levelDisplay').style.height = `${newLevel.length * 32}px`;
-        
+
             // Find the maximum length of any row
             const maxWidth = newLevel.reduce((max, row) => Math.max(max, row.length), 0);
-        
+
             // Set the width based on the maximum length
             document.getElementById('levelDisplay').style.width = `${maxWidth * 32}px`;
             document.getElementById('levelDisplay').style.border = '2px solid #000';
         }
-
-        
-
 
         let currentLevel = 0;
         drawLevel(LEVELS[currentLevel]);
@@ -197,7 +234,6 @@
             importLevel(levelArray);
         });
 
-
         document.getElementById('exportLevel').addEventListener('click', () => {
             const exportText = LEVELS[currentLevel].map(row => "'" + row.join('') + "'").join(",\n");
             navigator.clipboard.writeText(exportText).then(() => {
@@ -205,16 +241,12 @@
             });
         });
 
-        //create a button to launch the game with the test level
-        //to do this, we need to save the level to local storage
-        //then go to the root of the page with the params ?test=true
         document.getElementById('launchGame').addEventListener('click', () => {
             const exportText = LEVELS[currentLevel].map(row => "'" + row.join('') + "'").join(",\n");
             localStorage.setItem('savedLevel', JSON.stringify(LEVELS[currentLevel]));
             localStorage.setItem('levelToTest', exportText);
             window.location.href = 'index.html?test=true';
         });
-
     </script>
 </body>
 </html>
