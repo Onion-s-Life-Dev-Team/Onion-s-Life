@@ -795,6 +795,7 @@
       })
       var shownYouLose = false
       function die() {
+        if (onion.exists() {
         if (!isTouchscreen() && isDeathAnimEnabled) {
           loops = 0;
           const sprites = [
@@ -861,6 +862,7 @@
         }
         setHighLevel(levelId);
         sendDeathMessage(channel, userID);
+      }
       }
       //write a function to dtermine if there is are clouds in the camera view
       //if there are not, spawn a cloud
