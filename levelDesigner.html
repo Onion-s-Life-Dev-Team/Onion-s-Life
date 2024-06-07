@@ -82,6 +82,32 @@
             }
         });
 
+        onKeyDown('187', () => { selectedTile = '=' })
+        onKeyDown('191', () => { selectedTile = '?' })
+        onKeyDown('52', () => { selectedTile = '$' })
+        onKeyDown('54', () => { selectedTile = '^' })
+        onKeyDown('86', () => { selectedTile = 'v' })
+        onKeyDown('79', () => { selectedTile = 'O' })
+        onKeyDown('76', () => { selectedTile = 'l' })
+        onKeyDown('68', () => { selectedTile = 'D' })
+        onKeyDown('75', () => { selectedTile = 'k' })
+        onKeyDown('188', () => { selectedTile = '<' })
+        onKeyDown('190', () => { selectedTile = '>' })
+        onKeyDown('219', () => { selectedTile = '{' })
+        onKeyDown('221', () => { selectedTile = '}' })
+        onKeyDown('189', () => { selectedTile = '-' })
+        onKeyDown('73', () => { selectedTile = 'i' })
+        onKeyDown('83', () => { selectedTile = 'S' })
+        onKeyDown('81', () => { selectedTile = 'Q' })
+        onKeyDown('71', () => { selectedTile = 'G' })
+        onKeyDown('49', () => { selectedTile = '!' })
+
+        const loadedLevel = JSON.parse(localStorage.getItem('savedLevel'));
+            if (loadedLevel) {
+                LEVELS[currentLevel] = loadedLevel;
+                drawLevel(LEVELS[currentLevel]);
+            }
+
         const LEVELS = [
             Array.from({length: 42}, () => Array(64).fill(' ')) // Create 20 rows of 64 columns filled with empty space
         ];
@@ -146,7 +172,7 @@
             document.getElementById('levelDisplay').style.border = '2px solid #000';
         }
 
-
+        
 
 
         let currentLevel = 0;
