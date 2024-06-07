@@ -623,7 +623,7 @@
             channel.track({ userId: userID, level: levelId })
           } else {
             if(onion.exists()){
-            destroy(onion),
+            destroy(onion);
               }
               play("win")
             add([
@@ -969,7 +969,7 @@
           setHighLevel(levelId)
         } else {
           if(onion.exists()){
-          destroy(onion),
+          destroy(onion);
             }
             play("win")
           add([
