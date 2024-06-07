@@ -223,7 +223,9 @@
           onion.level = level;
           // Check if the level matches the current player's level
           if (level !== trackingLevelId) {
+            if(onion.exists()){
             destroy(onion); // Remove sprite from view
+            }
             otherOnions.splice(otherOnions.indexOf(onion), 1); // Remove from array
           }
         }
@@ -620,7 +622,9 @@
             setHighLevel(levelId)
             channel.track({ userId: userID, level: levelId })
           } else {
+            if(onion.exists()){
             destroy(onion),
+              }
               play("win")
             add([
               text("You Win!"),
@@ -964,7 +968,9 @@
           slctId = levelId
           setHighLevel(levelId)
         } else {
+          if(onion.exists()){
           destroy(onion),
+            }
             play("win")
           add([
             text("You Win!"),
