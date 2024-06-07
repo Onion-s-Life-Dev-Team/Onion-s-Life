@@ -190,34 +190,39 @@
                     tileElement.style.backgroundImage = `url('${getImageUrl(tile)}')`;
 
                     tileElement.addEventListener('mousedown', (event) => {
-                    if (event.button === 0) { // Left-click
-                        isDragging = true;
-                        LEVELS[0][y][x] = selectedTile === tile ? ' ' : selectedTile;
-                        drawLevel(LEVELS[0]);
-                    } else if (event.button === 2) { // Right-click
+                        if (event.button === 0) { // Left-click
+                            isDragging = true;
+                            LEVELS[0][y][x] = selectedTile === tile ? ' ' : selectedTile;
+                            drawLevel(LEVELS[0]);
+                        } else if (event.button === 2) { // Right-click
+                            event.preventDefault();
+                            isDragging = true;
+                            LEVELS[0][y][x] = ' '; // Assuming ' ' represents an empty space
+                            drawLevel(LEVELS[0]);
+                        }
+                    });
+
+                    tileElement.addEventListener('mouseup', (event) => {
+                        if (event.button === 0 || event.button === 2) { // Left-click or Right-click
+                            isDragging = false;
+                        }
+                    });
+
+                    tileElement.addEventListener('mousemove', (event) => {
+                        if (isDragging) {
+                            if (event.buttons === 1) { // Left button is held down
+                                LEVELS[0][y][x] = selectedTile;
+                            } else if (event.buttons === 2) { // Right button is held down
+                                LEVELS[0][y][x] = ' '; // Assuming ' ' represents an empty space
+                            }
+                            drawLevel(LEVELS[0]);
+                        }
+                    });
+
+                    // Prevent the context menu from appearing on right-click
+                    tileElement.addEventListener('contextmenu', (event) => {
                         event.preventDefault();
-                        LEVELS[0][y][x] = ' '; // Assuming ' ' represents an empty space
-                        drawLevel(LEVELS[0]);
-                    }
-                });
-
-                tileElement.addEventListener('mouseup', (event) => {
-                    if (event.button === 0) { // Left-click
-                        isDragging = false;
-                    }
-                });
-
-                tileElement.addEventListener('mousemove', () => {
-                    if (isDragging) {
-                        LEVELS[0][y][x] = selectedTile;
-                        drawLevel(LEVELS[0]);
-                    }
-                });
-
-                // Prevent the context menu from appearing on right-click
-                tileElement.addEventListener('contextmenu', (event) => {
-                    event.preventDefault();
-                });
+                    });
 
                     levelDisplay.appendChild(tileElement);
                 });
