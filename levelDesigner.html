@@ -75,6 +75,7 @@
         const tools = document.getElementById('tools');
         const levelDisplay = document.getElementById('levelDisplay');
         let selectedTile = ' '; // Default to empty space
+        let isDragging = false;
 
         tools.addEventListener('click', function(event) {
             if (event.target.tagName === 'BUTTON') {
@@ -187,10 +188,24 @@
                     tileElement.style.left = `${x * 32}px`;
                     tileElement.style.top = `${y * 32}px`;
                     tileElement.style.backgroundImage = `url('${getImageUrl(tile)}')`;
-                    tileElement.addEventListener('click', () => {
+
+                    tileElement.addEventListener('mousedown', () => {
+                        isDragging = true;
                         LEVELS[0][y][x] = selectedTile === tile ? ' ' : selectedTile;
                         drawLevel(LEVELS[0]);
                     });
+
+                    tileElement.addEventListener('mouseup', () => {
+                        isDragging = false;
+                    });
+
+                    tileElement.addEventListener('mousemove', () => {
+                        if (isDragging) {
+                            LEVELS[0][y][x] = selectedTile;
+                            drawLevel(LEVELS[0]);
+                        }
+                    });
+
                     levelDisplay.appendChild(tileElement);
                 });
             });
