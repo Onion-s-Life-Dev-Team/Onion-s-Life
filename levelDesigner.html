@@ -256,6 +256,9 @@
             if(confirm("Are you sure you would like to reset your level?")){
                 LEVELS[0] = Array.from({length: 42}, () => Array(64).fill(' ')) // Create 20 rows of 64 columns filled with empty space
                 drawLevel(LEVELS[0]);
+                if(confirm("Would you like to save your changes?")){
+                    localStorage.setItem('savedLevel', JSON.stringify(LEVELS[0]));
+                }
             }
         });
 
