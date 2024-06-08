@@ -64,7 +64,6 @@
             <button data-tile="!">Down Arrow (!)</button>
             <!-- Add more buttons for additional tile types -->
         </div>
-        <button id="saveLevel">Save Level</button>
         <button id="resetLevel">Reset Level</button>
         <button id="importLevel">Import Level</button>
         <button id="exportLevel">Export Level</button>
@@ -250,7 +249,7 @@
 
         setInterval(() => {
             localStorage.setItem('savedLevel', JSON.stringify(LEVELS[currentLevel]));
-        }, 5000);
+        }, 1000);
 
         document.getElementById('resetLevel').addEventListener('click', () => {
             if(confirm("Are you sure you would like to reset your level?")){
