@@ -248,9 +248,9 @@
         let currentLevel = 0;
         drawLevel(LEVELS[currentLevel]);
 
-        document.getElementById('saveLevel').addEventListener('click', () => {
+        setInterval(() => {
             localStorage.setItem('savedLevel', JSON.stringify(LEVELS[currentLevel]));
-        });
+        }, 5000);
 
         document.getElementById('resetLevel').addEventListener('click', () => {
             if(confirm("Are you sure you would like to reset your level?")){
