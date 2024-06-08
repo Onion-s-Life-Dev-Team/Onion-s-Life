@@ -65,6 +65,7 @@
             <!-- Add more buttons for additional tile types -->
         </div>
         <button id="saveLevel">Save Level</button>
+        <button id="resetLevel">Reset Level</button>
         <button id="importLevel">Import Level</button>
         <button id="exportLevel">Export Level</button>
         <button id="launchGame">Test Level in Game</button>
@@ -249,6 +250,11 @@
 
         document.getElementById('saveLevel').addEventListener('click', () => {
             localStorage.setItem('savedLevel', JSON.stringify(LEVELS[currentLevel]));
+        });
+
+        document.getElementById('resetLevel').addEventListener('click', () => {
+            LEVELS[0] = Array.from({length: 42}, () => Array(64).fill(' ')) // Create 20 rows of 64 columns filled with empty space
+            drawLevel(LEVELS[0]);
         });
 
         document.getElementById('importLevel').addEventListener('click', () => {
