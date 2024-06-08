@@ -1,6 +1,9 @@
 lsi: false
 safe: true
 source: .
+title: Onion's Life
+tagline: An EPIC game for web where you impersonate an Onion and go on adventures through mazes and labyrinths.
+logo: /assets/sprites/onion.png
 incremental: false
 highlighter: rouge
 gist:
