@@ -253,8 +253,10 @@
         });
 
         document.getElementById('resetLevel').addEventListener('click', () => {
-            LEVELS[0] = Array.from({length: 42}, () => Array(64).fill(' ')) // Create 20 rows of 64 columns filled with empty space
-            drawLevel(LEVELS[0]);
+            if(confirm("Are you sure you would like to reset your level?")){
+                LEVELS[0] = Array.from({length: 42}, () => Array(64).fill(' ')) // Create 20 rows of 64 columns filled with empty space
+                drawLevel(LEVELS[0]);
+            }
         });
 
         document.getElementById('importLevel').addEventListener('click', () => {
