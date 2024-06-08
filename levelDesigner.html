@@ -65,7 +65,6 @@
             <!-- Add more buttons for additional tile types -->
         </div>
         <button id="saveLevel">Save Level</button>
-        <button id="loadLevel">Load Level</button>
         <button id="importLevel">Import Level</button>
         <button id="exportLevel">Export Level</button>
         <button id="launchGame">Test Level in Game</button>
@@ -252,14 +251,6 @@
             localStorage.setItem('savedLevel', JSON.stringify(LEVELS[currentLevel]));
         });
 
-        document.getElementById('loadLevel').addEventListener('click', () => {
-            const loadedLevel = JSON.parse(localStorage.getItem('savedLevel'));
-            if (loadedLevel) {
-                LEVELS[currentLevel] = loadedLevel;
-                drawLevel(LEVELS[currentLevel]);
-            }
-        });
-
         document.getElementById('importLevel').addEventListener('click', () => {
             const levelString = prompt("Paste the level string here (remove the last comma in the array first, if there is one after the last string):");
             // Replace single quotes with double quotes before parsing
@@ -280,6 +271,12 @@
             localStorage.setItem('levelToTest', exportText);
             window.location.href = 'index.html?test=true';
         });
+
+        const loadedLevel = JSON.parse(localStorage.getItem('savedLevel'));
+            if (loadedLevel) {
+                LEVELS[currentLevel] = loadedLevel;
+                drawLevel(LEVELS[currentLevel]);
+            }
     </script>
 </body>
 </html>
