@@ -1,5 +1,5 @@
 lsi: false
-safe: true
+safe: false
 source: .
 title: Onion's Life
 tagline: An EPIC game for web where you impersonate an Onion and go on adventures through mazes and labyrinths.
