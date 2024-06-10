@@ -81,6 +81,10 @@
                 selectedTile = event.target.getAttribute('data-tile');
             }
         });
+        //force https redirect
+        if (window.location.protocol === "http:") {
+            window.location.href = window.location.href.replace("http:", "https:");
+        }
 
         // Key bindings for selecting tiles
         document.addEventListener('keydown', function(event) {
