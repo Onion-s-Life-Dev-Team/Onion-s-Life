@@ -18,7 +18,7 @@
     '=                      !!                  =            =',
     '=                                          =            =',
     '=                                          =            =',
-    '=         l }  $$$    =GG=       l ^   $$  =   }       O=',
+    '=    a    l }  $$$    =GG=       l ^   $$  =   }       O=',
     '=========================================================',
 
   ],
@@ -2082,6 +2082,13 @@ const levelConf = {
       anchor("bot"),
       offscreen({ hide: true }),
       area(),
+    ],
+    "a": () => [
+      sprite("achievement"),
+      area(),
+      offscreen({ hide: true }),
+      anchor("bot"),
+      "achievement",
     ],
   },
   
