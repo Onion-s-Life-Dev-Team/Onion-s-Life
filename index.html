@@ -524,6 +524,9 @@
       }
       sendNewPlayer()
 
+let hasFoundCoin = false;
+
+   
 
       const music = play("OverworldlyFoe", {
         volume: 1,
@@ -964,10 +967,22 @@
         shake();
       })
       onion.onCollide("coin", (coin) => {
+
         play("score")
         score.value += 1
         score.text = "Score:" + score.value
         destroy(coin)
+    if (!hasFoundCoin) {
+        handleAchievementCollision(
+            onion.pos.x,
+            onion.pos.y,
+            levelId,
+            "Found the first coin",
+            "You found your first coin!",
+            "coin"
+        );
+        hasFoundCoin = true;
+    }
 
       })
 
