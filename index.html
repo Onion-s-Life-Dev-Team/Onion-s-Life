@@ -1098,14 +1098,25 @@ let hasFoundCoin = false;
         go("name");
       })
 
-
-      add([
-        text("Onion's Life", { size: 120, align: "center" }),
-        color(0, 255, 0),
-        fixed(),
-        anchor("center"),
-        pos(width() / 2, height() * 0.10),
-      ])
+      var randTypo = (int)(Math.random() * 10000)
+      if(randTypo == 1337){
+        add([
+          text("Oinon's Life", { size: 120, align: "center" }),
+          color(0, 255, 0),
+          fixed(),
+          anchor("center"),
+          pos(width() / 2, height() * 0.10),
+        ])
+      } else {
+        add([
+          text("Onion's Life", { size: 120, align: "center" }),
+          color(0, 255, 0),
+          fixed(),
+          anchor("center"),
+          pos(width() / 2, height() * 0.10),
+        ])
+      }
+      
 
       const startBtn = add([
         sprite("startbtn"),
