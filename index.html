@@ -1098,7 +1098,7 @@ let hasFoundCoin = false;
         go("name");
       })
 
-      var randTypo = (int)(Math.random() * 10000)
+      var randTypo = Math.round((Math.random() * 10000))
       if(randTypo == 1337){
         add([
           text("Oinon's Life", { size: 120, align: "center" }),
