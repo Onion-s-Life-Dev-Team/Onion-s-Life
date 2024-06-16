@@ -65,7 +65,10 @@ export default function loadAssets() {
   loadSprite("onion-eggplant", "assets/sprites/eggplant-onion.png")
   loadSprite("onion-magic", "assets/sprites/magic-onion.png")
   loadSprite("onion-pumpkin","assets/sprites/pumpkin-onion.png")
+  loadSprite("onion-invert","assets/sprites/onionInvert.png")
+  
   loadSprite("ghostiny","assets/sprites/ghostiny.png")
+  
   loadFont('apl386', 'assets/apl386.woff2', { outline: 4, filter: 'linear'})
 
   // Custom loading screen
