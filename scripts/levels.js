@@ -2016,19 +2016,16 @@ const levelConf = {
     ],
     "{": () => [
       sprite("signpostl"),
-      area(),
       offscreen({ hide: true }),
       anchor("bot"), 
     ],
       "}": () => [
       sprite("signpostr"),
-      area(),
       offscreen({ hide: true }),
       anchor("bot"), 
     ],
       "-": () => [
       sprite("signposte"),
-      area(),
       offscreen({ hide: true }),
       anchor("bot"), 
     ],
