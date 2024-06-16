@@ -2146,7 +2146,7 @@ const levelConf = {
       {
         achName: "?",
         achDesc: "...",
-        achSprite: "onionInvert",
+        achSprite: "achievement",
       },
     ],
   },
