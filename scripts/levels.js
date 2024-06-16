@@ -46,7 +46,7 @@
     '                                                                     ',
     '^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^',
     '','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','',
-    '                                                        QQQQ'
+    '                                                         *  '
   ],
   //Flying for Coins
   [
@@ -2129,6 +2129,18 @@ const levelConf = {
         achName: "Up for the Challenge",
         achDesc: "You're a tough character! Nothing can stop you!",
         achSprite: "spike",
+      },
+    ],
+	  "*": () => [
+      sprite("achievement"),
+      area(),
+      offscreen({ hide: true }),
+      anchor("bot"),
+      "achievement",
+      {
+        achName: "?",
+        achDesc: "...",
+        achSprite: "onionInvert",
       },
     ],
   },
