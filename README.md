@@ -33,3 +33,27 @@ Onion's Life has an intuitive level builder that you can access [here](https://s
 4. This should open Onion's Life with your custom level!
 
 Congratulations! You developed a new level for Onion's Life! When it's ready to deploy, create a PR into the [levels.js](levels.js) file.
+
+## Add Achievements ##
+
+Achievements are there own sprites. To add, do the following:
+
+1. Add a new sprite that hasn't been used before to [levels.js](levels.js)
+2. Make that sprite look like this:
+
+```
+"a": () => [
+      sprite("achievement"),
+      area(),
+      offscreen({ hide: true }),
+      anchor("bot"),
+      "achievement",
+      {
+        achName: "Demo Trophy",
+        achDesc: "Demo Trophy description",
+        achSprite: "achievement",
+      },
+    ],
+```
+3. Add the sprite to a level (not supported yet in level designer)
+4. Make a PR with your level's achievement
