@@ -18,7 +18,7 @@
     '=                      !!                  =            =',
     '=                                          =            =',
     '=                                          =            =',
-    '=         l }  $$$    =GG=       l ^   $$  =   }       O=',
+    '=         l }  $$$    =GG=   g   l ^   $$  =   }       O=',
     '=========================================================',
 
   ],
@@ -2070,6 +2070,15 @@ const levelConf = {
     ],
     "G": () => [
       sprite("ghost"),
+      patrol(),
+      offscreen({ hide: true }),
+      "enemy",
+      anchor("bot"),
+      area(), 
+      body(), 
+      ],
+     "g": () => [
+      sprite("ghostiny"),
       patrol(),
       offscreen({ hide: true }),
       "enemy",
