@@ -81,7 +81,7 @@
     import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
     import registerTouchControls from "./scripts/touchCode.js";
     import loadAssets from "./scripts/assets.js";
-    import { handleAchievementCollision, checkAchievements } from "./scripts/achievement.js";
+    import { handleAchievementCollision, checkAchievements, hasAchievement } from "./scripts/achievement.js";
 
     console.log(checkAchievements())
 
@@ -799,6 +799,16 @@ let hasFoundCoin = false;
         
         
       })
+
+      //get all achievements
+      const achievements = get("achievement", { recursive: true });
+      //check to see if the user has them
+      achievements.forEach((achievement) => {
+        if (hasAchievement(achievement.achName)) {
+          destroy(achievement);
+        }
+      })
+      
 
       onion.onCollide("ground", (ground) => {
         canDoubleJump = true
