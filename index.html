@@ -1628,6 +1628,9 @@ let hasFoundCoin = false;
       })
 
       onClick("btn", () => {
+        if(!unlocked){
+          onionId = 0;
+        }
         go("game");
       })
 
