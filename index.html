@@ -81,6 +81,9 @@
     import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
     import registerTouchControls from "./scripts/touchCode.js";
     import loadAssets from "./scripts/assets.js";
+    import { handleAchievementCollision, checkAchievements } from "./scripts/achievement.js";
+
+    console.log(checkAchievements())
 
     const SUPABASE_URL = 'https://ihrdqbqvoflutgbzhqqo.supabase.co'
     const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlocmRxYnF2b2ZsdXRnYnpocXFvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTYwNDI1ODIsImV4cCI6MjAzMTYxODU4Mn0.d3Vac0lv5CicW-FF_NfZ7j3BAkaXEDLctg47V64S2NE'
@@ -783,6 +786,17 @@
         }
       })
 
+
+      onion.onCollide("achievement", (achievement) => {
+        if (achievement.achName && achievement.achDesc && achievement.achSprite){
+          handleAchievementCollision(onion.pos.x, onion.pos.y, levelId,achievement.achName, achievement.achDesc, achievement.achSprite);
+        }
+        play("score")
+        destroy(achievement);
+        
+        
+      })
+
       onion.onCollide("ground", (ground) => {
         canDoubleJump = true
       })
@@ -1052,6 +1066,9 @@
       onKeyPress("m", () => {
         go("multiplayer");
       })
+      onKeyPress("a", () => {
+        go("achievements");
+      })
       onKeyPress("n", () => {
         go("name");
       })
@@ -1096,6 +1113,19 @@
         go("skins");
       })
 
+      const achBtn = add([
+        sprite("achBtn"),
+        "ach",
+        fixed(),
+        area(),
+        anchor("center"),
+        pos(width() / 2 - 450, height() * 0.9),
+      ])
+
+      onClick("ach", () => {
+        go("achievements");
+      })
+
       startBtn.add([
         text("PLAY", { size: 64 }),
         fixed(),
@@ -1128,6 +1158,9 @@
           }
           if (skinsBtn.hasPoint(pos)) {
             go("skins");
+          }
+          if (achBtn.hasPoint(pos)) {
+            go("achievements");
           }
         })
       }
@@ -1626,6 +1659,45 @@
     //     })
     //   })
     // })
+    scene("achievements", () =>{
+      onKeyPress('b', () => {
+        go("title");
+      })
+      add([
+        text("Achievements", { size: 64 }),
+        color(255, 255, 255),
+        fixed(),
+        pos(40, 40),
+      ])
+      //for each sprite in checkAchievements(), add a sprite with the achievement
+      //add a text with the achievement name
+      //add a text with the achievement description
+
+      var index = 0
+      for (let achievement of checkAchievements()) {
+        var achSprite = add([
+          sprite(achievement.sprite),
+          scale(2),
+          pos(20 + (index*150), height() / 2 - 128),
+        ])
+        var achName = add([
+          text(achievement.name, {
+            width: 64 * 2,
+            size: 30,
+          }),
+          pos(20 + (index*150), achSprite.pos.y + 140),
+        ])
+        add([
+          text(achievement.description, {
+            width: 64 * 2,
+            size: 15,
+          }),
+          pos(20 + (index*150), achSprite.pos.y + 160 + (achName.text.length * 10)),
+        ])
+        index++;
+      }
+    })
+
     /*
     scene("dj", () => {
       const music = play("OverworldlyFoe", {

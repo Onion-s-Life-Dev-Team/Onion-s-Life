@@ -2089,6 +2089,11 @@ const levelConf = {
       offscreen({ hide: true }),
       anchor("bot"),
       "achievement",
+      {
+        achName: "E",
+        achDesc: "You found the Epic Trophy!",
+        achSprite: "achievement",
+      },
     ],
   },
   
@@ -2109,5 +2114,8 @@ function patrol(speed = 60, dir = 1) {
 		},
 	}
 }
+
+
+
 
 export { LEVELS, levelConf }
