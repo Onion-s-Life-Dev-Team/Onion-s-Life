@@ -867,6 +867,9 @@ let hasFoundCoin = false;
           setGravity(200)
           onion.move(0, 300)
         }
+        if (!isOnionInWater(onion, waterAreas) && onion.isFalling()) {
+          setGravity(1300)
+        }
       })
       
 
