@@ -1,0 +1,254 @@
+
+<script type="module">
+    // import kaboom.js
+    import kaplay from "https://unpkg.com/kaplay@3001.0.0-alpha.14/dist/kaboom.mjs";
+    // initialize context
+    kaplay({
+    background:[175,182,185]
+    })
+
+    setGravity(1300)
+
+    // load assets
+    loadSprite("bag", "assets/sprites/bag.png")
+    loadSprite("snow", "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAMAAACdt4HsAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAACcUExURQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA4PEBAQEB0eICAgICstMDAwMDk8QEBAQFBQUFZaYGBgYGVpb2VpcHN4f39/f4CAgIGHkJCQkJCWn5CWoJ6lr5+fn6CgoKy0v6+vr7rDz7rD0LvDz7+/v8nS38/Pz9/f3+bw/+/v7////21ZYOcAAAAQdFJOUwAQIGBvcH+An6Cwv8/Q3+/wy2kYAAABsUlEQVRYw+2XXW+bQBBFB1xKWlw42BsgpnVrkzhOGtYs/P//1gcwH1WihJWqvnCf0DL3zAXtSjsiIiLirG5C5igKPFcGfYqw0Oer3Q2w09pp/SG2WouIyDeAzc+ybmaoOikAX0RWANksd4tIgMgRCYGssVCtAF9WgKpsAM0RCOQrkFv5mwqIZA2UdoAGQACa/w742D+sL6fT02W80AMeP2Avsw0AKu/blT3g/W1QZaMN/KtbVD2A4yTqKU+UUsndse9VqckRSKqB2QJGhHLcK3kc+7e7XRq3L7L8WtYBaL+sPmV/nTeVX+pSAaRnY4wxxXZaIP1Tlud3m7dP7t500rs3AIPS/YPW+nxIR2vfzaAuxO19D9DjWF3Uttn2Fb8xRj8UhTamBxhT3LaF8V5PS4s0ZvvjbF7VCGCMPhdF8WxmaQKw0QJYAAtgASyABbAA/gUgBLSd/wWIJAAOdoACCMQHUjvAFvDEwTbCAcAVCYD4Zb7/dwzciIgbAfHsDIcYiFwREa+9x97PSKG7O6TXTq6+7dzpX2dfz2p0jrxh+Ha/zPcH4+ldxPWCGTHCwHc64x9yZWyGAWQsqwAAAABJRU5ErkJggg==")
+    loadSprite("coin","assets/sprites/coin.png")
+
+    loadSprite("portal", "assets/sprites/portal.png")
+
+    loadSprite("spike", "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAAAVCAYAAAD2KuiaAAAAAXNSR0IArs4c6QAAASxJREFUWIXtlr0RgzAMheVMwAb07JciE6RgP3o2YANSKecY/cuXO0JelfPFn56fsKCAUeMw7fh73ZZi3fctXlSmwrVZVMZ0b15GalHKLMprWmJFeBzTw7l5C2rFe/zXyuOYnlpiUlaQlrjHkKV7vXwBCE8AVeR5v1vqqhxkUTzpcFLXPbVrua+AxzQXYs2w8qTDcGFq+wCYACLdb/d4GFIIWte1MDkvqMMdsRp/zDMJXLelRALkeJwkHsXi5sHHote41bR1dlh4GRYVwnshOvQ0097BKfF6sNoQUt8BALKpyFuD4/RitY0u1CIW9ahNO2O4ZmUPLs0qACaAaFEs1qtbvSRdhdDEPqO4ENIz4Mwah2k/BPCL3Qfgz0VegSvp0lcA4B8A/x1wBa3bUl6DELTjnD/LxgAAAABJRU5ErkJggg==")
+
+    loadSprite("jumpy", "assets")
+
+    loadSprite("ghosty", "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADQAAAA8CAYAAAApK5mGAAAAAXNSR0IArs4c6QAAAgRJREFUaIHtmktywyAMhmWPD5CcIFnHM7lbTtK7dSZexyeIb5BuSsfFgB4grKb8q9Yg0IfEwzgdCHU6XF5SW6rmZeq4NmyDGiC+OGDkinuA+KKAoRUsgKyFQSULKTAfn3euT6hu1zFZnoKKFqRgNCBCSoHFoIIPYzC1QHzFwEJQmwfWYNYKgflQv/6xDOOEQfXuj78AQ1GfKrQIE/JpHYzBf5AydEqtPpJBKNleB0ADwvYGiSOcNjF/3DwKplwuDGZzu47sNrH6LijJOZSrkBOSweHYokA5DpSwjymW0j338Pl4xudGqqxWe6oph0niMKYNELY6nY9j0JHH8w7nIy+9uPUpEkUo5EjMuZoDBEAAyjktUG05A4SJFCEJVMxG+zhFTjmOI1hdKRRmdzpcXp2/bNc8kFL3KM65csjyKFMag7frPqShBmRdDci6GpB1NSDrakDW1YCsS3zaLn0dXEoiIOw9xpVjYJT3Ie7gsFOOc3GIXQeX7g+ACaR1C1qy3+w3Vv+T4N4/AyADUb5vlmxLOjBvt2yLgaTR0W6rRci6/ieQ9mfEkqoeIW3AzT7kn8O4+8+8TJv78ppRGkIO1HSi5JINIEg5igNUJ0vDAHwDaTiA1eXCUDPmZw6tOwiloGQ0NSKwVghStcNcSQ6ob7WxzsvUmY4QAD1KLr3NAwHgUOu5+gU1E/8vo/BmaAAAAABJRU5ErkJggg==")
+
+    loadSprite("grass", "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAAAXNSR0IArs4c6QAAAdlJREFUeJztmy1yQjEURvM6XUAFmgpcPQ6LYifsoCtgB+wEVYurx1VQXcEOWnWZEEKa3CTvuy+5Rz3aSbjfmfwy8wZj8fry9ms64Hw5DfR8feglPEESBmP6C0+cL6dh6DU88ez+YbXfIOoYjeP2cPP5CVSHGFQAugA0KgBdABoVgC4Azd05QBLunh2Ce34RKSAluK9NigxRU+C4PbDC+/qJxXsXGPs4XCJ0CDuP+13By1BtEbHBd+tl8P/vH59R/az2mzQB1Kg0McH/C+0jVoRN0nU4V0at4C4pIti/B6TIGCu4S4yIOwG79ZI1lLjUCO4SyuMVENOwBGOEd3EzBQ9CVGBpEYjgj4g6CboFc4RICm3DOgqjwizmM2OMMV/fP8X6FHUUDkHh3edcJiOgFpMRYA/7klNA5HX4ESWDE5MZAbVQAdyGi/ms6GqMgiWg1paEQKcAp1GtLQkBexucenBCpwC6ADQqAF0AGhWALgCNCkAXgL5TQAVIuFPARwAaqAAJdwr4T2LoO0WzUyB2cW1SQMri2qSAFJoUkLK4whfBWsQurk2OgBRUQIlO0Of5HLIFSDjP56BTILcDCef5HIpsg1MMTnT/4qS+OksfepNw8/I00YsE+/X5P+6znC4h3qbLAAAAAElFTkSuQmCC")
+    // add a character to screen
+
+    const LEVELS = [
+        [
+    '=                                          =               ^^                ',
+    '=                                    $   l =               ^^                ',
+    '=                                    l     =          ^^^^^^^               ',
+    '=                                          ====       ==                ^    ',
+    '=                               l$                 =                      ',
+    '=                               =        ^^^^^^^^^         =                  ',
+    '=                         l          G$                =   =        ',
+    '=                         =^  ^^     ==  G                ==          G        ',
+    '=                   Gl $                                  ==$         = l   l$ ',
+    '=              $     ==  ^                ==   $      G=  = =              ++=',
+    '=     $   G   l                                      l==ll=        l      $    ',
+    '=     ^      = ^^^   ^^^^^^^^^^^^^^^^^^^^^^^      ^  =     ^     O+^^^^   +    ',
+    '=====================================================================.        ',
+    '                                                                     ',
+    '                                                                     ',
+    '                                                                     ',
+    '                                                                     ',
+    '                                                                     ',
+    '                                                                     ',
+    '^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^'
+    ],
+        [
+        "=^^^^^^^^^^^^^^^^^^^^^^^^^^=",
+        "=                          =",
+        "=                          =",
+        "=         $                =",
+        "=                          =",
+        "=                          =",
+        "=                          =",
+        "=                          =",
+        "=         l                =",
+            "=    $    $    $    $     $=",
+            "=    $    $    $    $      =",
+            "=                         =",
+            "=         l               =",
+            "= ====           l        =",
+            "=                         =",
+            "=       =        =        =",
+            "=^^^^^^^^^^^^^^^^^^^^l   O=",
+            "===========================",
+        "                           ",
+        "                           ",
+        "                           ",
+        "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+        ],
+    ]
+    const levelConf = {
+    tileWidth: 64,
+    tileHeight: 64,
+        tiles: {
+    "=": () => [
+            sprite("snow"),
+            area(),
+            body({isStatic:true}),
+            anchor("bot"),
+        ],
+        "$": () => [
+            sprite("coin"),
+            area(),
+            anchor("bot"),
+            "coin",
+        ],
+        "^": () => [
+            sprite("spike"),
+            area(),
+            body({isStatic:true}),
+            anchor("bot"),
+        
+            "danger",
+        ],"O": () => [
+            sprite("portal"),
+            area({ scale: 0.5, }),
+            pos(0, -12),
+            anchor("bot"),
+        "portal",
+        ],
+        "l": () => [
+            sprite("jumpy"),
+            area(),
+            anchor("bot"),
+            "jumpy",
+        ],
+        "+": () => [
+            sprite("grass"),
+            area(),
+            anchor("bot"),
+            body({isStatic:true}),
+        ],
+        "G": () => [
+            sprite("ghosty"),
+            area(),
+            anchor("bot"),
+            "enemy",
+            "danger",
+        ],
+        }
+    }
+    scene("game", ({ levelId, coins } = { levelId: 0, coins: 0 }) => {
+    const level = addLevel(LEVELS[levelId ?? 0], levelConf)
+    const bag = add([
+        // list of components
+        sprite("bag"),
+        pos(120, 40),
+        area(),
+    body(),
+    ])
+    //Movement
+    onKeyDown('left', () => {
+        bag.move(-400,0)
+    })
+    onKeyDown('right', () => {
+        bag.move( 400,0)
+    })
+    onKeyDown('up', () => {
+    if (bag.isGrounded()) {
+
+    bag.jump()
+    
+    }
+    
+    });
+    onKeyPress("f", (c) => {
+        fullscreen(!isFullscreen())
+    })
+    onKeyDown('space', () => {
+    if (bag.isGrounded()) {
+
+    bag.jump()
+    
+    }
+    
+    })
+
+    //onKeyDown('q', () => {
+    //bag.jump()
+    //})
+
+            
+            
+
+
+    //scrolling
+    // camera follows player
+    bag.onUpdate(() => {
+        camPos(bag.pos)
+    })
+
+    //spike code
+    bag.onCollide("danger", (danger) => {
+        destroy(bag)
+        shake();
+        add([
+        text("You lose"),
+        pos(bag.pos),
+        color(255, 0, 0),
+
+        
+        ])
+    })
+    const score = add([
+        text("Score: 0"),
+        pos(80,40),
+        { value: 0 },
+        fixed(),
+    ])
+
+    bag.onCollide("coin", (coin) => {
+        score.value += 1
+        score.text = "Score:" + score.value
+        destroy(coin)
+
+    })
+    //define layers
+
+
+
+
+
+    //jumpy code
+    bag.onCollide("jumpy", () => {
+        
+
+    bag.jump(1200)
+
+
+    
+    })
+
+
+    bag.onCollide("portal", () => {
+            if (levelId + 1 < LEVELS.length) {
+                go("game", {
+                    levelId: levelId + 1,
+                    coins: coins,
+                })
+            } else {
+                destroy(bag),
+            add([
+            text("Good Job!"),
+            color(0,255,0),
+            pos(bag.pos),
+            
+
+            
+            ])
+            }
+        })
+    onClick("enemy", (enemy) => destroy(enemy))
+
+    // add a shake on mouse click
+    onClick(() => shake())
+
+    onKeyDown("r", () => {
+        go("game", {
+        levelId: levelId,
+        });
+    });
+    });
+
+
+
+
+
+    go("game");
+</script>
