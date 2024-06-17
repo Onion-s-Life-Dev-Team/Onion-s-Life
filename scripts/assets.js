@@ -70,6 +70,7 @@ export default function loadAssets() {
   loadSprite("water", "assets/sprites/water.png")
   loadSprite("sand", "assets/sprites/sand.png")
   loadSprite("ghostiny","assets/sprites/ghostiny.png")
+  loadSprite("bag", "assets/sprites/bag.png")
   
   loadFont('apl386', 'assets/apl386.woff2', { outline: 4, filter: 'linear'})
 

@@ -3,6 +3,7 @@
     // import kaplay.js
     import kaplay from "https://unpkg.com/kaplay@3001.0.0-alpha.14/dist/kaboom.mjs";
     import { loadAssets } from "./scripts/bagsLife/assets.js";
+    import { handleAchievementCollision, checkAchievements, hasAchievement } from "./scripts/achievement.js";
     import { LEVELS, levelConf } from "./scripts/bagsLife/levels.js";
 
     
@@ -13,9 +14,15 @@
     })
 
     // load assets
-    loadAssets();
+    loadAssets()
 
     setGravity(1300)
+
+    // check if the user has the bags life achievement
+    // if not, give it to them cause they're cool
+    if (!hasAchievement("bagsLife")) {
+        handleAchievementCollision(0,0,0,"Bag's Life Found!", "You found Bag's Life! You're cool.", "bag")
+    }
 
     scene("game", ({ levelId, coins } = { levelId: 0, coins: 0 }) => {
     const level = addLevel(LEVELS[levelId ?? 0], levelConf)
