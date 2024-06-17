@@ -163,6 +163,11 @@
       const channel = supabase.removeChannel(channel);
     }
 
+    //function remove cookie
+    function removeCookie(name) {
+      document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+    }
+
     //handle death event
     function receivedDeathMessage({ event, payload }) {
       const { userId } = payload
@@ -456,7 +461,9 @@
       setGravity(1300)
       var storedName = getCookie("name");
       if (storedName) {
-        userID = storedName;
+        alert("Why did you make an offensive name? I'm changing it to a random name.")
+        removeCookie("name");
+        userID = randomNameGenerator();
       }
 
       if (first) {
@@ -1555,7 +1562,9 @@ let hasFoundCoin = false;
         
         const nameSoFar = getCookie("name");
         if (nameSoFar) {
-          return nameSoFar;
+          alert("Why did you use an offensive name? Tough, cause you're gonna get a random name.")
+          removeCookie("name");
+          return randomNameGenerator();
         } else {
           return "Type to change your name!";
         }
