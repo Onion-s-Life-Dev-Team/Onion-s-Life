@@ -1876,6 +1876,42 @@
 '  $    }      =^^^^=^^^=^^^^^^^^^=^^^^^^^^^^^^^=llllll=   =     ',
 '=======================================================???======',
 		 ],
+     [
+'=                                     D                         ',
+'=                                     D                         ',
+'=                                     D                         ',
+'=                                     D                         ',
+'=                                     D                         ',
+'=              !                      D                         ',
+'=                                     D                         ',
+'=                                     D    }                    ',
+'=      }                G             D>>>>>>>>>>               ',
+'sssslssssswwwwwwwwwwwwsss^^sssswwwwwwws                         ',
+'         swwwww$wwwwwws       swwwwwwws                         ',
+'         swwwwwwww$wwws       swwwwwwws    {                    ',
+'         swww$wwwwwwwws       sw$wwwwws  <<<<<<<<<<<<<<         ',
+'         swwwwwwwwwwwws       swwwwwwws                         ',
+'         swwwww$wwww$ws       swwwwwwws                         ',
+'         sww$wwww$wwwws       swwwwkwws    }                    ',
+'         swwwwwwwwwwwws       swwwwwwws>>>>>>>>>>>              ',
+'======   ssssssssssssssvvvvvv sssssssss                         ',
+'     =                                                          ',
+'     =                                     {                    ',
+'     =                       {        <<<<<<<<<<<<<<<<<         ',
+'     =                 ^^   ^swwwwwwws                          ',
+'     =                       sw$www$ws                          ',
+'     =                       swwwwwwws                          ',
+'     =                       swwwwwwws                          ',
+'     =                       swwwwwwws                          ',
+'     =                       sssssssss                          ',
+'     =                                                          ',
+'     =             $ {                                          ',
+'     sssssswwwwsss====   lll                                    ',
+'          swwwws                                                ',
+'          swwwws                                                ',
+'          swwOws                                                ',
+'          ssssss                                                ',
+]
 
 
 
@@ -2149,6 +2185,25 @@ const levelConf = {
         achSprite: "onion-invert",
       },
     ],
+    "s": () => [
+      sprite("sand"),
+      area(),
+      body({ isStatic: true }),
+      scale(1),
+      offscreen({ hide: true }),
+      anchor("bot"),
+      "sand"
+
+    ],
+    "w": () => [
+      sprite("water"),
+      area(),
+      scale(1),
+      offscreen({ hide: true }),
+      anchor("bot"),
+      "water"
+
+    ]
   },
   
 }

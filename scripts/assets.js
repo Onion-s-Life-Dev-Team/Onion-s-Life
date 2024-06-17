@@ -67,7 +67,8 @@ export default function loadAssets() {
   loadSprite("onion-pumpkin","assets/sprites/pumpkin-onion.png")
   loadSprite("onion-invert","assets/sprites/onionInvert.png")
   loadSprite("onion-secret","assets/sprites/onion-secret.png")
-  
+  loadSprite("water", "assets/sprites/water.png")
+  loadSprite("sand", "assets/sprites/sand.png")
   loadSprite("ghostiny","assets/sprites/ghostiny.png")
   
   loadFont('apl386', 'assets/apl386.woff2', { outline: 4, filter: 'linear'})

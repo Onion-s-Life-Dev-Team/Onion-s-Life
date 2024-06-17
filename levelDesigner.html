@@ -62,6 +62,8 @@
             <button data-tile="Q">Invisible Danger (Q)</button>
             <button data-tile="G">Ghost (G)</button>
             <button data-tile="!">Down Arrow (!)</button>
+            <button data-tile="s">Sand (s)</button>
+            <button data-tile="w">Water (w)</button>
             <!-- Add more buttons for additional tile types -->
         </div>
         <button id="resetLevel">Reset Level</button>
@@ -135,13 +137,21 @@
                     selectedTile = 'i';
                     break;
                 case 'KeyS': // 'S' key
-                    selectedTile = 'S';
+                    //ask if the user wants sand or invis spike
+                    if(confirm("Would you like to place sand? If not, invis spike will be placed.")){
+                        selectedTile = 's';
+                    } else {
+                        selectedTile = 'S';
+                    }
                     break;
                 case 'KeyQ': // 'Q' key
                     selectedTile = 'Q';
                     break;
                 case 'KeyG': // 'G' key
                     selectedTile = 'G';
+                    break;
+                case 'KeyW': // 'W' key
+                    selectedTile = 'w';
                     break;
                 case 'Digit1': // '1' key
                     selectedTile = '!';
@@ -178,6 +188,8 @@
                 case '!': return 'assets/sprites/darrow.png';
                 case 'v': return 'assets/sprites/dspike.png';
                 case '?': return 'assets/sprites/fake.png'; // Add paths for each tile type
+                case 's': return 'assets/sprites/sand.png';
+                case 'w': return 'assets/sprites/water.png';
                 default: return ''; // Default image for unknown types
             }
         }
