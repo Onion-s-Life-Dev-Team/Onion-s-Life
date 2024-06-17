@@ -1902,7 +1902,7 @@
 '     =                       sw$www$ws                          ',
 '     =                       swwwwwwws                          ',
 '     =                       swwwwwwws                          ',
-'     =                       swwwwwwws                          ',
+'     =                       swwwWwwws                          ',
 '     =                       sssssssss                          ',
 '     =                                                          ',
 '     =             $ {                                          ',
@@ -2183,6 +2183,18 @@ const levelConf = {
         achName: "?",
         achDesc: "...",
         achSprite: "onion-invert",
+      },
+    ],
+  "W": () => [
+      sprite("achievement"),
+      area(),
+      offscreen({ hide: true }),
+      anchor("bot"),
+      "achievement",
+      {
+        achName: "Explored the Depths",
+        achDesc: "You went deep under the sea in Onion's Life!",
+        achSprite: "water",
       },
     ],
     "s": () => [
