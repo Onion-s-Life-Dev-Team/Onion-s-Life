@@ -984,7 +984,7 @@ let hasFoundCoin = false;
         score.value += 1
         score.text = "Score:" + score.value
         destroy(coin)
-    if (!hasFoundCoin) {
+    if (!hasFoundCoin && !hasAchievement("Found the first coin")) {
         handleAchievementCollision(
             onion.pos.x,
             onion.pos.y,
