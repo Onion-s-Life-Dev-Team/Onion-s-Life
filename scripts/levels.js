@@ -1884,7 +1884,7 @@
 '=                                     D                         ',
 '=              !                      D                         ',
 '=                                     D                         ',
-'=                                     D    }                    ',
+'=         bbbbbbbbbbbb         bbbbbbbD    }                    ',
 '=      }                G             D>>>>>>>>>>               ',
 'sssslssssswwwwwwwwwwwwsss^^sssswwwwwwws                         ',
 '=        swwwww$wwwwwws       swwwwwwws                         ',
@@ -1896,7 +1896,7 @@
 '=        swwwwwwwwwwwws       swwwwwwws>>>>>>>>>>>              ',
 '======   ssssssssssssssvvvvvv sssssssss                         ',
 '     =                                                          ',
-'     =                                     {                    ',
+'     =                        bbbbbbb      {                    ',
 '     =                       {        <<<<<<<<<<<<<<<<<         ',
 '     =                 ^^   ^swwwwwwws                          ',
 '     =                       sw$www$ws                          ',
@@ -1904,7 +1904,7 @@
 '     =                       swwwwwwws                          ',
 '     =                       swwwuwwws                          ',
 '     =                       sssssssss                          ',
-'     =                                                          ',
+'     =     bbbb                                                 ',
 '     =             $ {                                          ',
 '     sssssswwwwsss====   lll                                    ',
 '          swwwws                                                ',
@@ -2215,7 +2215,14 @@ const levelConf = {
       anchor("bot"),
       "water"
 
-    ]
+    ],
+    "b": () => [
+      sprite("invisdanger"),
+      area(),
+      offscreen({ hide: true }),
+      anchor("bot"),
+      "gravityreset"
+    ],
   },
   
 }

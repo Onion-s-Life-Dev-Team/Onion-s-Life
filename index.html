@@ -870,6 +870,11 @@ let hasFoundCoin = false;
         })
       }
 
+      onion.onCollide("gravityreset", (gravityreset) => {
+        setGravity(1300)
+      })
+      
+
       onUpdate(() => {
         if (isOnionInWater(onion, waterAreas)) {
           setGravity(200)
