@@ -819,6 +819,12 @@ let hasFoundCoin = false;
         canDoubleJump = true
         setGravity(1300)
       })
+      onion.onCollide("door", (ground) => {
+        setGravity(1300)
+      })
+      onion.onCollide("enemy", (ground) => {
+        setGravity(1300)
+      })
       onion.onCollide("water", (ground) => {
         canDoubleJump = true
       })
@@ -827,9 +833,11 @@ let hasFoundCoin = false;
       })
       onion.onCollide("left", (ground) => {
         canDoubleJump = true
+        setGravity(1300)
       })
       onion.onCollide("right", (ground) => {
         canDoubleJump = true
+        setGravity(1300)
       })
       onion.onCollide("block", (ground) => {
         canDoubleJump = true
