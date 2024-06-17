@@ -354,6 +354,7 @@
 
     import { LEVELS, levelConf } from './scripts/levels.js';
     import optimizeLevel from "./scripts/levelOptimizer.js";
+    import fixWater from "./scripts/waterFixer.js";
     //var scale = 1;
     //if (canvasWidth < 800){
     //scale = .5;
@@ -512,7 +513,7 @@
           setHighLevel(levelId)
         } else {
           //load the level
-          addLevel(optimizeLevel(LEVELS[levelId ?? 0]), levelConf);
+          addLevel(optimizeLevel(fixWater(LEVELS[levelId ?? 0])), levelConf);
         }
       } catch(error ) {
         console.error('Error in loading custom level:', error);
