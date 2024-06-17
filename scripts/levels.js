@@ -1902,7 +1902,7 @@
 '     =                       sw$www$ws                          ',
 '     =                       swwwwwwws                          ',
 '     =                       swwwwwwws                          ',
-'     =                       swwwWwwws                          ',
+'     =                       swwwuwwws                          ',
 '     =                       sssssssss                          ',
 '     =                                                          ',
 '     =             $ {                                          ',
@@ -2185,7 +2185,7 @@ const levelConf = {
         achSprite: "onion-invert",
       },
     ],
-  "W": () => [
+  "u": () => [
       sprite("achievement"),
       area(),
       offscreen({ hide: true }),
