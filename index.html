@@ -890,18 +890,13 @@ let hasFoundCoin = false;
             color(255, 0, 0),
           ])
           // Can someone figure out how to get the pos of this correct
-          /*
-          const respawn = add([
-            sprite("keyboardR"),
+          
+          add([
+            text("Press 'R' to restart", { size: 30 }),
+            fixed(),
             pos(onion.pos),
             anchor("center"),
-            fixed(),
           ])
-          respawn.add([
-            text("Respawn"),
-            fixed(),
-            pos(75, 13),
-          ])*/
         }
         setHighLevel(levelId);
         sendDeathMessage(channel, userID);
