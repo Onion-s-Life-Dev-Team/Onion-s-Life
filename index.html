@@ -463,6 +463,7 @@
       if (storedName) {
         alert("Why did you make an offensive name? I'm changing it to a random name.")
         removeCookie("name");
+        //return storedName to use the custom name
         userID = randomNameGenerator();
       }
 
@@ -1564,6 +1565,7 @@ let hasFoundCoin = false;
         if (nameSoFar) {
           alert("Why did you use an offensive name? Tough, cause you're gonna get a random name.")
           removeCookie("name");
+          //return nameSoFar to use custom name
           return randomNameGenerator();
         } else {
           return "Type to change your name!";
