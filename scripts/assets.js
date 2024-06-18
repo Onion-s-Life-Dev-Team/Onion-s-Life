@@ -54,9 +54,7 @@ export default function loadAssets() {
   loadSound("jump", "assets/sounds/hit.mp3")
   loadSound("jumpy", "assets/sounds/spring.mp3")
   loadSound("win", "assets/sounds/error.mp3")
-  //import new onion's
-  //not sure we need this code, as they aren't for bag.
-/*  loadSprite("onion-red", "assets/sprites/onion-watermelon.png")
+  loadSprite("onion-red", "assets/sprites/onion-watermelon.png")
   loadSprite("onion-beach","assets/sprites/onion-beach.png")
   loadSprite("onion-watermelon", "assets/sprites/onion-watermelon2.png")
   loadSprite("onion-blue","assets/sprites/onion-blue.png")
@@ -68,7 +66,7 @@ export default function loadAssets() {
   loadSprite("onion-pumpkin","assets/sprites/pumpkin-onion.png")
   loadSprite("onion-invert","assets/sprites/onionInvert.png")
   loadSprite("onion-secret","assets/sprites/onion-secret.png")
-  */
+  
   loadSprite("water", "assets/sprites/water.png")
   loadSprite("sand", "assets/sprites/sand.png")
   loadSprite("ghostiny","assets/sprites/ghostiny.png")
