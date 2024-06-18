@@ -7,8 +7,6 @@ export function loadAssets(){
     loadSprite("portal", "assets/sprites/portal1.png")
 
     loadSprite("spike", "assets/sprites/spike.png")
-
-	@@ -13,4 +13,4 @@ export function loadAssets(){
     loadSprite("ghosty", "assets/sprites/ghosty.png")
 
     loadSprite("grass", "assets/sprites/grass.png")
