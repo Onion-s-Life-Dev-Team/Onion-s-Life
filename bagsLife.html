@@ -13,11 +13,16 @@
     <button onclick="validatePassword()">Submit</button>
     <p id="errorMessage" style="color: red; display: none;">Invalid Password</p>
     <p>Pardon Our Dust! Secret things are being worked on here.</p>
-     <img> src="/assets/sprites/bag.png" alt="Bag"</img>
+     <img src="/assets/sprites/bag.png" alt="Bag"></img>
   </div>
   <canvas class="kaboomCanvas"></canvas>
 
   <script>
+    // Check if the current protocol is HTTP
+    if (location.protocol === 'http:') {
+        // Redirect to the same URL with HTTPS
+        location.href = 'https://' + location.hostname + location.pathname + location.search;
+    }
     async function validatePasswordIfSaved(){
         const savedPassword = getCookie('password');
         if (savedPassword) {
