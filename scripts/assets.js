@@ -5,7 +5,7 @@ export default function loadAssets() {
   loadSprite("bigonion", "assets/sprites/bigonion.png")
   loadSprite("grass", "assets/sprites/grass.png")
   loadSprite("coin", "assets/sprites/coin.png")
-  loadSprite("portal", "assets/sprites/portal1.png")
+  loadSprite("portal", "assets/sprites/portal.png")
   loadSprite("spike", "assets/sprites/spike.png")
   loadSprite("spike3", "assets/sprites/spike3.png")
   loadSprite("spike9", "assets/sprites/spike9.png")
