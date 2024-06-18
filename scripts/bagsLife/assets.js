@@ -7,6 +7,9 @@ export function loadAssets(){
     loadSprite("portal", "assets/sprites/portal1.png")
 
     loadSprite("spike", "assets/sprites/spike.png")
+
+    loadSprite("jumpy", "assets/sprites/jumpy.png")
+
     loadSprite("ghosty", "assets/sprites/ghosty.png")
 
     loadSprite("grass", "assets/sprites/grass.png")
