@@ -57,3 +57,4 @@ Achievements are there own sprites. To add, do the following:
 ```
 3. Add the sprite to a level (not supported yet in level designer)
 4. Make a PR with your level's achievement
+5. We might accept your achievement into the game!
