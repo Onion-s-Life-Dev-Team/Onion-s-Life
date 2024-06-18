@@ -1,0 +1,237 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Onion's Life-Hacker Campaign</title>
+</head>
+<body>
+  <div id="passwordPrompt">
+    <h2>Enter Password</h2>
+    <input type="password" id="passwordInput" placeholder="Password">
+    <button onclick="validatePassword()">Submit</button>
+    <p id="errorMessage" style="color: red; display: none;">Invalid Password</p>
+    <p>Pardon Our Dust! Secret things are being worked on here.</p>
+     <img src="/assets/sprites/gigagantrum.png" alt="Hacker"></img>
+  </div>
+  <canvas class="kaboomCanvas"></canvas>
+
+  <script>
+    // Check if the current protocol is HTTP
+    if (location.protocol === 'http:') {
+        // Redirect to the same URL with HTTPS
+        location.href = 'https://' + location.hostname + location.pathname + location.search;
+    }
+    async function validatePasswordIfSaved(){
+        const savedPassword = getCookie('password');
+        if (savedPassword) {
+            const response = await fetch('https://ol-password-protect.vercel.app/api/validate-password', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ password: savedPassword })
+            });
+            const data = await response.json();
+            if (data.success) {
+            document.getElementById('passwordPrompt').style.display = 'none';
+            document.querySelector('.kaboomCanvas').style.display = 'block';
+            }
+        }
+    }
+    validatePasswordIfSaved();
+
+    async function validatePassword() {
+      const password = document.getElementById('passwordInput').value;
+      const response = await fetch('https://ol-password-protect.vercel.app/api/validate-password', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ password })
+      });
+      const data = await response.json();
+      if (data.success) {
+        document.getElementById('passwordPrompt').style.display = 'none';
+        document.querySelector('.kaboomCanvas').style.display = 'block';
+        setCookie('password', password)
+      } else {
+        document.getElementById('errorMessage').style.display = 'block';
+      }
+    }
+    // write a function that stores a value to a cookie
+    //the cookie should last forever
+    function setCookie(name, value) {
+        document.cookie = `${name}=${value}; expires=Fri, 31 Dec 9999 23:59:59 GMT`;
+    }
+    // write a function that gets a value from a cookie
+    function getCookie(name) {
+        const value = `; ${document.cookie}`;
+        const parts = value.split(`; ${name}=`);
+        if (parts.length === 2) return parts.pop().split(';').shift();
+    }
+    
+  </script>
+</body>
+</html>
+
+
+<script type="module">
+    // import kaplay.js
+    import kaplay from "https://unpkg.com/kaplay@3001.0.0-alpha.14/dist/kaboom.mjs";
+    import { loadAssets } from "./assets.js";
+    import { handleAchievementCollision, checkAchievements, hasAchievement } from "./scripts/achievement.js";
+    import { LEVELS, levelConf } from "./levels.js";
+
+    
+    
+    // initialize context
+    kaplay({
+        background:[175,182,185],
+        canvas: document.querySelector(".kaboomCanvas"),
+        font: "apl386",
+    })
+
+    // load assets
+    loadAssets()
+
+    setGravity(1300)
+
+    //hide the main canvas
+    document.querySelector('.kaboomCanvas').style.display = 'none';
+
+    // check if the user has the bags life achievement
+    // if not, give it to them cause they're cool
+    if (!hasAchievement("bagsLife")) {
+        handleAchievementCollision(0,0,0,"Bag's Life Found!", "You found Bag's Life! You're cool.", "bag")
+    }
+
+    scene("game", ({ levelId, coins } = { levelId: 0, coins: 0 }) => {
+    const level = addLevel(LEVELS[levelId ?? 0], levelConf)
+    const bag = add([
+        // list of components
+        sprite("bag"),
+        pos(120, 40),
+        area(),
+    body(),
+    ])
+    //Movement
+    onKeyDown('left', () => {
+        bag.move(-400,0)
+    })
+    onKeyDown('right', () => {
+        bag.move( 400,0)
+    })
+    onKeyDown('up', () => {
+    if (bag.isGrounded()) {
+
+    bag.jump()
+    
+    }
+    
+    });
+    onKeyPress("f", (c) => {
+        fullscreen(!isFullscreen())
+    })
+    onKeyDown('space', () => {
+    if (bag.isGrounded()) {
+
+    bag.jump()
+    
+    }
+    
+    })
+
+    //onKeyDown('q', () => {
+    //bag.jump()
+    //})
+
+            
+            
+
+
+    //scrolling
+    // camera follows player
+    bag.onUpdate(() => {
+        camPos(bag.pos)
+    })
+
+    //spike code
+    bag.onCollide("danger", (danger) => {
+        destroy(bag)
+        shake();
+        add([
+        text("You lose"),
+        pos(bag.pos),
+        color(255, 0, 0),
+
+        
+        ])
+    })
+    const score = add([
+        text("Score: 0"),
+        pos(80,40),
+        { value: 0 },
+        fixed(),
+    ])
+
+    bag.onCollide("coin", (coin) => {
+        score.value += 1
+        score.text = "Score:" + score.value
+        destroy(coin)
+
+    })
+    //define layers
+
+
+
+
+
+    //jumpy code
+    bag.onCollide("jumpy", () => {
+        
+
+    bag.jump(1200)
+
+
+    
+    })
+
+
+    bag.onCollide("portal", () => {
+            if (levelId + 1 < LEVELS.length) {
+                go("game", {
+                    levelId: levelId + 1,
+                    coins: coins,
+                })
+            } else {
+                destroy(bag),
+            add([
+            text("Good Job!"),
+            color(0,255,0),
+            pos(bag.pos),
+            
+
+            
+            ])
+            }
+        })
+    onClick("enemy", (enemy) => destroy(enemy))
+
+    // add a shake on mouse click
+    onClick(() => shake())
+
+    onKeyDown("r", () => {
+        go("game", {
+        levelId: levelId,
+        });
+    });
+    });
+
+
+
+
+
+    go("game");
+</script>

@@ -1129,6 +1129,22 @@ let hasFoundCoin = false;
 
     });
 
+function button(){
+  return {
+  id: "button",
+  require: ["scale", "area"],
+  add() {
+    onHover: () => {
+      this.scale = 0.70;
+    },
+    onHoverEnd: () => {
+      this.scale = 1;
+    }
+  }
+  }
+}
+
+
     scene("title", () => {
       if (parseInt(getHighLevel()) > 0) {
         highestId = parseInt(getHighLevel());
