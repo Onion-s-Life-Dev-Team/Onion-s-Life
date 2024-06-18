@@ -1,4 +1,4 @@
-export default function loadAssets() {
+export default function loadBagAssets() {
   loadSprite("onion", "assets/sprites/onion.png")
   loadSprite("grass5", "assets/sprites/grass5.png")
   loadSprite("grass25", "assets/sprites/grass25.png")
