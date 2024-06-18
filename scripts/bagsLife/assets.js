@@ -4,7 +4,7 @@ export function loadAssets(){
     loadSprite("snow", "assets/sprites/snow.png")
     loadSprite("coin","assets/sprites/coin.png")
 
-    loadSprite("portal", "assets/sprites/portal.png")
+    loadSprite("portal", "assets/sprites/portal1.png")
 
     loadSprite("spike", "assets/sprites/spike.png")
 
