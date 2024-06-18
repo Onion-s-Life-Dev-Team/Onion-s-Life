@@ -946,7 +946,7 @@ let hasFoundCoin = false;
           shownYouLose = true
           add([
             text("You Lose", { size: 48 }),
-            pos(onion.pos),
+            pos(pos(width()/2, height()/2 - 15),),
             anchor("center"),
             color(255, 0, 0),
           ])
@@ -955,7 +955,7 @@ let hasFoundCoin = false;
           add([
             text("Press 'R' to restart", { size: 30 }),
             fixed(),
-            pos(onion.pos, onion.pos-30),
+            pos(width()/2, height()/2 + 15),
             anchor("center"),
           ])
         }
