@@ -104,7 +104,7 @@
     var onions = [
       "onion", "onion-beach", "onion-blue", "onion-dark", "onion-gold",
       "onion-watermelon","onion-eggplant", "onion-magic","onion-pumpkin","onion-invert",
-      "onion-secret"
+      "onion-ocean","onion-secret"
     ];
     const channel = supabase.channel('player_locations', {
       config: {
@@ -1671,7 +1671,36 @@ function button() {
             anchor("center"),
           ])
         }
-      } else {
+      } else if(onions[onionId] === "onion-secret"){
+        for (let achievement of checkAchievements()) {
+          if(achievement.name === "Explored the Depths"){
+            unlocked = true;
+            const onionSelect = add([
+              // list of components
+              sprite(onions[onionId]),
+              "btn",
+              pos(width() / 2 - 38, height() / 2 - 50),
+              area(),
+
+            ])
+          } //add other achievement-locked skins as an "else" statement here
+        }
+        if(!unlocked){
+          const onionSelect = add([
+            // list of components
+            sprite("skinsBtn"),
+            "btn",
+            pos(width() / 2, height()/2),
+            area(),
+            anchor("center"),
+          ])
+          add([
+            text("An achievement is required...", { size: 40 } ),
+            pos(width() / 2, height() * 0.7),
+            anchor("center"),
+          ])
+        }
+      }else {
         unlocked = true;
         const onionSelect = add([
           // list of components
