@@ -119,6 +119,8 @@
     var speedCap = 400; // raising this raises the max speed
     var canDoubleJump = false;
 
+    var pumpkinBought = false;
+
     function subscribeToChannel() {
       // Subscribe to mouse events.
       // Our second parameter filters only for mouse events.
@@ -1700,7 +1702,39 @@ function button() {
             anchor("center"),
           ])
         }
-      }else {
+      } else if(onions[onionId] === "onion-pumpkin"){
+          if(pumpkinBought){
+            const onionSelect = add([
+              unlocked = true;
+              // list of components
+              sprite(onions[onionId]),
+              "btn",
+              pos(width() / 2 - 38, height() / 2 - 50),
+              area(),
+  
+            ]) //add other achievement-locked skins as an "else" statement here
+          }
+        if(!unlocked){
+          const onionSelect = add([
+            // list of components
+            sprite(onions[onionId]),
+            "btn",
+            pos(width() / 2, height()/2),
+            area(),
+            anchor("center"),
+          ])
+          const startBtn = add([
+            sprite("startBtn"),
+            pos(width() / 2, height() * 0.7),
+            anchor("center"),
+          ])
+          startBtn.add([
+            text("250", { size: 64 }),
+            fixed(),
+            anchor("center"),
+          ])
+        }
+      } else {
         unlocked = true;
         const onionSelect = add([
           // list of components
