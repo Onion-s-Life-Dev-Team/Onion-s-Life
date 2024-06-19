@@ -702,7 +702,17 @@ let hasFoundCoin = false;
 
       registerTouchControls(onion, moveOnion, levelId, setHighLevel, rEnabled, music, applyRandomEffects, continuouslyChangeEffects, jumpCount);
 
-
+      //get all water sprites
+      const water = get("water", { recursive: true });
+      //determine the various water areas on the map based on their positions
+      const waterAreas = water.map(water => {
+        return {
+          x: water.pos.x,
+          y: water.pos.y,
+          width: water.width,
+          height: water.height,
+        }
+      })
 
       if (levelId != 32 || isOnionInWater(onion, waterAreas)) {
         onKeyPress("up", () => {
@@ -851,19 +861,7 @@ let hasFoundCoin = false;
       onion.onCollide("block", (ground) => {
         canDoubleJump = true
       })
-
-
-      //get all water sprites
-      const water = get("water", { recursive: true });
-      //determine the various water areas on the map based on their positions
-      const waterAreas = water.map(water => {
-        return {
-          x: water.pos.x,
-          y: water.pos.y,
-          width: water.width,
-          height: water.height,
-        }
-      })
+      
       //write a function to see if an onion is in water
       function isOnionInWater(onion, waterAreas) {
         return waterAreas.some(waterArea => {
