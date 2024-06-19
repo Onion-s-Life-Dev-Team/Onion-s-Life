@@ -927,7 +927,7 @@ let hasFoundCoin = false;
                 scale(rand(0.25, 0.5)),
                 area(),
                 body({ solid: false, }),
-                lifespan(0.75, { fade: 0.5 }),
+                lifespan(1, { fade: 0.5 }),
                 move(choose([LEFT, RIGHT]), rand(60, 240)),
                 offscreen({ hidden: true }),
               ])
