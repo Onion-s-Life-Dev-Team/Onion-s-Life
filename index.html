@@ -412,6 +412,19 @@
     var jumpCount = 0;
     var subX = 0;
     var subY = 0;
+//offensive words
+    function containsOffensiveWords(username) {
+    const offensiveWords = ["shit", "bitch", "fuck"]; // Add more offensive words here
+    const lowerCaseUsername = username.toLowerCase();
+    
+    for (let word of offensiveWords) {
+        if (lowerCaseUsername.includes(word)) {
+            return true;
+        }
+    }
+    
+    return false;
+}
     // Set a cookie
     function setCookie(name, value, days) {
       let expires = "";
@@ -434,6 +447,7 @@
       }
       return null;
     }
+
     var slctId = 0;
     // Set a high score cookie
     function setHighLevel(score) {
@@ -461,13 +475,14 @@
     }) => {
       setGravity(1300)
       var storedName = getCookie("name");
-      if (storedName) {
-        alert("Why did you make an offensive name? I'm changing it to a random name.")
-        removeCookie("name");
-        //return storedName to use the custom name
-        userID = randomNameGenerator();
-      }
 
+if (storedName && containsOffensiveWords(storedName)) {
+    alert("Why did you make an offensive name? I'm changing it to a random name.");
+    removeCookie("name");
+    userID = randomNameGenerator();
+} else {
+    userID = storedName;
+}
       if (first) {
         levelId = slctId;
         first = false;
