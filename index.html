@@ -1704,8 +1704,9 @@ function button() {
         }
       } else if(onions[onionId] === "onion-pumpkin"){
           if(pumpkinBought){
+            unlocked = true;
             const onionSelect = add([
-              unlocked = true;
+              
               // list of components
               sprite(onions[onionId]),
               "btn",
