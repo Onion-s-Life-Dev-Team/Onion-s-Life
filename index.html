@@ -1141,7 +1141,20 @@ let hasFoundCoin = false;
   }
   }
 }*/
-
+function button() {
+  return {
+    id: "button",
+    require: ["scale", "area"],
+    add() {
+      this.onHover: () => {
+        this.scale = 0.70;
+      },
+      this.onHoverEnd: () => {
+        this.scale = 1;
+      }
+    }
+  }
+}
 
     scene("title", () => {
       if (parseInt(getHighLevel()) > 0) {
@@ -1194,6 +1207,8 @@ let hasFoundCoin = false;
         fixed(),
         area(),
         anchor("center"),
+        "button",
+        button(),
         pos(width() / 2, height() * 0.9),
       ])
 
