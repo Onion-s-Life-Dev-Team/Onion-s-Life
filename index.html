@@ -1146,12 +1146,12 @@ function button() {
     id: "button",
     require: ["scale", "area"],
     add() {
-      this.onHover: () => {
-        this.scale = 0.70;
-      },
-      this.onHoverEnd: () => {
-        this.scale = 1;
-      }
+      this.onHover(() => {
+    this.scale = 0.70;
+})
+      this.onHoverEnd(() => {
+    this.scale = 1;
+})
     }
   }
 }
