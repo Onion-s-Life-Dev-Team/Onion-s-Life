@@ -63,7 +63,7 @@ export default function loadAssets() {
   loadSprite("achievement", "assets/sprites/trophy.png")
   loadSprite("onion-eggplant", "assets/sprites/eggplant-onion.png")
   loadSprite("onion-magic", "assets/sprites/magic-onion.png")
-  loadSprite("onion-pumpkin","assets/sprites/pumpkin-onion.png")
+  loadSprite("onion-pumpkin","assets/sprites/onion-pumpkin.png")
   loadSprite("onion-invert","assets/sprites/onionInvert.png")
   loadSprite("onion-ocean","assets/sprites/onion-ocean.png")
   loadSprite("onion-secret","assets/sprites/onion-secret.png")
