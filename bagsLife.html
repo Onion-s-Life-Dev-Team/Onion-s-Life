@@ -8,11 +8,11 @@
 </head>
 <body>
   <div id="passwordPrompt">
-    <h2>Enter Password</h2>
-    <input type="password" id="passwordInput" placeholder="Password">
-    <button onclick="validatePassword()">Submit</button>
-    <p id="errorMessage" style="color: red; display: none;">Invalid Password</p>
-    <p>Pardon Our Dust! Secret things are being worked on here.</p>
+    <h2 style="text-align:center">Enter Password</h2>
+    <input type="password" id="passwordInput" placeholder="Password" style="text-align:center">
+    <button onclick="validatePassword()" style="text-align:center">Submit</button>
+    <p id="errorMessage" style="color: red; display: none;" style="text-align:center">Invalid Password</p>
+    <p style="text-align:center">Pardon Our Dust! Secret things are being worked on here.</p>
      <img src="/assets/sprites/bag.png" alt="Bag"></img>
   </div>
   <canvas class="kaboomCanvas"></canvas>
@@ -108,125 +108,126 @@
     }
 
     scene("game", ({ levelId, coins } = { levelId: 0, coins: 0 }) => {
-    const level = addLevel(LEVELS[levelId ?? 0], levelConf)
-    const bag = add([
-        // list of components
-        sprite("bag"),
-        pos(120, 40),
-        area(),
-    body(),
-    ])
-    //Movement
-    onKeyDown('left', () => {
-        bag.move(-400,0)
-    })
-    onKeyDown('right', () => {
-        bag.move( 400,0)
-    })
-    onKeyDown('up', () => {
-    if (bag.isGrounded()) {
-
-    bag.jump()
-    
-    }
-    
-    });
-    onKeyPress("f", (c) => {
-        fullscreen(!isFullscreen())
-    })
-    onKeyDown('space', () => {
-    if (bag.isGrounded()) {
-
-    bag.jump()
-    
-    }
-    
-    })
-
-    //onKeyDown('q', () => {
-    //bag.jump()
-    //})
-
-            
-            
-
-
-    //scrolling
-    // camera follows player
-    bag.onUpdate(() => {
-        camPos(bag.pos)
-    })
-
-    //spike code
-    bag.onCollide("danger", (danger) => {
-        destroy(bag)
-        shake();
-        add([
-        text("You lose"),
-        pos(bag.pos),
-        color(255, 0, 0),
-
-        
-        ])
-    })
-    const score = add([
-        text("Score: 0"),
-        pos(80,40),
-        { value: 0 },
-        fixed(),
-    ])
-
-    bag.onCollide("coin", (coin) => {
-        score.value += 1
-        score.text = "Score:" + score.value
-        destroy(coin)
-
-    })
-    //define layers
-
-
-
-
-
-    //jumpy code
-    bag.onCollide("jumpy", () => {
-        
-
-    bag.jump(1200)
-
-
-    
-    })
-
-
-    bag.onCollide("portal", () => {
-            if (levelId + 1 < LEVELS.length) {
-                go("game", {
-                    levelId: levelId + 1,
-                    coins: coins,
-                })
-            } else {
-                destroy(bag),
-            add([
-            text("Good Job!"),
-            color(0,255,0),
-            pos(bag.pos),
-            
-
-            
-            ])
-            }
-        })
-    onClick("enemy", (enemy) => destroy(enemy))
-
-    // add a shake on mouse click
-    onClick(() => shake())
-
-    onKeyDown("r", () => {
-        go("game", {
-        levelId: levelId,
-        });
-    });
+      const level = addLevel(LEVELS[levelId ?? 0], levelConf)
+      const bag = add([
+          // list of components
+          sprite("bag"),
+          pos(120, 40),
+          area(),
+      body(),
+      ])
+      //Movement
+      onKeyDown('left', () => {
+          bag.move(-400,0)
+      })
+      onKeyDown('right', () => {
+          bag.move( 400,0)
+      })
+      onKeyDown('up', () => {
+      if (bag.isGrounded()) {
+  
+      bag.jump()
+      
+      }
+      
+      });
+      onKeyPress("f", (c) => {
+          fullscreen(!isFullscreen())
+      })
+      onKeyDown('space', () => {
+      if (bag.isGrounded()) {
+  
+      bag.jump()
+      
+      }
+      
+      })
+  
+      //onKeyDown('q', () => {
+      //bag.jump()
+      //})
+  
+              
+              
+  
+  
+      //scrolling
+      // camera follows player
+      bag.onUpdate(() => {
+          camPos(bag.pos)
+      })
+  
+      //spike code
+      bag.onCollide("danger", (danger) => {
+          destroy(bag)
+          shake();
+          add([
+          text("You lose"),
+          pos(bag.pos),
+          color(255, 0, 0),
+  
+          
+          ])
+      })
+      const score = add([
+          text("Score: 0"),
+          pos(80,40),
+          { value: 0 },
+          fixed(),
+      ])
+  
+      bag.onCollide("coin", (coin) => {
+          score.value += 1
+          score.text = "Score:" + score.value
+          destroy(coin)
+  
+      })
+      //define layers
+  
+  
+  
+  
+  
+      //jumpy code
+      bag.onCollide("jumpy", () => {
+          
+  
+      bag.jump(1200)
+  
+  
+      
+      })
+  
+  
+      bag.onCollide("portal", () => {
+              if (levelId + 1 < LEVELS.length) {
+                  go("game", {
+                      levelId: levelId + 1,
+                      coins: coins,
+                  })
+              } else {
+                  destroy(bag),
+              add([
+              text("Good Job!"),
+              color(0,255,0),
+              pos(bag.pos),
+              
+  
+              
+              ])
+              }
+          })
+      onClick("enemy", (enemy) => destroy(enemy))
+  
+      // add a shake on mouse click
+      onClick(() => shake())
+  
+      onKeyDown("r", () => {
+          go("game", {
+          levelId: levelId,
+          });
+      });
+      }
     });
 
 
