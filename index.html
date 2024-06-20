@@ -1702,6 +1702,7 @@ function button() {
           ])
         }
       } else if(onions[onionId] === "onion-pumpkin"){
+        unlocked = true;
           if(pumpkinBought){
             unlocked = true;
             const onionSelect = add([
@@ -1724,7 +1725,6 @@ function button() {
               anchor("center"),
             ])
           }
-        unlocked = true;
         if(!unlocked){
           const onionSelect = add([
             // list of components
@@ -1734,7 +1734,7 @@ function button() {
             area(),
             anchor("center"),
           ])
-          const startBtn = add([
+          const buyBtn = add([
             sprite("startbtn"),
             pos(width() / 2, height() * 0.7),
             anchor("center"),
@@ -1744,6 +1744,13 @@ function button() {
             fixed(),
             anchor("center"),
           ])
+
+          onClick("buyBtn", () => {
+            if(coins >= 250){
+              pumpkinBought = true;
+              go("skins");
+            }
+          })
         }
       } else {
         unlocked = true;
