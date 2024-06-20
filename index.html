@@ -1619,6 +1619,8 @@ function button() {
     })
 
     scene("skins", () => {
+    let coins = retrieveCoins();
+      
       onKeyPress('b', () => {
         go("title");
       });
@@ -1646,6 +1648,16 @@ function button() {
         pos(width() / 2 - 128, height() / 2 - 128),
         area(),
       ]);
+
+      const coinSpr = add([
+        sprite("coin"),
+        pos(width() * 0.8, height() * 0.05),
+      ])
+
+      const coinCount = add([
+        text(coins),
+        pos(width() * 0.85, height() * 0.05),
+      ])
 
       var unlocked = false;
       if (onions[onionId] === "onion-secret") {
@@ -1800,7 +1812,7 @@ function button() {
         }
         go("skins");
       });
-      let coins = retrieveCoins();
+      
       onClick("btn", () => {
         if(coins >= 250 && onions[onionId] == "onion-pumpkin" && !hasSkin("onion-pumpkin")){
           saveSkin(onions[onionId]);
