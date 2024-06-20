@@ -1736,40 +1736,26 @@ function button() {
         } else {
           // Retrieve the user's coins and check if they have enough
           let coins = retrieveCoins();
-          if (coins >= 250) {
-            unlocked = true;
-            const onionSelect = add([
-              sprite(onions[onionId]),
-              "btn",
-              pos(width() / 2 - 38, height() / 2 - 50),
-              area(),
+          unlocked = true;
+          const onionSelect = add([
+            sprite(onions[onionId]),
+            "btn",
+            pos(width() / 2 - 38, height() / 2 - 50),
+            area(),
             ]);
-            const buyBtn = add([
-              sprite("startbtn"),
-              pos(width() / 2, height() * 0.7),
-              anchor("center"),
-              area(),
-              "buyBtn"
-            ]);
-            buyBtn.add([
-              text("$250", { size: 64 }),
-              fixed(),
-              anchor("center"),
-            ]);
+          const buyBtn = add([
+            sprite("startbtn"),
+            pos(width() / 2, height() * 0.7),
+            anchor("center"),
+            area(),
+            "buyBtn"
+          ]);
+          buyBtn.add([
+            text("$250", { size: 64 }),
+            fixed(),
+            anchor("center"),
+          ]);
 
-          } else {
-            const onionSelect = add([
-              sprite("skinsBtn"),
-              "btn",
-              pos(width() / 2, height() / 2),
-              area(),
-              anchor("center"),
-            ]);
-            add([
-              text("Not enough coins...", { size: 40 }),
-              pos(width() / 2, height() * 0.7),
-              anchor("center"),
-            ]);
           }
         }
       } else {
