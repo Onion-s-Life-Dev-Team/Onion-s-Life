@@ -82,6 +82,8 @@
     import registerTouchControls from "./scripts/touchCode.js";
     import loadAssets from "./scripts/assets.js";
     import { handleAchievementCollision, checkAchievements, hasAchievement } from "./scripts/achievement.js";
+    import { addCoin, retrieveCoins, storeCoins } from "./scripts/coinManager.js";
+    import { hasSkin, saveSkin } from "./scripts/skinManager.js";
 
     console.log(checkAchievements())
 
@@ -119,7 +121,8 @@
     var speedCap = 400; // raising this raises the max speed
     var canDoubleJump = false;
 
-    var pumpkinBought = false;
+    var pumpkinBought = hasSkin("onion-pumpkin");
+
 
     function subscribeToChannel() {
       // Subscribe to mouse events.
@@ -1039,6 +1042,9 @@ let hasFoundCoin = false;
         score.value += 1
         score.text = "Score:" + score.value
         destroy(coin)
+
+        addCoin()
+
     if (!hasFoundCoin && !hasAchievement("Found the first coin")) {
         handleAchievementCollision(
             onion.pos.x,
@@ -1615,170 +1621,168 @@ function button() {
     scene("skins", () => {
       onKeyPress('b', () => {
         go("title");
-      })
+      });
 
       add([
         text("Customization", { size: 64 }),
         color(255, 255, 255),
         fixed(),
         pos(40, 40),
-      ])
+      ]);
 
       const backKeybind = add([
         sprite("keyboardB"),
         pos(width() * 0.02, height() * 0.9)
-      ])
+      ]);
 
       backKeybind.add([
         text("Back"),
         pos(75, 13),
-      ])
+      ]);
 
       const skinSelectBtn = add([
-        // list of components
         sprite("lvlbtn"),
         "btn",
         pos(width() / 2 - 128, height() / 2 - 128),
         area(),
+      ]);
 
-      ])
       var unlocked = false;
-      if(onions[onionId] === "onion-secret"){
+      if (onions[onionId] === "onion-secret") {
         for (let achievement of checkAchievements()) {
-          if(achievement.name === "?"){
+          if (achievement.name === "?") {
             unlocked = true;
             const onionSelect = add([
-              // list of components
               sprite(onions[onionId]),
               "btn",
               pos(width() / 2 - 38, height() / 2 - 50),
               area(),
-
-            ])
-          } //add other achievement-locked skins as an "else" statement here
-        }
-        if(!unlocked){
-          const onionSelect = add([
-            // list of components
-            sprite("skinsBtn"),
-            "btn",
-            pos(width() / 2, height()/2),
-            area(),
-            anchor("center"),
-          ])
-          add([
-            text("An achievement is required...", { size: 40 } ),
-            pos(width() / 2, height() * 0.7),
-            anchor("center"),
-          ])
-        }
-      } else if(onions[onionId] === "onion-ocean"){
-        for (let achievement of checkAchievements()) {
-          if(achievement.name === "Explored the Depths"){
-            unlocked = true;
-            const onionSelect = add([
-              // list of components
-              sprite(onions[onionId]),
-              "btn",
-              pos(width() / 2 - 38, height() / 2 - 50),
-              area(),
-
-            ])
-          } //add other achievement-locked skins as an "else" statement here
-        }
-        if(!unlocked){
-          const onionSelect = add([
-            // list of components
-            sprite("skinsBtn"),
-            "btn",
-            pos(width() / 2, height()/2),
-            area(),
-            anchor("center"),
-          ])
-          add([
-            text("An achievement is required...", { size: 40 } ),
-            pos(width() / 2, height() * 0.7),
-            anchor("center"),
-          ])
-        }
-      } else if(onions[onionId] === "onion-pumpkin"){
-        pumpkinBought = true;
-          if(pumpkinBought){
-            unlocked = true;
-            const onionSelect = add([
-              
-              // list of components
-              sprite(onions[onionId]),
-              "btn",
-              pos(width() / 2 - 38, height() / 2 - 50),
-              area(),
-  
-            ]) //add other achievement-locked skins as an "else" statement here
-            const startBtn = add([
-              sprite("startbtn"),
-              pos(width() / 2, height() * 0.7),
-              anchor("center"),
-            ])
-            startBtn.add([
-              text("Bought", { size: 64 }),
-              fixed(),
-              anchor("center"),
-            ])
+            ]);
           }
-        if(!unlocked){
+        }
+        if (!unlocked) {
           const onionSelect = add([
-            // list of components
+            sprite("skinsBtn"),
+            "btn",
+            pos(width() / 2, height() / 2),
+            area(),
+            anchor("center"),
+          ]);
+          add([
+            text("An achievement is required...", { size: 40 }),
+            pos(width() / 2, height() * 0.7),
+            anchor("center"),
+          ]);
+        }
+      } else if (onions[onionId] === "onion-ocean") {
+        for (let achievement of checkAchievements()) {
+          if (achievement.name === "Explored the Depths") {
+            unlocked = true;
+            const onionSelect = add([
+              sprite(onions[onionId]),
+              "btn",
+              pos(width() / 2 - 38, height() / 2 - 50),
+              area(),
+            ]);
+          }
+        }
+        if (!unlocked) {
+          const onionSelect = add([
+            sprite("skinsBtn"),
+            "btn",
+            pos(width() / 2, height() / 2),
+            area(),
+            anchor("center"),
+          ]);
+          add([
+            text("An achievement is required...", { size: 40 }),
+            pos(width() / 2, height() * 0.7),
+            anchor("center"),
+          ]);
+        }
+      } else if (onions[onionId] === "onion-pumpkin") {
+        // Check if the pumpkin has been bought
+        pumpkinBought = hasSkin("onion-pumpkin")
+        if (pumpkinBought) {
+          unlocked = true;
+          const onionSelect = add([
             sprite(onions[onionId]),
             "btn",
-            pos(width() / 2, height()/2),
+            pos(width() / 2 - 38, height() / 2 - 50),
             area(),
-            anchor("center"),
-          ])
-          const buyBtn = add([
+          ]);
+          const startBtn = add([
             sprite("startbtn"),
             pos(width() / 2, height() * 0.7),
             anchor("center"),
-          ])
+          ]);
           startBtn.add([
-            text("$250", { size: 64 }),
+            text("Bought", { size: 64 }),
             fixed(),
             anchor("center"),
-          ])
+          ]);
+        } else {
+          // Retrieve the user's coins and check if they have enough
+          let coins = retrieveCoins();
+          if (coins >= 250) {
+            unlocked = true;
+            const onionSelect = add([
+              sprite(onions[onionId]),
+              "btn",
+              pos(width() / 2 - 38, height() / 2 - 50),
+              area(),
+            ]);
+            const buyBtn = add([
+              sprite("startbtn"),
+              pos(width() / 2, height() * 0.7),
+              anchor("center"),
+              area(),
+              "buyBtn"
+            ]);
+            buyBtn.add([
+              text("$250", { size: 64 }),
+              fixed(),
+              anchor("center"),
+            ]);
 
-          onClick("buyBtn", () => {
-            if(coins >= 250){
-              pumpkinBought = true;
-              go("skins");
-            }
-          })
+          } else {
+            const onionSelect = add([
+              sprite("skinsBtn"),
+              "btn",
+              pos(width() / 2, height() / 2),
+              area(),
+              anchor("center"),
+            ]);
+            add([
+              text("Not enough coins...", { size: 40 }),
+              pos(width() / 2, height() * 0.7),
+              anchor("center"),
+            ]);
+          }
         }
       } else {
         unlocked = true;
         const onionSelect = add([
-          // list of components
           sprite(onions[onionId]),
           "btn",
           pos(width() / 2 - 38, height() / 2 - 50),
           area(),
-
-        ])
+        ]);
       }
-      
 
       const leftArrow = add([
         sprite("arrowl"),
         "l",
-
-        area({ scale: 2, }),
+        area({ scale: 2 }),
         pos(width() * 0.3 - 32, height() / 2 - 64),
-      ])
+      ]);
 
       var rightArrow = add([
         sprite("arrowr"),
         "r",
-        area({ scale: 2, }),
+        area({ scale: 2 }),
         pos(width() * 0.7 - 32, height() / 2 - 64),
-      ])
+      ]);
 
       onClick("r", () => {
         if (onionId == (onions.length - 1)) {
@@ -1787,7 +1791,7 @@ function button() {
           onionId++;
         }
         go("skins");
-      })
+      });
       onClick("l", () => {
         if (onionId == 0) {
           onionId = (onions.length - 1);
@@ -1795,16 +1799,20 @@ function button() {
           onionId--;
         }
         go("skins");
-      })
-
+      });
+      let coins = retrieveCoins();
       onClick("btn", () => {
-        if(!unlocked){
+        if(coins >= 250 && onions[onionId] == "onion-pumpkin" && !hasSkin("onion-pumpkin")){
+          saveSkin(onions[onionId]);
+          storeCoins(coins - 250);
+        }
+        if (!unlocked) {
           onionId = 0;
         }
         go("game");
-      })
+      });
+    });
 
-    })
 
     scene("multiplayer", () => {
       onKeyPress('b', () => {
