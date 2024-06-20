@@ -1713,7 +1713,18 @@ function button() {
               area(),
   
             ]) //add other achievement-locked skins as an "else" statement here
+            const startBtn = add([
+              sprite("startbtn"),
+              pos(width() / 2, height() * 0.7),
+              anchor("center"),
+            ])
+            startBtn.add([
+              text("Bought", { size: 64 }),
+              fixed(),
+              anchor("center"),
+            ])
           }
+        unlocked = true;
         if(!unlocked){
           const onionSelect = add([
             // list of components
