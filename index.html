@@ -1096,7 +1096,7 @@ let hasFoundCoin = false;
       //jumpy code
       onion.onCollide("jumpy", () => {
         play("jumpy")
-        onion.jump(1200)
+        onion.jump(1400)
         //shake()
       })
       onion.onCollideUpdate("right", () => {
@@ -1702,6 +1702,7 @@ function button() {
           ])
         }
       } else if(onions[onionId] === "onion-pumpkin"){
+        pumpkinBought = true;
           if(pumpkinBought){
             unlocked = true;
             const onionSelect = add([
@@ -1713,6 +1714,16 @@ function button() {
               area(),
   
             ]) //add other achievement-locked skins as an "else" statement here
+            const startBtn = add([
+              sprite("startbtn"),
+              pos(width() / 2, height() * 0.7),
+              anchor("center"),
+            ])
+            startBtn.add([
+              text("Bought", { size: 64 }),
+              fixed(),
+              anchor("center"),
+            ])
           }
         if(!unlocked){
           const onionSelect = add([
@@ -1723,16 +1734,23 @@ function button() {
             area(),
             anchor("center"),
           ])
-          const startBtn = add([
+          const buyBtn = add([
             sprite("startbtn"),
             pos(width() / 2, height() * 0.7),
             anchor("center"),
           ])
           startBtn.add([
-            text("250", { size: 64 }),
+            text("$250", { size: 64 }),
             fixed(),
             anchor("center"),
           ])
+
+          onClick("buyBtn", () => {
+            if(coins >= 250){
+              pumpkinBought = true;
+              go("skins");
+            }
+          })
         }
       } else {
         unlocked = true;
