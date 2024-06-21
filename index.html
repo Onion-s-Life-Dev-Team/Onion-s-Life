@@ -1671,6 +1671,7 @@ function button() {
               pos(width() / 2 - 38, height() / 2 - 50),
               area(),
             ]);
+            saveSkin(onions[onionId]);
           }
         }
         if (!unlocked) {
@@ -1697,6 +1698,7 @@ function button() {
               pos(width() / 2 - 38, height() / 2 - 50),
               area(),
             ]);
+            saveSkin(onions[onionId]);
           }
         }
         if (!unlocked) {
@@ -1760,6 +1762,7 @@ function button() {
         }
       } else {
         unlocked = true;
+        saveSkin(onions[onionId])
         const onionSelect = add([
           sprite(onions[onionId]),
           "btn",
@@ -1804,7 +1807,7 @@ function button() {
           saveSkin(onions[onionId]);
           storeCoins(coins - 250);
         }
-        if (!unlocked) {
+        if (!unlocked || !hasSkin(onions[onionId])) {
           onionId = 0;
         }
         go("game");
