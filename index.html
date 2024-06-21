@@ -670,7 +670,6 @@ let hasFoundCoin = false;
 
       })
       onKeyPress("b", () => {
-        storeCoins(coins - score.value)
         go("title");
         music.paused = true;
       })
@@ -1125,7 +1124,6 @@ let hasFoundCoin = false;
       onKeyPress("r", () => {
         music.stop()
         canDoubleJump = false
-        storeCoins(coins - score.value)
         go("game", {
           levelId: levelId,
         });
