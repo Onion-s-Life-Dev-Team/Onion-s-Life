@@ -1755,7 +1755,7 @@ function button() {
             "buyBtn"
           ]);
           buyBtn.add([
-            text("$250", { size: 64 }),
+            text("$750", { size: 64 }),
             fixed(),
             anchor("center"),
           ]);
@@ -1849,9 +1849,12 @@ function button() {
       });
       
       onClick("btn", () => {
-        if(coins >= 250 && onions[onionId] == "onion-pumpkin" && !hasSkin("onion-pumpkin")){
+        if(coins >= 750 && onions[onionId] == "onion-pumpkin" && !hasSkin("onion-pumpkin")){
           saveSkin(onions[onionId]);
-          storeCoins(coins - 250);
+          storeCoins(coins - 750);
+        } else if(coins >= 1250 && onions[onionId] == "onion-invert" && !hasSkin("onion-invert")){
+          saveSkin(onions[onionId]);
+          storeCoins(coins - 1250);
         }
         if (!unlocked || !hasSkin(onions[onionId])) {
           onionId = 0;
