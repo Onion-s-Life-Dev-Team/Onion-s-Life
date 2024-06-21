@@ -1926,7 +1926,7 @@ const levelConf = {
     "=": () => [
       sprite("grass"),
       area(),
-      body({ isStatic: true }),
+      body({ isStatic: true, mass: 5 }),
       scale(1),
       offscreen({ hide: true }),
       anchor("bot"),
@@ -1935,7 +1935,7 @@ const levelConf = {
     "+": () => [
       sprite("grass5"),
       area(new Rect(vec2(), 160, 32)),
-      body({ isStatic: true }),
+      body({ isStatic: true, mass: 5 }),
       offscreen({ hide: true, distance: 160 }),
       scale(1),
       anchor("bot"),
@@ -1944,7 +1944,7 @@ const levelConf = {
     "_": () => [
       sprite("grass25"),
       area(new Rect(vec2(), 800, 32)),
-      body({ isStatic: true }),
+      body({ isStatic: true, mass: 5 }),
       offscreen({ hide: true, distance: 800 }),
       scale(1),
       anchor("bot"),
