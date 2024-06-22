@@ -1,4 +1,5 @@
 export function optimizeLevel(map) {
+    map = checkLevel(map);
     for (var i = 0; i < map.length; i++) {
         map[i] = map[i].replaceAll("=====", "  +  ");
         map[i] = map[i].replaceAll("  +    +    +    +    +  ", "            _            ");
