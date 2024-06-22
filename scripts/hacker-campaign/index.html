@@ -81,7 +81,7 @@
     // import kaplay.js
     import kaplay from "https://unpkg.com/kaplay@3001.0.0-alpha.14/dist/kaboom.mjs";
     import { loadAssets } from "./assets.js";
-    import { handleAchievementCollision, checkAchievements, hasAchievement } from "./scripts/achievement.js";
+    import { handleAchievementCollision, checkAchievements, hasAchievement } from "../../scripts/achievement.js";
     import { LEVELS, levelConf } from "./levels.js";
 
     
@@ -103,8 +103,8 @@
 
     // check if the user has the bags life achievement
     // if not, give it to them cause they're cool
-    if (!hasAchievement("bagsLife")) {
-        handleAchievementCollision(0,0,0,"Bag's Life Found!", "You found Bag's Life! You're cool.", "bag")
+    if (!hasAchievement("hackerCampaign")) {
+        handleAchievementCollision(0,0,0,"Hacker Campaign Found!", "You found the Hacker Campaign! You're cool.", "gigagantrum")
     }
 
     scene("game", ({ levelId, coins } = { levelId: 0, coins: 0 }) => {

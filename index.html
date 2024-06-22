@@ -122,6 +122,7 @@
     var canDoubleJump = false;
 
     var pumpkinBought = hasSkin("onion-pumpkin");
+    var invertBought = hasSkin("onion-invert");
 
 
     function subscribeToChannel() {
@@ -1754,7 +1755,52 @@ function button() {
             "buyBtn"
           ]);
           buyBtn.add([
-            text("$250", { size: 64 }),
+            text("$750", { size: 64 }),
+            fixed(),
+            anchor("center"),
+          ]);
+          
+        }
+      } else if (onions[onionId] === "onion-invert") {
+        // Check if the invert has been bought
+        invertBought = hasSkin("onion-invert")
+        if (invertBought) {
+          unlocked = true;
+          const onionSelect = add([
+            sprite(onions[onionId]),
+            "btn",
+            pos(width() / 2 - 38, height() / 2 - 50),
+            area(),
+          ]);
+          const startBtn = add([
+            sprite("startbtn"),
+            pos(width() / 2, height() * 0.7),
+            anchor("center"),
+          ]);
+          startBtn.add([
+            text("Bought", { size: 64 }),
+            fixed(),
+            anchor("center"),
+          ]);
+        } else {
+          // Retrieve the user's coins and check if they have enough
+          let coins = retrieveCoins();
+          unlocked = true;
+          const onionSelect = add([
+            sprite(onions[onionId]),
+            "btn",
+            pos(width() / 2 - 38, height() / 2 - 50),
+            area(),
+          ]);
+          const buyBtn = add([
+            sprite("startbtn"),
+            pos(width() / 2, height() * 0.7),
+            anchor("center"),
+            area(),
+            "buyBtn"
+          ]);
+          buyBtn.add([
+            text("$1250", { size: 64 }),
             fixed(),
             anchor("center"),
           ]);
@@ -1803,9 +1849,12 @@ function button() {
       });
       
       onClick("btn", () => {
-        if(coins >= 250 && onions[onionId] == "onion-pumpkin" && !hasSkin("onion-pumpkin")){
+        if(coins >= 750 && onions[onionId] == "onion-pumpkin" && !hasSkin("onion-pumpkin")){
           saveSkin(onions[onionId]);
-          storeCoins(coins - 250);
+          storeCoins(coins - 750);
+        } else if(coins >= 1250 && onions[onionId] == "onion-invert" && !hasSkin("onion-invert")){
+          saveSkin(onions[onionId]);
+          storeCoins(coins - 1250);
         }
         if (!unlocked || !hasSkin(onions[onionId])) {
           onionId = 0;
