@@ -14,7 +14,6 @@ export function optimizeLevel(map) {
     return newMap;
 }
 
-
 function removeTiles(map, start, end, tile, col) {
     if (tile == "=") {
         for (var i = start; i < end; i++) {

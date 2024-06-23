@@ -561,6 +561,7 @@ let hasFoundCoin = false;
           text(userID, { size: 15 }),
           //make it follow the onion
           pos(0, 0),
+          z(1),
           follow(onion, vec2(0, -20)),
 
         ])
@@ -594,6 +595,7 @@ let hasFoundCoin = false;
         text(levelNames[levelId], { size: 64 }),
         color(255, 255 - notRColor, 255 - notRColor),
         fixed(),
+        z(1),
         pos(40, 40),
       ])
 
@@ -951,6 +953,7 @@ let hasFoundCoin = false;
             text("You Lose", { size: 48 }),
             pos(pos(width()/2, height()/2 - 15),),
             anchor("center"),
+            z(1),
             color(255, 0, 0),
           ])
           // Can someone figure out how to get the pos of this correct
@@ -1606,7 +1609,7 @@ function button() {
         
         const nameSoFar = getCookie("name");
         if (nameSoFar) {
-          alert("Why did you use an offensive name? Tough, cause you're gonna get a random name.")
+          alert("Sorry, this functionality is currently disabled due to abuse.")
           removeCookie("name");
           //return nameSoFar to use custom name
           return randomNameGenerator();
