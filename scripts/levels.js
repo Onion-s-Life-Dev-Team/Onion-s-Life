@@ -1912,6 +1912,22 @@
 '          swwOws                                                ',
 '          ssssss                                                ',
 ],
+	 // super sea survivor
+	 ['=  =                 k            D                             ',
+'=  =                              D                     swwws   ',
+'=  =              >>>>>>lDDD      D                     swwws   ',
+'=  =                    l  D      D                     swwws   ',
+'=  =                    l  D      D             $       swwws   ',
+'=??=                    l  ^^^^^^^^      $          $   swwws   ',
+'s  ^^^^^^               l                               swwws   ',
+'swwwwwwwwwws>>>>>>wwwwwws?     ?                        swwws   ',
+'swwwwwwwwwws     sw^^^^ws?     ?      $    $   $  l     sOwws   ',
+'sww$w$wwwwws     sw^OO^ws??????? G      l               sssss   ',
+'swwwwww$wwws     sw^OO^wswwwwwwssss                             ',
+'sw$wwwww$wws     sw^^^^wswwwwwws             l                  ',
+'swwwwwwwwwws     swwwwwwswwGwwws    l                           ',
+'ssssssssssss     sssssssssssssss                                ',
+'                                                                ',],
 
 
 
