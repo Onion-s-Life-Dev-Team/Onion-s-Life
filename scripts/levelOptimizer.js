@@ -1,15 +1,19 @@
 export function optimizeLevel(map) {
-    map = checkLevel(map);
-    for (var i = 0; i < map.length; i++) {
-        map[i] = map[i].replaceAll("=====", "  +  ");
-        map[i] = map[i].replaceAll("  +    +    +    +    +  ", "            _            ");
-        map[i] = map[i].replaceAll("iiiiiiiiiiiiiiiiiiiiiiiii", "            ~            ");
-        map[i] = map[i].replaceAll("            ~                        ~                        ~            ", "                                #                                ");
-        //map[i] = map[i].replaceAll("^^^^^^^^^", "    &    ");
-        //map[i] = map[i].replaceAll("^^^", " ` ");
+    let newMap = map.slice();
+    newMap = checkLevel(newMap); // Assuming checkLevel does not mutate its input
+
+    for (var i = 0; i < newMap.length; i++) {
+        newMap[i] = newMap[i].replaceAll("=====", "  +  ");
+        newMap[i] = newMap[i].replaceAll("  +    +    +    +    +  ", "            _            ");
+        newMap[i] = newMap[i].replaceAll("iiiiiiiiiiiiiiiiiiiiiiiii", "            ~            ");
+        newMap[i] = newMap[i].replaceAll("            ~                        ~                        ~            ", "                                #                                ");
+        //newMap[i] = newMap[i].replaceAll("^^^^^^^^^", "    &    ");
+        //newMap[i] = newMap[i].replaceAll("^^^", " ` ");
     }
-    return map;
+
+    return newMap;
 }
+
 
 function removeTiles(map, start, end, tile, col) {
     for (var i = start; i < end; i++) {
