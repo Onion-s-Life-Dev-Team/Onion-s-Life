@@ -1,23 +1,43 @@
-var levelChunks;
-
 export function optimizeLevel(map) {
-    levelChunks = searchLevel(map);
-    for (var i = 0; i < map.length; i++) {
-        map[i] = map[i].replaceAll("=====", "  +  ");
-        map[i] = map[i].replaceAll("  +    +    +    +    +  ", "            _            ");
-        map[i] = map[i].replaceAll("iiiiiiiiiiiiiiiiiiiiiiiii", "            ~            ");
-        map[i] = map[i].replaceAll("            ~                        ~                        ~            ", "                                #                                ");
-        //map[i] = map[i].replaceAll("^^^^^^^^^", "    &    ");
-        //map[i] = map[i].replaceAll("^^^", " ` ");
+    let newMap = map.slice();
+    newMap = checkLevel(newMap); // Assuming checkLevel does not mutate its input
+
+    for (var i = 0; i < newMap.length; i++) {
+        newMap[i] = newMap[i].replaceAll("=====", "  +  ");
+        newMap[i] = newMap[i].replaceAll("  +    +    +    +    +  ", "            _            ");
+        newMap[i] = newMap[i].replaceAll("iiiiiiiiiiiiiiiiiiiiiiiii", "            ~            ");
+        newMap[i] = newMap[i].replaceAll("            ~                        ~                        ~            ", "                                #                                ");
+        //newMap[i] = newMap[i].replaceAll("^^^^^^^^^", "    &    ");
+        //newMap[i] = newMap[i].replaceAll("^^^", " ` ");
     }
-    console.log(levelChunks);
-    return map;
+
+    return newMap;
 }
 
-function searchColumn(map, column) {
-    let chunks = [];
+function removeTiles(map, start, end, tile, col) {
+    if (tile == "=") {
+        for (var i = start; i < end; i++) {
+            map[i] = replaceChar(map[i], col)
+        }
+    }
+    return map
+}
+
+function addCollision(start, end, tile, col) {
+    if (tile == "=") {
+        add([
+            body({ isStatic: true, mass: 5 }),
+            pos(col* 64, end * 64),
+            area({ shape: new Rect(vec2(0, 0), 64, (end * 64) - (start * 64)) }),
+            offscreen({ hide: true }),
+            anchor("bot"),
+            z(100)
+        ])
+    }
+}
+
+function checkColumn(map, column) {
     let startCoord;
-    let currentChar;
     for (var i = 0; i < map.length; i++) {
         if (map[i].charAt(column) == "=") {
             if (i == 0) {
@@ -28,49 +48,83 @@ function searchColumn(map, column) {
                 }
             } else if (i == map.length - 1) {
                 if (map[i].charAt(column) == map[i - 1].charAt(column)) {
-                    chunks.push({ start: startCoord, end: i, tile: map[i].charAt(column), col: column });
+                    map = removeTiles(map, startCoord, i, map[i].charAt(column), column)
+                    addCollision(startCoord - 1, i, map[i].charAt(column), column)
                 }
             } else if (map[i].charAt(column) == map[i - 1].charAt(column)) {
                 if (map[i - 1].charAt(column) != map[i - 2].charAt(column)) {
                     startCoord = i - 1;
                 }
                 if (map[i].charAt(column) != map[i + 1].charAt(column)) {
-                    chunks.push({ start: startCoord, end: i, tile: map[i].charAt(column), col: column });
+                    map = removeTiles(map, startCoord, i, map[i].charAt(column), column)
+                    addCollision(startCoord - 1, i, map[i].charAt(column), column)
                 }
             }
         }
     }
-    return chunks;
+    return map
 }
 
-function searchLevel(map) {
-    let chunks = [];
-    for (var i = 0; i < map[0].length; i++) {
-        let col = searchColumn(map, i);
-        if (col.length != 0) {
-            chunks.push(searchColumn(map, i));
+export function checkLevel(map) {
+    let newMap = map.slice();
+    for (var i = 0; i < newMap[0].length; i++) {
+        newMap = checkColumn(newMap, i);
+    }
+    return newMap
+}
+
+function drawColumn(map, column) {
+    let startCoord;
+    for (var i = 0; i < map.length; i++) {
+        if (map[i].charAt(column) == "=") {
+            if (i == 0) {
+                startCoord = 0;
+            } else if (i == 1) {
+                if (map[i].charAt(column) != map[i - 1].charAt(column)) {
+                    startCoord = 1;
+                }
+            } else if (i == map.length - 1) {
+                if (map[i].charAt(column) == map[i - 1].charAt(column)) {
+                    drawVertChunk(startCoord - 1, i, map[i].charAt(column), column)
+                }
+            } else if (map[i].charAt(column) == map[i - 1].charAt(column)) {
+                if (map[i - 1].charAt(column) != map[i - 2].charAt(column)) {
+                    startCoord = i - 1;
+                }
+                if (map[i].charAt(column) != map[i + 1].charAt(column)) {
+                    drawVertChunk(startCoord - 1, i, map[i].charAt(column), column)
+                }
+            }
         }
     }
-    return chunks;
 }
 
-export function drawSprites(map) {
-    /*
-    for (var o = 0; o = levelChunks.length - 1; o++) {
-        for (var i = 0; i = levelChunks[o].length - 1; i++) {
-            console.log("Draw Sprites");
-        }
-    }*/
-    drawSprite({
-        sprite: "jumpy",
-        pos: vec2(0, 576),
-        width: 64,
-        height: 64,
-        tiled: true,
-        anchor: "bot"
-    })
+export function drawLevel(map) {
+    for (var i = 0; i < map[0].length; i++) {
+        drawColumn(map, i);
+    }
 }
 
-function removeTiles(map, chunks) {
+function drawVertChunk(start, end, tile, col) {
+    if (tile == "=") {
+        drawSprite({
+            sprite: "grass",
+            pos: vec2(col * 64, start * 64),
+            width: 64,
+            height: (end * 64) - (start * 64),
+            tiled: true,
+            anchor: "top"
+        })
+    }
+}
 
+
+// code that isn't stolen off the internet
+// VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV
+function replaceChar(orig, index) {
+    let first = orig.substr(0, index);
+    let last = orig.substr(index + 1);
+
+    let newStr = first + " " + last;
+    return newStr
 }
