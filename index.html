@@ -495,7 +495,88 @@
       //if(levelId > savedId) {
       //  setData(savedId, levelId)
       //}
+      //code for the clouds!
+      //create an array of cloud positions just as little bundles of x and y values
+      var cloudPositions = []
 
+      //determine the width of the level based on the LEVELS array
+      //each char is 64 px
+      //you have to find the longest level
+      var levelWidth = LEVELS[levelId].reduce((acc, row) => {
+        return row.length > acc ? row.length : acc
+      }, 0) * 64
+      var levelHeight = LEVELS[levelId].length * 64
+
+      //create a modified var of the level height that basically is where a cloud should spawn on the y axis
+      //it should be 200 on smaller levels and 400 on larger levels
+      var cloudHeight = levelHeight < 400 ? 200 : 400
+
+      //generate a bunch within the levelWidth
+      for (let i = 0; i < 10; i++) {
+        cloudPositions.push({ x: rand(0, levelWidth), y: rand(0, cloudHeight), dir: choose([LEFT, RIGHT]), speed: rand(.5, 1)})
+      }
+      
+      //draw a cloud sprite
+
+      onDraw(()=> {
+        if(cloudPositions.length > 0){
+          for (let i = 0; i < cloudPositions.length; i++) {
+            drawSprite({
+              sprite: "cloud",
+              pos: vec2(cloudPositions[i].x, cloudPositions[i].y),
+            })
+            //increment the x value of the cloud if it is less than the levelWidth and the direction is right
+            if (cloudPositions[i].dir === RIGHT && cloudPositions[i].x < levelWidth) {
+              cloudPositions[i].x += cloudPositions[i].speed
+            }
+            //decrement the x value of the cloud if it is greater than 0 and the direction is left
+            if (cloudPositions[i].dir === LEFT && cloudPositions[i].x > 0) {
+              cloudPositions[i].x -= cloudPositions[i].speed
+            }
+            //if cloud is at edge, flip it around
+            if (cloudPositions[i].x >= levelWidth) {
+              cloudPositions[i].dir = LEFT
+            }
+            if (cloudPositions[i].x <= 0) {
+              cloudPositions[i].dir = RIGHT
+            }
+          }
+          // if two clouds are overlapping, remove them from the array and add a tornado sprite onto the grid
+          for (let i = 0; i < cloudPositions.length; i++) {
+            for (let j = 0; j < cloudPositions.length; j++) {
+              if (i !== j && Math.abs(cloudPositions[i].x - cloudPositions[j].x) < 128 && Math.abs(cloudPositions[i].y - cloudPositions[j].y) < 128) {
+                add([
+                  sprite("tornado"),
+                  pos(cloudPositions[i].x, cloudPositions[i].y),
+                  area(),
+                  body(),
+                  "enemy",
+                  patrol()
+                ])
+                cloudPositions.splice(i, 1)
+                cloudPositions.splice(j, 1)
+              }
+            }
+          }
+        }
+
+      })
+      function patrol(speed = 60, dir = 1) {
+        return {
+          id: "patrol",
+          require: [ "pos", "area", ],
+          add() {
+            this.on("collide", (obj, col) => {
+              if (col.isLeft() || col.isRight()) {
+                dir = -dir
+              }
+            })
+          },
+          update() {
+            this.move(speed * dir, 0)
+          },
+        }
+      }
 
       try {
         //get the params from the url
@@ -982,84 +1063,7 @@ let hasFoundCoin = false;
         
       }*/
 
-      //code for the clouds!
-      //create an array of cloud positions just as little bundles of x and y values
-      var cloudPositions = []
-
-      //determine the width of the level based on the LEVELS array
-      //each char is 64 px
-      //you have to find the longest level
-      var levelWidth = LEVELS[levelId].reduce((acc, row) => {
-        return row.length > acc ? row.length : acc
-      }, 0) * 64
-      var levelHeight = LEVELS[levelId].length * 64
-
-      //generate a bunch within the levelWidth
-      for (let i = 0; i < 10; i++) {
-        cloudPositions.push({ x: rand(0, levelWidth), y: rand(0, 300), dir: choose([LEFT, RIGHT]), speed: rand(.5, 1)})
-      }
       
-      //draw a cloud sprite
-
-      onDraw(()=> {
-        if(cloudPositions.length > 0){
-          for (let i = 0; i < cloudPositions.length; i++) {
-            drawSprite({
-              sprite: "cloud",
-              pos: vec2(cloudPositions[i].x, cloudPositions[i].y),
-            })
-            //increment the x value of the cloud if it is less than the levelWidth and the direction is right
-            if (cloudPositions[i].dir === RIGHT && cloudPositions[i].x < levelWidth) {
-              cloudPositions[i].x += cloudPositions[i].speed
-            }
-            //decrement the x value of the cloud if it is greater than 0 and the direction is left
-            if (cloudPositions[i].dir === LEFT && cloudPositions[i].x > 0) {
-              cloudPositions[i].x -= cloudPositions[i].speed
-            }
-            //if cloud is at edge, flip it around
-            if (cloudPositions[i].x >= levelWidth) {
-              cloudPositions[i].dir = LEFT
-            }
-            if (cloudPositions[i].x <= 0) {
-              cloudPositions[i].dir = RIGHT
-            }
-          }
-          // if two clouds are overlapping, remove them from the array and add a tornado sprite onto the grid
-          for (let i = 0; i < cloudPositions.length; i++) {
-            for (let j = 0; j < cloudPositions.length; j++) {
-              if (i !== j && Math.abs(cloudPositions[i].x - cloudPositions[j].x) < 128 && Math.abs(cloudPositions[i].y - cloudPositions[j].y) < 128) {
-                add([
-                  sprite("tornado"),
-                  pos(cloudPositions[i].x, cloudPositions[i].y),
-                  area(),
-                  body(),
-                  "enemy",
-                  patrol(),
-                ])
-                cloudPositions.splice(i, 1)
-                cloudPositions.splice(j, 1)
-              }
-            }
-          }
-        }
-
-      })
-      function patrol(speed = 60, dir = 1) {
-        return {
-          id: "patrol",
-          require: [ "pos", "area", ],
-          add() {
-            this.on("collide", (obj, col) => {
-              if (col.isLeft() || col.isRight()) {
-                dir = -dir
-              }
-            })
-          },
-          update() {
-            this.move(speed * dir, 0)
-          },
-        }
-      }
 
 
       const score = add([
