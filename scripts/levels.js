@@ -1998,6 +1998,16 @@ const levelConf = {
       anchor("top"),
       "danger",
     ],
+    "t": () => [
+      sprite("tornado"),
+      patrol(),
+      offscreen({ hide: true }),
+      "enemy",
+      anchor("bot"),
+      area(), 
+      body(), 
+      "enemy",
+    ],
     "O": () => [
       sprite("portal"),
       area({ scale: 0.5, }),
