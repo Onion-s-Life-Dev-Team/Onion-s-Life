@@ -359,7 +359,7 @@
     
 
     import { LEVELS, levelConf } from './scripts/levels.js';
-    import { optimizeLevel, drawSprites } from "./scripts/levelOptimizer.js";
+    import { optimizeLevel, drawLevel, checkLevel } from "./scripts/levelOptimizer.js";
     import fixWater from "./scripts/waterFixer.js";
     //var scale = 1;
     //if (canvasWidth < 800){
@@ -601,6 +601,7 @@
         } else {
           //load the level
           addLevel(optimizeLevel(fixWater(LEVELS[levelId ?? 0])), levelConf);
+          checkLevel(LEVELS[levelId])
         }
       } catch(error ) {
         console.error('Error in loading custom level:', error);
@@ -623,8 +624,6 @@
 
 let hasFoundCoin = false;
 
-   
-
       const music = play("OverworldlyFoe", {
         volume: 1,
         loop: true
@@ -643,6 +642,7 @@ let hasFoundCoin = false;
           text(userID, { size: 15 }),
           //make it follow the onion
           pos(0, 0),
+          z(1),
           follow(onion, vec2(0, -20)),
 
         ])
@@ -676,6 +676,7 @@ let hasFoundCoin = false;
         text(levelNames[levelId], { size: 64 }),
         color(255, 255 - notRColor, 255 - notRColor),
         fixed(),
+        z(1),
         pos(40, 40),
       ])
 
@@ -868,7 +869,7 @@ let hasFoundCoin = false;
         myCoords = { x: onion.pos.x, y: onion.pos.y, level: levelId };
       })
       onDraw(() => {
-          // drawSprites(LEVELS[levelId]);
+          drawLevel(LEVELS[levelId]);
           let fpsTextPosition = { x: width() - 50, y: height() - 50 };
           drawText({
               text: debug.fps(),
@@ -1033,6 +1034,7 @@ let hasFoundCoin = false;
             text("You Lose", { size: 48 }),
             pos(pos(width()/2, height()/2 - 15),),
             anchor("center"),
+            z(1),
             color(255, 0, 0),
           ])
           // Can someone figure out how to get the pos of this correct
@@ -1650,7 +1652,7 @@ function button() {
         
         const nameSoFar = getCookie("name");
         if (nameSoFar) {
-          alert("Why did you use an offensive name? Tough, cause you're gonna get a random name.")
+          alert("Sorry, this functionality is currently disabled due to abuse.")
           removeCookie("name");
           //return nameSoFar to use custom name
           return randomNameGenerator();
