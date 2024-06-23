@@ -16,10 +16,25 @@ export function optimizeLevel(map) {
 
 
 function removeTiles(map, start, end, tile, col) {
-    for (var i = start; i < end; i++) {
-        map[i] = replaceChar(map[i], col)
+    if (tile == "=") {
+        for (var i = start; i < end; i++) {
+            map[i] = replaceChar(map[i], col)
+        }
     }
     return map
+}
+
+function addCollision(start, end, tile, col) {
+    if (tile == "=") {
+        add([
+            body({ isStatic: true, mass: 5 }),
+            pos(col* 64, end * 64),
+            area({ shape: new Rect(vec2(0, 0), 64, (end * 64) - (start * 64)) }),
+            offscreen({ hide: true }),
+            anchor("bot"),
+            z(100)
+        ])
+    }
 }
 
 function checkColumn(map, column) {
@@ -35,6 +50,7 @@ function checkColumn(map, column) {
             } else if (i == map.length - 1) {
                 if (map[i].charAt(column) == map[i - 1].charAt(column)) {
                     map = removeTiles(map, startCoord, i, map[i].charAt(column), column)
+                    addCollision(startCoord - 1, i, map[i].charAt(column), column)
                 }
             } else if (map[i].charAt(column) == map[i - 1].charAt(column)) {
                 if (map[i - 1].charAt(column) != map[i - 2].charAt(column)) {
@@ -42,6 +58,7 @@ function checkColumn(map, column) {
                 }
                 if (map[i].charAt(column) != map[i + 1].charAt(column)) {
                     map = removeTiles(map, startCoord, i, map[i].charAt(column), column)
+                    addCollision(startCoord - 1, i, map[i].charAt(column), column)
                 }
             }
         }
@@ -50,10 +67,11 @@ function checkColumn(map, column) {
 }
 
 export function checkLevel(map) {
-    for (var i = 0; i < map[0].length; i++) {
-        map = checkColumn(map, i);
+    let newMap = map.slice();
+    for (var i = 0; i < newMap[0].length; i++) {
+        newMap = checkColumn(newMap, i);
     }
-    return map
+    return newMap
 }
 
 function drawColumn(map, column) {
@@ -68,14 +86,14 @@ function drawColumn(map, column) {
                 }
             } else if (i == map.length - 1) {
                 if (map[i].charAt(column) == map[i - 1].charAt(column)) {
-                    drawChunk(startCoord - 1, i, map[i].charAt(column), column)
+                    drawVertChunk(startCoord - 1, i, map[i].charAt(column), column)
                 }
             } else if (map[i].charAt(column) == map[i - 1].charAt(column)) {
                 if (map[i - 1].charAt(column) != map[i - 2].charAt(column)) {
                     startCoord = i - 1;
                 }
                 if (map[i].charAt(column) != map[i + 1].charAt(column)) {
-                    drawChunk(startCoord - 1, i, map[i].charAt(column), column)
+                    drawVertChunk(startCoord - 1, i, map[i].charAt(column), column)
                 }
             }
         }
@@ -88,15 +106,17 @@ export function drawLevel(map) {
     }
 }
 
-function drawChunk(start, end, tile, col) {
-    drawSprite({
-        sprite: "jumpy",
-        pos: vec2(col * 64, start * 64),
-        width: 64,
-        height: (end * 64) - (start * 64),
-        tiled: true,
-        anchor: "top"
-    })
+function drawVertChunk(start, end, tile, col) {
+    if (tile == "=") {
+        drawSprite({
+            sprite: "grass",
+            pos: vec2(col * 64, start * 64),
+            width: 64,
+            height: (end * 64) - (start * 64),
+            tiled: true,
+            anchor: "top"
+        })
+    }
 }
 
 

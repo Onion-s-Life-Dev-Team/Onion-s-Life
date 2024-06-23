@@ -359,7 +359,7 @@
     
 
     import { LEVELS, levelConf } from './scripts/levels.js';
-    import { optimizeLevel, drawLevel } from "./scripts/levelOptimizer.js";
+    import { optimizeLevel, drawLevel, checkLevel } from "./scripts/levelOptimizer.js";
     import fixWater from "./scripts/waterFixer.js";
     //var scale = 1;
     //if (canvasWidth < 800){
@@ -520,6 +520,7 @@
         } else {
           //load the level
           addLevel(optimizeLevel(fixWater(LEVELS[levelId ?? 0])), levelConf);
+          checkLevel(LEVELS[levelId])
         }
       } catch(error ) {
         console.error('Error in loading custom level:', error);
@@ -541,8 +542,6 @@
       sendNewPlayer()
 
 let hasFoundCoin = false;
-
-   
 
       const music = play("OverworldlyFoe", {
         volume: 1,
