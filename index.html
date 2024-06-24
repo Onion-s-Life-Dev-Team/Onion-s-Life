@@ -1139,13 +1139,15 @@ let hasFoundCoin = false;
           setHighLevel(levelId)
         }
       })
+      /*
       onion.onCollide("arg", () => {
         music.paused = !music.paused;
         go("game", {
-          levelId: -1,
+          secretLevelId: 1,
           coins: coins,
         })
       })
+      */
       //jumpy code
       onion.onCollide("jumpy", () => {
         play("jumpy")
