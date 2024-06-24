@@ -2321,4 +2321,4 @@ function patrol(speed = 60, dir = 1) {
 
 
 
-export { LEVELS, levelConf }
+export { LEVELS, SECRET_LEVELS, levelConf }
