@@ -2245,7 +2245,7 @@ const levelConf = {
       anchor("bot"),
       "achievement",
       {
-        achName: " ",
+        achName: "...",
         achDesc: " ",
         achSprite: "spike",
       },
