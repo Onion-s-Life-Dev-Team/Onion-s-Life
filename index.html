@@ -1668,7 +1668,7 @@ function button() {
       var unlocked = false;
       if (onions[onionId] === "onion-secret") {
         for (let achievement of checkAchievements()) {
-          if (achievement.name === "?") {
+          if (achievement.name === "...") {
             unlocked = true;
             const onionSelect = add([
               sprite(onions[onionId]),
