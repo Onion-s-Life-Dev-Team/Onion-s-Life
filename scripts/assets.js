@@ -68,6 +68,7 @@ export default function loadAssets() {
   loadSprite("onion-ocean","assets/sprites/onion-ocean.png")
   loadSprite("onion-secret","assets/sprites/onion-secret.png")
   loadSprite("winSpin", "assets/sprites/portal.png")
+  loadSprite("winSpinBtn", "assets/sprites/winSpinBtn.png")
   
   loadSprite("water", "assets/sprites/water.png")
   loadSprite("sand", "assets/sprites/sand.png")

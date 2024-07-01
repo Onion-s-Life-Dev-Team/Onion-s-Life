@@ -1272,10 +1272,23 @@ function button() {
         area(),
         anchor("center"),
         pos(width() / 2 - 450, height() * 0.9),
-      ])
+      ]) 
 
       onClick("ach", () => {
         go("achievements");
+      })
+
+      const winSpinBtn = add([
+        sprite("winSpinBtn"),
+        "winSpin",
+        fixed(),
+        area(),
+        anchor("center"),
+        pos(width() / 2 + 450, height() * 0.9),
+      ])
+
+      onClick("winSpin", () => {
+        go("winSpins");
       })
 
       startBtn.add([
