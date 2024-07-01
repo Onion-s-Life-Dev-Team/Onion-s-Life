@@ -84,6 +84,7 @@
     import { handleAchievementCollision, checkAchievements, hasAchievement } from "./scripts/achievement.js";
     import { addCoin, retrieveCoins, storeCoins } from "./scripts/coinManager.js";
     import { hasSkin, saveSkin } from "./scripts/skinManager.js";
+    import { getWinSpins, useWinSpin, spinWheel, addWinSpin } from './scripts/winSpins.js';
 
     console.log(checkAchievements())
 
@@ -869,6 +870,21 @@ let hasFoundCoin = false;
       onion.onCollide("block", (ground) => {
         canDoubleJump = true
       })
+      onion.onCollide("winSpin", (winSpin)=>{
+        addWinSpin()
+        destroy(winSpin)
+        //print text to the screen for five seconds that you have a win spin
+        const winSpinText = add([
+          text("You have a Win Spin!", { align: "center", size: 30 }),
+          pos(width()/2, 50),
+          color(255, 255, 0),
+          fixed(),
+          z(1),
+        ])
+        setTimeout(() => {
+          destroy(winSpinText)
+        }, 5000)
+      })
       
       //write a function to see if an onion is in water
       function isOnionInWater(onion, waterAreas) {
@@ -1185,6 +1201,9 @@ function button() {
 
       onKeyPress("m", () => {
         go("multiplayer");
+      })
+      onKeyPress("w", () => {
+        go("winSpins");
       })
       onKeyPress("a", () => {
         go("achievements");
@@ -1963,6 +1982,135 @@ function button() {
     //     })
     //   })
     // })
+
+
+    scene("winSpins", () => {
+      const spins = getWinSpins();
+      let isSpinning = false; // Flag to check if spinning is in progress
+      let isPrizeReady = false; // Flag to check if prize is ready to be accepted
+
+      add([
+        text("WinSpins", { size: 64 }),
+        pos(40, 40),
+      ]);
+
+      const spinCount = add([
+        text(`Available Spins: ${spins}`, { size: 48 }),
+        pos(40, 120),
+      ]);
+
+      const underPrizeBtn = add([
+        sprite("lvlbtn"),
+        pos(width() / 2, height() / 2),
+        scale(1.15),
+        area(),
+        anchor("center"),
+        "underPrizeBtn",
+      ]);
+
+      const prizeSprite = add([
+        sprite("invisdanger"),
+        pos(width() / 2, height() / 2),
+        anchor("center"),
+      ]);
+
+      underPrizeBtn.prizeText = add([
+        text("SPIN", { size: 40 }),
+        pos(width() / 2, height() / 2),
+        anchor("center"),
+      ]);
+
+      underPrizeBtn.collectText = add([
+        text("", { size: 20 }),
+        pos(width() / 2, height() / 2 + 40),
+        anchor("center"),
+      ]);
+
+      const prizes = ["coins", "skin", "winSpin"];
+      const prizeSprites = ["coin", "onion-beach", "portal", "onion-blue", "onion-dark", "onion-gold", "onion-watermelon", "onion-eggplant", "onion-magic", "onion-pumpkin", "onion-invert", "onion-ocean"];
+
+      function animateSpin(callback) {
+        let index = 0;
+        const animationDuration = 2000; // total duration of the animation
+        const intervalDuration = 100; // interval between sprite changes
+        const totalIntervals = animationDuration / intervalDuration;
+
+        const interval = setInterval(() => {
+          prizeSprite.use(sprite(prizeSprites[index % prizeSprites.length]));
+          underPrizeBtn.prizeText.text = "";
+          index++;
+        }, intervalDuration);
+
+        setTimeout(() => {
+          clearInterval(interval);
+          callback();
+        }, animationDuration);
+      }
+
+      onClick("underPrizeBtn", () => {
+        if (isSpinning || isPrizeReady) return; // Prevent button action if spinning or prize is ready
+        if (useWinSpin()) {
+          isSpinning = true; // Set spinning flag to true
+          underPrizeBtn.opacity = 0.5; // Grey out the button
+          animateSpin(() => {
+            const prize = prizes[Math.floor(Math.random() * prizes.length)];
+            switch (prize) {
+              case "coins":
+                prizeSprite.use(sprite("coin"));
+                underPrizeBtn.prizeText.text = "COINS";
+                break;
+              case "skin":
+                const randomSkin = "onion-" + ["beach", "blue", "dark", "gold", "watermelon", "eggplant", "magic", "pumpkin", "invert", "ocean"][Math.floor(Math.random() * 11)];
+                prizeSprite.use(sprite(randomSkin));
+                underPrizeBtn.prizeText.text = "SKIN";
+                break;
+              case "winSpin":
+                prizeSprite.use(sprite("portal"));
+                underPrizeBtn.prizeText.text = "WINSPIN";
+                break;
+            }
+            underPrizeBtn.prizeText.pos.y = (prizeSprite.height / 2) + (height() / 2) + 40;
+            underPrizeBtn.collectText.pos.y = (prizeSprite.height / 2) + (height() / 2) + 80;
+            underPrizeBtn.collectText.text = "COLLECT";
+            spinCount.text = `Available Spins: ${getWinSpins()}`;
+            isSpinning = false; // Reset spinning flag to false
+            isPrizeReady = true; // Set prize ready flag to true
+            underPrizeBtn.opacity = 1; // Restore button opacity
+          });
+        } else {
+          alert("No WinSpins available!");
+        }
+      });
+
+      onClick("underPrizeBtn", () => {
+        if (!isPrizeReady) return; // Prevent accepting prize if not ready
+        const prizeText = underPrizeBtn.prizeText.text;
+        switch (prizeText) {
+          case "COINS":
+            addCoin();
+            break;
+          case "SKIN":
+            const skinSprite = prizeSprite.sprite;
+            saveSkin(skinSprite.name);
+            break;
+          case "WINSPIN":
+            addWinSpin();
+            break;
+        }
+        underPrizeBtn.prizeText.text = "SPIN"; // Reset button text
+        underPrizeBtn.collectText.text = ""; // Reset collect text
+        isPrizeReady = false; // Reset prize ready flag
+      });
+
+      onKeyPress('b', () => {
+        go("title");
+      });
+    });
+
+
+
+    
+
     scene("achievements", () =>{
       onKeyPress('b', () => {
         go("title");
