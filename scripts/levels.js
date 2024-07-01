@@ -2292,7 +2292,8 @@ const levelConf = {
       sprite("winSpin"),
       area(),
       offscreen({ hide: true }),
-      anchor("bot"),
+      anchor("center"),
+      rotate(0),
       "winSpin"
     ],
   },

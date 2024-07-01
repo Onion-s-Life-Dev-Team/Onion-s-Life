@@ -885,6 +885,14 @@ let hasFoundCoin = false;
           destroy(winSpinText)
         }, 5000)
       })
+
+      //get all winspins
+      const winSpins = get("winSpin", { recursive: true });
+      for(let i = 0; i < winSpins.length; i++){
+        winSpins[i].onUpdate(() => {
+          winSpins[i].angle += 120 * dt();
+        })
+      }
       
       //write a function to see if an onion is in water
       function isOnionInWater(onion, waterAreas) {
