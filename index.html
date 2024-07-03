@@ -360,7 +360,7 @@
     
 
     import { LEVELS, SECRET_LEVELS, levelConf } from './scripts/levels.js';
-    import { optimizeLevel, drawLevel, checkLevel } from "./scripts/levelOptimizer.js";
+    import { optimizeLevel, checkLevel } from "./scripts/levelOptimizer.js";
     import fixWater from "./scripts/waterFixer.js";
     //var scale = 1;
     //if (canvasWidth < 800){
@@ -789,7 +789,6 @@ let hasFoundCoin = false;
         myCoords = { x: onion.pos.x, y: onion.pos.y, level: levelId };
       })
       onDraw(() => {
-          drawLevel(LEVELS[levelId]);
           let fpsTextPosition = { x: width() - 50, y: height() - 50 };
           drawText({
               text: debug.fps(),
