@@ -31,7 +31,19 @@ function addCollision(start, end, tile, col) {
             area({ shape: new Rect(vec2(0, 0), 64, (end * 64) - (start * 64)) }),
             offscreen({ hide: true }),
             anchor("bot"),
-            z(100)
+            offscreen({ hide: true, distance: (end * 64) - (start * 64)}),
+            {
+                draw() {
+                    drawSprite({
+                        sprite: "grass",
+                        pos: vec2(col * 64, start * 64) - 64,
+                        width: 64,
+                        height: (end * 64) - (start * 64),
+                        tiled: true,
+                        anchor: "bot"
+                    })
+                }
+            }
         ])
     }
 }
@@ -72,52 +84,6 @@ export function checkLevel(map) {
     }
     return newMap
 }
-
-function drawColumn(map, column) {
-    let startCoord;
-    for (var i = 0; i < map.length; i++) {
-        if (map[i].charAt(column) == "=") {
-            if (i == 0) {
-                startCoord = 0;
-            } else if (i == 1) {
-                if (map[i].charAt(column) != map[i - 1].charAt(column)) {
-                    startCoord = 1;
-                }
-            } else if (i == map.length - 1) {
-                if (map[i].charAt(column) == map[i - 1].charAt(column)) {
-                    drawVertChunk(startCoord - 1, i, map[i].charAt(column), column)
-                }
-            } else if (map[i].charAt(column) == map[i - 1].charAt(column)) {
-                if (map[i - 1].charAt(column) != map[i - 2].charAt(column)) {
-                    startCoord = i - 1;
-                }
-                if (map[i].charAt(column) != map[i + 1].charAt(column)) {
-                    drawVertChunk(startCoord - 1, i, map[i].charAt(column), column)
-                }
-            }
-        }
-    }
-}
-
-export function drawLevel(map) {
-    for (var i = 0; i < map[0].length; i++) {
-        drawColumn(map, i);
-    }
-}
-
-function drawVertChunk(start, end, tile, col) {
-    if (tile == "=") {
-        drawSprite({
-            sprite: "grass",
-            pos: vec2(col * 64, start * 64),
-            width: 64,
-            height: (end * 64) - (start * 64),
-            tiled: true,
-            anchor: "top"
-        })
-    }
-}
-
 
 // code that isn't stolen off the internet
 // VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV
