@@ -1305,6 +1305,9 @@ function button() {
       ])
 
       onClick("start", () => {
+        if(!hasSkin(onions[onionId])){
+          onionId = 0;
+        }
         go("game");
       })
 
