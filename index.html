@@ -683,6 +683,127 @@ let hasFoundCoin = false;
         moveOnion(true, 400)
       })
 
+      let funCameraMode = false;
+      const cameraSpeed = 2;
+      let zoomLevel = 3;  // Start zoomed in
+      let effectState = 0;
+      let effectTimer = 0;
+
+      const effects = {
+        wanted: () => ({
+          "u_time": time(),
+          "u_radius": 64,
+          "u_blur": 64,
+          "u_resolution": vec2(width(), height()),
+          "u_mouse": mousePos(),
+          "u_size": wave(2, 3, time() * 2),
+        }),
+      };
+
+      loadShader("wanted", null, `uniform float u_radius;
+uniform float u_blur;
+uniform vec2 u_resolution;
+uniform vec2 u_mouse;
+
+vec4 frag(vec2 pos, vec2 uv, vec4 color, sampler2D tex) {
+	if (u_radius <= 0.0) return def_frag();
+	vec2 center = u_mouse / u_resolution * vec2(1, -1) + vec2(0, 1);
+	float dist = distance(uv * u_resolution, center * u_resolution);
+	float alpha = smoothstep(max((dist - u_radius) / u_blur, 0.0), 0.0, 1.0);
+	return mix(vec4(0, 0, 0, 1), def_frag(), 1.0 - alpha);
+}
+
+`);
+
+      let curEffect = 0;
+
+      // Function to toggle fun camera mode
+      function toggleFunCameraMode() {
+        funCameraMode = !funCameraMode;
+        if (funCameraMode) {
+          console.log("Wanted Onion Effect Enabled");
+          zoomLevel = 3;
+          effectState = 0;
+          effectTimer = 0;
+        } else {
+          console.log("Wanted Onion Effect Disabled");
+        }
+      }
+
+      // Event listener for the "e" key press
+      onKeyPress("w", () => {
+        toggleFunCameraMode();
+      });
+
+      // Function to apply Wanted Onion camera effects
+      function applyWantedOnionEffects() {
+        if (funCameraMode) {
+          const t = time() * cameraSpeed;
+          effectTimer += dt();
+          
+          switch (effectState) {
+            case 0: // Initial zoom in
+              camScale(vec2(zoomLevel));
+              if (effectTimer > 1) { // After 1 second
+                effectTimer = 0;
+                effectState = 1;
+              }
+              break;
+            case 1: // Dramatically zoom out
+              zoomLevel -= dt() * 2; // Zoom out faster
+              camScale(vec2(zoomLevel));
+              if (zoomLevel < 0.5) {
+                zoomLevel = 0.5;
+                effectTimer = 0;
+                effectState = 2;
+              }
+              break;
+            case 2: // Spin around
+              camPos(
+                onion.pos.x + Math.sin(effectTimer * cameraSpeed) * 200,
+                onion.pos.y + Math.cos(effectTimer * cameraSpeed) * 200
+              );
+              camRot(Math.sin(t) * 5);
+              if (effectTimer > 2 * Math.PI / cameraSpeed) { // After one full rotation
+                effectTimer = 0;
+                effectState = 3;
+              }
+              break;
+            case 3: // Zoom way back
+              zoomLevel += dt() * 2; // Zoom back in faster
+              camScale(vec2(zoomLevel));
+              if (zoomLevel > 3) {
+                zoomLevel = 3;
+                effectTimer = 0;
+                effectState = 4;
+              }
+              break;
+            case 4: // Final state: loop back to zoom out
+              effectState = 1;
+              break;
+          }
+        } else {
+          // Reset camera to default state when effect is off
+          camScale(vec2(1));
+          camRot(0);
+          camPos(onion.pos);
+        }
+      }
+
+      // Update the camera effects in the game loop
+      onUpdate(() => {
+        applyWantedOnionEffects();
+
+        if (funCameraMode) {
+          const effect = Object.keys(effects)[curEffect];
+          usePostEffect(effect, effects[effect]());
+        } else {
+          usePostEffect(null); // Disable post effect when funCameraMode is off
+        }
+      });
+
+
+
 
       onKeyDown('right', () => {
         moveOnion(false, 400)
