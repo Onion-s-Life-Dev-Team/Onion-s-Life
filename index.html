@@ -121,6 +121,7 @@
     var multiplayerEnabled = true;
     var speedCap = 400; // raising this raises the max speed
     var canDoubleJump = false;
+    let funCameraMode = false;
 
     var pumpkinBought = hasSkin("onion-pumpkin");
     var invertBought = hasSkin("onion-invert");
@@ -683,7 +684,6 @@ let hasFoundCoin = false;
         moveOnion(true, 400)
       })
 
-      let funCameraMode = false;
       const cameraSpeed = 2;
       let zoomLevel = 3;  // Start zoomed in
       let effectState = 0;
@@ -692,10 +692,10 @@ let hasFoundCoin = false;
       const effects = {
         wanted: () => ({
           "u_time": time(),
-          "u_radius": 64,
+          "u_radius": 32 * zoomLevel ,
           "u_blur": 64,
-          "u_resolution": vec2(width(), height()),
-          "u_mouse": mousePos(),
+          "u_resolution": vec2(width() - (onion.width / 2), height() - (onion.height / 2)),
+          "u_mouse": vec2(width() / 2, height() / 2),
           "u_size": wave(2, 3, time() * 2),
         }),
       };
@@ -802,7 +802,13 @@ vec4 frag(vec2 pos, vec2 uv, vec4 color, sampler2D tex) {
         }
       });
 
-
+      onion.onCollide("lightbulb", (lightbulb) => {
+        if (lightbulb.exists()){
+        destroy(lightbulb);
+        }
+        toggleFunCameraMode();
+        
+      });
 
 
       onKeyDown('right', () => {
