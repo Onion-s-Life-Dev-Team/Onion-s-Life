@@ -476,6 +476,13 @@
         userID = randomNameGenerator();
       }
 
+      //I now dislike lighting
+      //destroy all lights
+      const lights = get("lightbulb", { recursive: true });
+      for (const light of lights) {
+        destroy(light);
+      }
+
       if (first) {
         levelId = slctId;
         first = false;
