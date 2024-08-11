@@ -476,6 +476,7 @@
         userID = randomNameGenerator();
       }
 
+
       if (first) {
         levelId = slctId;
         first = false;
@@ -592,7 +593,6 @@ let hasFoundCoin = false;
       ];
 
       var notRColor = 255 * (levelId / levelNames.length);
-      console.log(levelNames[levelId]);
       add([
         text(levelNames[levelId], { size: 64 }),
         color(255, 255 - notRColor, 255 - notRColor),
@@ -600,6 +600,13 @@ let hasFoundCoin = false;
         z(1),
         pos(40, 40),
       ])
+
+      //I now dislike lighting
+      //destroy all lights
+      const lights = get("lightbulb", { recursive: true });
+      for (const light of lights) {
+        destroy(light);
+      }
 
       //that music annoys me
       onKeyPress('s', () => {
