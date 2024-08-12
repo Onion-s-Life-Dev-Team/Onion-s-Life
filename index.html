@@ -85,6 +85,7 @@
     import { addCoin, retrieveCoins, storeCoins } from "./scripts/coinManager.js";
     import { hasSkin, saveSkin } from "./scripts/skinManager.js";
     import { getWinSpins, useWinSpin, spinWheel, addWinSpin } from './scripts/winSpins.js';
+    import { getPack } from "./scripts/packHandler.js";
 
     console.log(checkAchievements())
 
@@ -1352,6 +1353,10 @@ function button() {
       onKeyPress("n", () => {
         go("name");
       })
+      onKeyPress("u", () => {
+        getPack();
+      })
+
 
       var randTypo = Math.round((Math.random() * 10000))
       console.log(randTypo);
