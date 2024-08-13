@@ -58,3 +58,10 @@ Achievements are there own sprites. To add, do the following:
 3. Add the sprite to a level (not supported yet in level designer)
 4. Make a PR with your level's achievement
 5. We might accept your achievement into the game!
+
+## Related Repositories
+
+1. [randomalt1123/randomalt1123.github.io](https://github.com/randomalt1123/randomalt1123.github.io)
+a. Contains the home page of the website ([onions.life](https://onions.life))
+2. [LagTheSystem/OnionsPack](https://github.com/LagTheSystem/OnionsPack)
+a. Contains an Onion's Life resource pack template
