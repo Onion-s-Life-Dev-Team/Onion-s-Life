@@ -2,8 +2,12 @@ import { textures, sounds, music } from "./resourcePaths.js";
 
 export function getPack() {
     var url = prompt("Insert Pack URL:");
-    if (url.charAt(url.length - 1) != "/") {
-        url += "/";
+    if (url != null) {
+        if (url.charAt(url.length - 1) != "/") {
+            url += "/";
+        }
+    } else {
+        return;
     }
 
     textures.forEach((element) => {
