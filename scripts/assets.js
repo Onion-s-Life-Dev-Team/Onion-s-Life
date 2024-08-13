@@ -1,12 +1,17 @@
-import { textureIds, texturePaths, soundIds, soundPaths, musicIds, musicPaths } from "./resourcePaths.js";
+import { textures, sounds, music } from "./resourcePaths.js";
+
+/*
+ * Go to scripts/resourcePaths.js to add new textures/sounds/music
+ * - LagTheSystem
+ */
 
 export default function loadAssets() {
   // load sprites
-  batchAssets(textureIds, texturePaths, "sprite");
+  batchAssets(textures, "sprite");
   // load sound
-  batchAssets(soundIds, soundPaths, "sound");
+  batchAssets(sounds, "sound");
   // load music
-  batchAssets(musicIds, musicPaths, "music");
+  batchAssets(music, "music");
   
   loadFont('apl386', 'assets/apl386.woff2', { outline: 4, filter: 'linear'})
 
@@ -39,16 +44,16 @@ export default function loadAssets() {
   })
 }
 
-function batchAssets(ids, paths, loadType) {
-  for (var i = 0; i < ids.length; i++) {
+function batchAssets(data, loadType) {
+  data.forEach((element) => {
     if (loadType == "sprite") {
-      loadSprite(ids[i], paths[i]);
+      loadSprite(element[0], element[1]);
     } else if (loadType == "sound") {
-      loadSound(ids[i], paths[i]);
+      loadSound(element[0], element[1]);
     } else if (loadType == "music") {
-      loadMusic(ids[i], paths[i]);
+      loadMusic(element[0], element[1]);
     } else {
-      console.error("Textures failed to load! Invalid loadType.");
+      console.error(element[0] + " failed to load! Invalid loadType.");
     }
-  }
+  });
 }
