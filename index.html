@@ -77,7 +77,7 @@
   <script type="module">
 
     // import kaboom.js
-    import kaboom from "https://unpkg.com/kaplay@3001.0.0-alpha.14/dist/kaboom.mjs"
+    import kaboom from "https://unpkg.com/kaplay@4000.0.0-alpha.1/dist/kaboom.mjs"
     import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
     import registerTouchControls from "./scripts/touchCode.js";
     import loadAssets from "./scripts/assets.js";
@@ -85,6 +85,7 @@
     import { addCoin, retrieveCoins, storeCoins } from "./scripts/coinManager.js";
     import { hasSkin, saveSkin } from "./scripts/skinManager.js";
     import { getWinSpins, useWinSpin, spinWheel, addWinSpin } from './scripts/winSpins.js';
+    import { getPack } from "./scripts/packHandler.js";
 
     console.log(checkAchievements())
 
@@ -1352,6 +1353,10 @@ function button() {
       onKeyPress("n", () => {
         go("name");
       })
+      onKeyPress("u", () => {
+        getPack();
+      })
+
 
       var randTypo = Math.round((Math.random() * 10000))
       console.log(randTypo);
