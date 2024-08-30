@@ -86,7 +86,7 @@
   <script type="module">
 
     // import kaboom.js
-    import kaboom from "https://unpkg.com/kaplay@4000.0.0-alpha.1/dist/kaboom.mjs"
+    import kaboom from "https://unpkg.com/kaplay@4000.0.0-alpha.3/dist/kaboom.mjs"
     import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
     import registerTouchControls from "./scripts/touchCode.js";
     import loadAssets from "./scripts/assets.js";
@@ -1393,7 +1393,7 @@ function button() {
         "start",
         fixed(),
         area(),
-        scale(),
+        scale(0.421875),
         anchor("center"),
         pos(width() / 2, height() * 0.9),
       ])
@@ -1401,6 +1401,7 @@ function button() {
       const lvlSelect = add([
         sprite("lvlSelect"),
         "lvlSelect",
+        scale(0.421875),
         fixed(),
         area(),
         anchor("center"),
@@ -1410,6 +1411,7 @@ function button() {
       const skinsBtn = add([
         sprite("skinsBtn"),
         "skins",
+        scale(0.421875),
         fixed(),
         area(),
         anchor("center"),
@@ -1422,6 +1424,7 @@ function button() {
 
       const achBtn = add([
         sprite("achBtn"),
+        scale(0.421875),
         "ach",
         fixed(),
         area(),
@@ -1438,6 +1441,7 @@ function button() {
         "winSpin",
         fixed(),
         area(),
+        scale(0.421875),
         anchor("center"),
         pos(width() / 2 + 450, height() * 0.9),
       ])
@@ -1448,6 +1452,7 @@ function button() {
 
       startBtn.add([
         text("PLAY", { size: 64 }),
+        scale(2.37037037037),
         fixed(),
         anchor("center"),
       ])
@@ -1873,6 +1878,7 @@ function button() {
           const onionSelect = add([
             sprite("skinsBtn"),
             "btn",
+            scale(0.421875),
             pos(width() / 2, height() / 2),
             area(),
             anchor("center"),
@@ -1900,6 +1906,7 @@ function button() {
           const onionSelect = add([
             sprite("skinsBtn"),
             "btn",
+            scale(0.421875),
             pos(width() / 2, height() / 2),
             area(),
             anchor("center"),
@@ -1923,11 +1930,13 @@ function button() {
           ]);
           const startBtn = add([
             sprite("startbtn"),
+            scale(0.421875),
             pos(width() / 2, height() * 0.7),
             anchor("center"),
           ]);
           startBtn.add([
             text("Bought", { size: 64 }),
+            scale(2.37037037037),
             fixed(),
             anchor("center"),
           ]);
@@ -1968,11 +1977,13 @@ function button() {
           ]);
           const startBtn = add([
             sprite("startbtn"),
+            scale(0.421875),
             pos(width() / 2, height() * 0.7),
             anchor("center"),
           ]);
           startBtn.add([
             text("Bought", { size: 64 }),
+            scale(2.37037037037),
             fixed(),
             anchor("center"),
           ]);
