@@ -2189,6 +2189,7 @@ const levelConf = {
       anchor("bot"),
       offscreen({ hide: true }),
       area(),
+      scale(0.25),
     ],
     "a": () => [
       sprite("achievement"),
@@ -2294,6 +2295,7 @@ const levelConf = {
       offscreen({ hide: true }),
       anchor("center"),
       rotate(0),
+      scale(0.25),
       "winSpin"
     ],
     "4": () => [
