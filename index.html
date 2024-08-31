@@ -428,8 +428,8 @@
     var loops = 0;
     var lvlWidth = 0;
     var jumpCount = 0;
-    var subX = 0;
-    var subY = 0;
+    var offsetY = 0;
+    var offsetX = 0;
     // Set a cookie
     function setCookie(name, value, days) {
       let expires = "";
@@ -1497,6 +1497,7 @@ function button() {
       add([
         // list of components
         sprite("bigonion"),
+        scale(0.5),
         pos(width() / 2 - 115, height() / 2 - 126),
       ])
 
@@ -1540,7 +1541,8 @@ function button() {
         // list of components
         sprite("lvlbtn"),
         "btn",
-        pos(width() / 2 - 128, height() / 2 - 128),
+        anchor("center"),
+        pos(width() / 2, height() / 2),
         area(),
 
       ])
@@ -1557,23 +1559,23 @@ function button() {
 
       if (slctId > 9) {
         lvlWidth = 250;
-        subX = 120;
-        subY = 90;
+        offsetY = 0;
+        offsetX = 15;
       }
       if (slctId < 10) {
         lvlWidth = 100;
-        subX = 55;
-        subY = 290;
+        offsetY = -75;
+        offsetX = 0;
       }
-
+      
       add([
         text(slctId, {
           size: 150,
           width: lvlWidth,
           height: 180,
         }),
-        pos(width() / 2, height() / 2),
         anchor("center"),
+        pos(width() / 2 + offsetX, height() / 2 + offsetY),
       ])
       //touchscreen
       const leftArrow = add([
