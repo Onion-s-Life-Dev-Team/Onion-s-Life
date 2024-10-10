@@ -77,6 +77,8 @@
         const levelDisplay = document.getElementById('levelDisplay');
         let selectedTile = ' '; // Default to empty space
         let isDragging = false;
+        let levelWidth = 64;
+        let levelHeight = 42;
 
         tools.addEventListener('click', function(event) {
             if (event.target.tagName === 'BUTTON') {
@@ -137,7 +139,6 @@
                     selectedTile = 'i';
                     break;
                 case 'KeyS': // 'S' key
-                    //ask if the user wants sand or invis spike
                     if(confirm("Would you like to place sand? If not, invis spike will be placed.")){
                         selectedTile = 's';
                     } else {
@@ -156,14 +157,13 @@
                 case 'Digit1': // '1' key
                     selectedTile = '!';
                     break;
-                // Add more cases for additional key bindings
                 default:
                     break;
             }
         });
 
-        const LEVELS = [
-            Array.from({length: 42}, () => Array(64).fill(' ')) // Create 20 rows of 64 columns filled with empty space
+        let LEVELS = [
+            Array.from({length: levelHeight}, () => Array(levelWidth).fill(' ')) // Create rows of columns filled with empty space
         ];
 
         function getImageUrl(tile) {
@@ -187,7 +187,7 @@
                 case 'G': return 'assets/sprites/ghosty.png';
                 case '!': return 'assets/sprites/darrow.png';
                 case 'v': return 'assets/sprites/dspike.png';
-                case '?': return 'assets/sprites/fake.png'; // Add paths for each tile type
+                case '?': return 'assets/sprites/fake.png';
                 case 's': return 'assets/sprites/sand.png';
                 case 'w': return 'assets/sprites/water.png';
                 default: return ''; // Default image for unknown types
@@ -261,7 +261,19 @@
         }
 
         let currentLevel = 0;
-        drawLevel(LEVELS[currentLevel]);
+
+        // Function to create a level with user-defined dimensions
+        function createLevel() {
+            const widthInput = prompt("Enter level width (columns):", levelWidth);
+            const heightInput = prompt("Enter level height (rows):", levelHeight);
+            levelWidth = parseInt(widthInput) || levelWidth;
+            levelHeight = parseInt(heightInput) || levelHeight;
+            LEVELS[0] = Array.from({length: levelHeight}, () => Array(levelWidth).fill(' '));
+            drawLevel(LEVELS[0]);
+        }
+
+        // Create the level when the page loads
+        createLevel();
 
         setInterval(() => {
             localStorage.setItem('savedLevel', JSON.stringify(LEVELS[currentLevel]));
@@ -269,8 +281,7 @@
 
         document.getElementById('resetLevel').addEventListener('click', () => {
             if(confirm("Are you sure you would like to reset your level?")){
-                LEVELS[0] = Array.from({length: 42}, () => Array(64).fill(' ')) // Create 20 rows of 64 columns filled with empty space
-                drawLevel(LEVELS[0]);
+                createLevel();
                 if(confirm("Would you like to save your changes?")){
                     localStorage.setItem('savedLevel', JSON.stringify(LEVELS[0]));
                 }
@@ -279,7 +290,6 @@
 
         document.getElementById('importLevel').addEventListener('click', () => {
             const levelString = prompt("Paste the level string here (remove the last comma in the array first, if there is one after the last string):");
-            // Replace single quotes with double quotes before parsing
             const levelArray = JSON.parse(levelString.replace(/'/g, '"'));
             importLevel(levelArray);
         });
@@ -299,10 +309,10 @@
         });
 
         const loadedLevel = JSON.parse(localStorage.getItem('savedLevel'));
-            if (loadedLevel) {
-                LEVELS[currentLevel] = loadedLevel;
-                drawLevel(LEVELS[currentLevel]);
-            }
+        if (loadedLevel) {
+            LEVELS[currentLevel] = loadedLevel;
+            drawLevel(LEVELS[currentLevel]);
+        }
     </script>
 </body>
 </html>
