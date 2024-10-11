@@ -268,8 +268,8 @@
         const heightInput = prompt("Enter level height (rows):", levelHeight);
         
         // Update the levelWidth and levelHeight based on user input
-        levelWidth = parseInt(widthInput) || levelWidth;
-        levelHeight = parseInt(heightInput) || levelHeight;
+        localStorage.setItem('levelWidth', parseInt(widthInput) || levelWidth);
+        localStorage.setItem('levelHeight', parseInt(heightInput) || levelHeight);
         
         // Update the width and height of the levelDisplay element
         levelDisplay.style.width = `${32 * levelWidth}px`;   // Width of levelDisplay (32px * levelWidth)
