@@ -77,8 +77,8 @@
         const levelDisplay = document.getElementById('levelDisplay');
         let selectedTile = ' '; // Default to empty space
         let isDragging = false;
-        let levelWidth = 64;
-        let levelHeight = 42;
+        let levelWidth = parseInt(localStorage.getItem('levelWidth')) || 64;
+        let levelHeight = parseInt(localStorage.getItem('levelHeight')) || 42;
 
         tools.addEventListener('click', function(event) {
             if (event.target.tagName === 'BUTTON') {
@@ -264,29 +264,28 @@
 
         // Function to create a level with user-defined dimensions
         function createLevel() {
-        const widthInput = prompt("Enter level width (columns):", levelWidth);
-        const heightInput = prompt("Enter level height (rows):", levelHeight);
-        
-        // Update the levelWidth and levelHeight based on user input
-        localStorage.setItem('levelWidth', parseInt(widthInput) || levelWidth);
-        localStorage.setItem('levelHeight', parseInt(heightInput) || levelHeight);
-        
-        // Update the width and height of the levelDisplay element
-        levelDisplay.style.width = `${32 * levelWidth}px`;   // Width of levelDisplay (32px * levelWidth)
-        levelDisplay.style.height = `${32 * levelHeight}px`; // Height of levelDisplay (32px * levelHeight)
-        
-        // Initialize the LEVELS array with the new dimensions
-        LEVELS[0] = Array.from({ length: levelHeight }, () => Array(levelWidth).fill(' '));
+            const widthInput = prompt("Enter level width (columns):", levelWidth);
+            const heightInput = prompt("Enter level height (rows):", levelHeight);
+
+            // Update levelWidth and levelHeight based on user input
+            levelWidth = parseInt(widthInput) || levelWidth;
+            levelHeight = parseInt(heightInput) || levelHeight;
+
+            // Save new dimensions to localStorage
+            localStorage.setItem('levelWidth', levelWidth);
+            localStorage.setItem('levelHeight', levelHeight);
+            
+            // Update levelDisplay dimensions
+            levelDisplay.style.width = `${32 * levelWidth}px`;
+            levelDisplay.style.height = `${32 * levelHeight}px`;
+            
+            // Initialize LEVELS with new dimensions
+            LEVELS[0] = Array.from({ length: levelHeight }, () => Array(levelWidth).fill(' '));
     
-        // Redraw the level with the new dimensions
-        drawLevel(LEVELS[0]);
-    }
-
-
-
-        // Resize the level when the page loads
-        levelDisplay.style.width = `${32 * levelWidth}px`;   // Width of levelDisplay (32px * levelWidth)
-        levelDisplay.style.height = `${32 * levelHeight}px`; // Height of levelDisplay (32px * levelHeight)
+            drawLevel(LEVELS[0]);
+        }
+        levelDisplay.style.width = `${32 * levelWidth}px`;
+        levelDisplay.style.height = `${32 * levelHeight}px`;
 
         setInterval(() => {
             localStorage.setItem('savedLevel', JSON.stringify(LEVELS[currentLevel]));
