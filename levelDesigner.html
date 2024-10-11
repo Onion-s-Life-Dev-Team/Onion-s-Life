@@ -278,7 +278,9 @@
         }
 
 
-        // Create the level when the page loads
+        // Resize the level when the page loads
+        document.getElementById('levelDisplay').style.width = `${32 * levelWidth}px`;
+        document.getElementById('levelDisplay').style.height = `${32 * levelHeight}px`;
 
         setInterval(() => {
             localStorage.setItem('savedLevel', JSON.stringify(LEVELS[currentLevel]));
