@@ -268,12 +268,17 @@
             const heightInput = prompt("Enter level height (rows):", levelHeight);
             levelWidth = parseInt(widthInput) || levelWidth;
             levelHeight = parseInt(heightInput) || levelHeight;
-            LEVELS[0] = Array.from({length: levelHeight}, () => Array(levelWidth).fill(' '));
+            
+            // Adjust the size of the levelDisplay dynamically
+            document.getElementById('levelDisplay').style.width = `${32 * levelWidth}px`;
+            document.getElementById('levelDisplay').style.height = `${32 * levelHeight}px`;
+        
+            LEVELS[0] = Array.from({ length: levelHeight }, () => Array(levelWidth).fill(' '));
             drawLevel(LEVELS[0]);
         }
 
+
         // Create the level when the page loads
-        createLevel();
 
         setInterval(() => {
             localStorage.setItem('savedLevel', JSON.stringify(LEVELS[currentLevel]));
