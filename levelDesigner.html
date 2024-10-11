@@ -162,9 +162,14 @@
             }
         });
 
-        let LEVELS = [
-            Array.from({length: levelHeight}, () => Array(levelWidth).fill(' ')) // Create rows of columns filled with empty space
-        ];
+        let LEVELS = [];
+
+        // Initialize LEVELS based on the retrieved dimensions
+        function initializeLevels() {
+            LEVELS[0] = Array.from({ length: levelHeight }, () => Array(levelWidth).fill(' '));
+        }
+
+        initializeLevels(); // Initialize LEVELS on page load
 
         function getImageUrl(tile) {
             switch(tile) {
@@ -280,7 +285,7 @@
             levelDisplay.style.height = `${32 * levelHeight}px`;
             
             // Initialize LEVELS with new dimensions
-            LEVELS[0] = Array.from({ length: levelHeight }, () => Array(levelWidth).fill(' '));
+            initializeLevels();
     
             drawLevel(LEVELS[0]);
         }
@@ -322,8 +327,8 @@
 
         const loadedLevel = JSON.parse(localStorage.getItem('savedLevel'));
         if (loadedLevel) {
-            LEVELS[currentLevel] = loadedLevel;
-            drawLevel(LEVELS[currentLevel]);
+            LEVELS[0] = loadedLevel; // Initialize LEVELS with loaded data
+            drawLevel(LEVELS[0]);
         }
     </script>
 </body>
