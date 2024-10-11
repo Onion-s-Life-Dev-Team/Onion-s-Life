@@ -264,18 +264,25 @@
 
         // Function to create a level with user-defined dimensions
         function createLevel() {
-            const widthInput = prompt("Enter level width (columns):", levelWidth);
-            const heightInput = prompt("Enter level height (rows):", levelHeight);
-            levelWidth = parseInt(widthInput) || levelWidth;
-            levelHeight = parseInt(heightInput) || levelHeight;
-            
-            // Adjust the size of the levelDisplay dynamically
-            document.getElementById('levelDisplay').style.width = `${32 * levelWidth}px`;
-            document.getElementById('levelDisplay').style.height = `${32 * levelHeight}px`;
+        const widthInput = prompt("Enter level width (columns):", levelWidth);
+        const heightInput = prompt("Enter level height (rows):", levelHeight);
         
-            LEVELS[0] = Array.from({ length: levelHeight }, () => Array(levelWidth).fill(' '));
-            drawLevel(LEVELS[0]);
-        }
+        // Update the levelWidth and levelHeight based on user input
+        levelWidth = parseInt(widthInput) || levelWidth;
+        levelHeight = parseInt(heightInput) || levelHeight;
+        
+        // Update the width and height of the levelDisplay element
+        const levelDisplay = document.getElementById('levelDisplay');
+        levelDisplay.style.width = `${32 * levelWidth}px`;   // Width of levelDisplay (32px * levelWidth)
+        levelDisplay.style.height = `${32 * levelHeight}px`; // Height of levelDisplay (32px * levelHeight)
+        
+        // Initialize the LEVELS array with the new dimensions
+        LEVELS[0] = Array.from({ length: levelHeight }, () => Array(levelWidth).fill(' '));
+    
+        // Redraw the level with the new dimensions
+        drawLevel(LEVELS[0]);
+    }
+
 
 
         // Resize the level when the page loads
