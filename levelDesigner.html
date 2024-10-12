@@ -211,8 +211,15 @@
 
                     if(x != levelWidth || y != levelHeight){
                         alert("An error has occurred. Your level has been reset.");
-                        createLevel();
+                        levelDisplay.style.width = `${32 * levelWidth}px`;
+                        levelDisplay.style.height = `${32 * levelHeight}px`;
+                        
+                        initializeLevels();
+                        drawLevel(LEVELS[0]);
+                        
                         localStorage.setItem('savedLevel', JSON.stringify(LEVELS[0]));
+                        localStorage.setItem('levelHeight', 42);
+                        localStorage.setItem('levelWidth', 64);
                     }
 
                     tileElement.addEventListener('mousedown', (event) => {
