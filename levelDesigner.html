@@ -209,6 +209,12 @@
                     tileElement.style.top = `${y * 32}px`;
                     tileElement.style.backgroundImage = `url('${getImageUrl(tile)}')`;
 
+                    if(x != levelWidth || y != levelHeight){
+                        alert("An error has occurred. Your level has been reset.");
+                        createLevel();
+                        localStorage.setItem('savedLevel', JSON.stringify(LEVELS[0]));
+                    }
+
                     tileElement.addEventListener('mousedown', (event) => {
                         if (event.button === 0) { // Left-click
                             isDragging = true;
