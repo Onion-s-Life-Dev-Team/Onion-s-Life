@@ -210,9 +210,8 @@
                     tileElement.style.backgroundImage = `url('${getImageUrl(tile)}')`;
 
                     if(x != levelWidth || y != levelHeight){
-                        alert("An error has occurred. Your level has been reset.");
+                        alert("An error has occurred. Your level has been reset. x: " + x + ", width: " + levelWidth + ", y: " + y + ", height: " + levelHeight);
                         createLevel();
-                        alert("x: " + x + ", width: " + levelWidth + ", y: " + y + ", height: " + levelHeight);
                     }
 
                     tileElement.addEventListener('mousedown', (event) => {
