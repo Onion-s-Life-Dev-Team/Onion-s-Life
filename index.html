@@ -1241,7 +1241,7 @@ vec4 frag(vec2 pos, vec2 uv, vec4 color, sampler2D tex) {
         play("portal")
         sendMoveLevels(channel, userID, levelId + 1)
         trackingLevelId = levelId + 1;
-        if (levelId + 1 < LEVELS.length && !test) {
+        if (levelId + 1 < LEVELS.length && test == false) {
           go("game", {
             levelId: levelId + 1,
             coins: coins,
