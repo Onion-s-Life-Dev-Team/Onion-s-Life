@@ -206,12 +206,16 @@
                     // Check for error condition
                     if (x >= levelWidth || y >= levelHeight) {
                         alert("An error has occurred. Your level has been reset. x: " + x + ", width: " + levelWidth + ", y: " + y + ", height: " + levelHeight);
+                        
+                        // Resetting the indices to the last valid position
                         x = levelWidth - 1; // Set x to width - 1 (last valid index)
                         y = levelHeight - 1; // Set y to height - 1 (last valid index)
-                        createLevel(); // Reset level
-                        return; // Skip further processing
+        
+                        // Ensure to exit the current loop iteration
+                        return; // Skip further processing for this tile
                     }
         
+                    // Create the tile element if within valid dimensions
                     const tileElement = document.createElement('div');
                     tileElement.className = 'tile';
                     tileElement.style.left = `${x * 32}px`;
@@ -257,6 +261,7 @@
                 });
             });
         }
+
 
 
         function importLevel(levelArray) {
