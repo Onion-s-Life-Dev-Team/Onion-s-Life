@@ -203,17 +203,21 @@
             levelDisplay.innerHTML = '';
             level.forEach((row, y) => {
                 row.forEach((tile, x) => {
+                    // Check for error condition
+                    if (x >= levelWidth || y >= levelHeight) {
+                        alert("An error has occurred. Your level has been reset. x: " + x + ", width: " + levelWidth + ", y: " + y + ", height: " + levelHeight);
+                        x = levelWidth - 1; // Set x to width - 1 (last valid index)
+                        y = levelHeight - 1; // Set y to height - 1 (last valid index)
+                        createLevel(); // Reset level
+                        return; // Skip further processing
+                    }
+        
                     const tileElement = document.createElement('div');
                     tileElement.className = 'tile';
                     tileElement.style.left = `${x * 32}px`;
                     tileElement.style.top = `${y * 32}px`;
                     tileElement.style.backgroundImage = `url('${getImageUrl(tile)}')`;
-
-                    if(x != levelWidth || y != levelHeight){
-                        alert("An error has occurred. Your level has been reset. x: " + x + ", width: " + levelWidth + ", y: " + y + ", height: " + levelHeight);
-                        createLevel();
-                    }
-
+        
                     tileElement.addEventListener('mousedown', (event) => {
                         if (event.button === 0) { // Left-click
                             isDragging = true;
@@ -226,13 +230,13 @@
                             drawLevel(LEVELS[0]);
                         }
                     });
-
+        
                     tileElement.addEventListener('mouseup', (event) => {
                         if (event.button === 0 || event.button === 2) { // Left-click or Right-click
                             isDragging = false;
                         }
                     });
-
+        
                     tileElement.addEventListener('mousemove', (event) => {
                         if (isDragging) {
                             if (event.buttons === 1) { // Left button is held down
@@ -243,16 +247,17 @@
                             drawLevel(LEVELS[0]);
                         }
                     });
-
+        
                     // Prevent the context menu from appearing on right-click
                     tileElement.addEventListener('contextmenu', (event) => {
                         event.preventDefault();
                     });
-
+        
                     levelDisplay.appendChild(tileElement);
                 });
             });
         }
+
 
         function importLevel(levelArray) {
             const newLevel = levelArray.map(row => row.split(''));
