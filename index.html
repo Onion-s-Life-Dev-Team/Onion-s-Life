@@ -604,8 +604,9 @@ let hasFoundCoin = false;
       ];
 
       var notRColor = 255 * (levelId / levelNames.length);
-      add([
-        text(levelNames[levelId], { size: 64 }),
+      if(isTestMode){ let displayLevel = "Custom Level" } else { let displayLevel = levelNames[levelId] }
+      if(add([
+        text(displayLevel, { size: 64 }),
         color(255, 255 - notRColor, 255 - notRColor),
         fixed(),
         z(1),
