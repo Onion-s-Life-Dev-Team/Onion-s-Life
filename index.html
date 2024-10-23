@@ -604,14 +604,24 @@ let hasFoundCoin = false;
       ];
 
       var notRColor = 255 * (levelId / levelNames.length);
-      if(isTestMode){ let displayLevel = "Custom Level" } else { let displayLevel = levelNames[levelId] }
-      if(add([
-        text(displayLevel, { size: 64 }),
-        color(255, 255 - notRColor, 255 - notRColor),
-        fixed(),
-        z(1),
-        pos(40, 40),
-      ])
+      let displayLevel; // Declare displayLevel outside the if statement
+
+	if (isTestMode) {
+	    displayLevel = "Custom Level"; // Assign value if in test mode
+	} else {
+	    displayLevel = levelNames[levelId]; // Assign value otherwise
+	}
+	
+	// The rest of your code remains unchanged
+	if (add([
+	    text(displayLevel, { size: 64 }),
+	    color(255, 255 - notRColor, 255 - notRColor),
+	    fixed(),
+	    z(1),
+	    pos(40, 40),
+	])) {
+	    // Any additional logic if needed
+	}
 
       //I now dislike lighting
       //destroy all lights
