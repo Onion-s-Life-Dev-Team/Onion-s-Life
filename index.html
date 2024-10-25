@@ -509,11 +509,11 @@
       //  setData(savedId, levelId)
       //}
 
-
+      var isTestMode = false;
       try {
         //get the params from the url
         const urlParams = new URLSearchParams(window.location.search);
-        const isTestMode = urlParams.get('test') === 'true';
+        isTestMode = urlParams.get('test') === 'true';
         //get local storage value of levelToTest
         const levelToTest = localStorage.getItem("levelToTest");
         if (levelToTest && isTestMode) {
@@ -579,6 +579,7 @@ let hasFoundCoin = false;
 
         ])
       }
+      let displayLevel; // Declare displayLevel outside the if statement
 
       var levelNames = ["Intro", "Classic ~ 1", "Flying For Coins ~ 2",
         "Bouncy House ~ 3", "Booby Trap ~ 4", "Staircase of Doom ~ 5",
@@ -604,7 +605,7 @@ let hasFoundCoin = false;
       ];
 
       var notRColor = 255 * (levelId / levelNames.length);
-      let displayLevel; // Declare displayLevel outside the if statement
+
 
 	if (isTestMode) {
 	    displayLevel = "Custom Level"; // Assign value if in test mode
