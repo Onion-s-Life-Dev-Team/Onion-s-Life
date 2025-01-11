@@ -1432,7 +1432,9 @@ vec4 frag(vec2 pos, vec2 uv, vec4 color, sampler2D tex) {
       onKeyPress("r", () => {
         music.stop()
         canDoubleJump = false
-        trackFailureData(levelId, "restart", score.value)
+        if(onion.exists()){
+          trackFailureData(levelId, "restart", score.value)
+        }
         go("game", {
           levelId: levelId,
         });
