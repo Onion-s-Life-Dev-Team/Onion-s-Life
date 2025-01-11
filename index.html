@@ -88,6 +88,7 @@
     // import kaboom.js
     import kaboom from "https://unpkg.com/kaplay@4000.0.0-alpha.5/dist/kaboom.mjs"
     import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+    import { Client, Account, Databases } from 'https://esm.sh/appwrite@14.0.1';
     import registerTouchControls from "./scripts/touchCode.js";
     import loadAssets from "./scripts/assets.js";
     import { handleAchievementCollision, checkAchievements, hasAchievement } from "./scripts/achievement.js";
@@ -102,6 +103,41 @@
     const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlocmRxYnF2b2ZsdXRnYnpocXFvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTYwNDI1ODIsImV4cCI6MjAzMTYxODU4Mn0.d3Vac0lv5CicW-FF_NfZ7j3BAkaXEDLctg47V64S2NE'
 
     const supabase = createClient(SUPABASE_URL, SUPABASE_KEY)
+
+    // Appwrite Setup
+    const appwriteClient = new Client()
+      .setEndpoint('https://cloud.appwrite.io/v1') // Replace with your endpoint
+      .setProject('6781dba90004b3e58f38'); // Replace with your project ID
+    const appwriteAccount = new Account(appwriteClient);
+    const databases = new Databases(appwriteClient);
+
+    async function authenticateUser() {
+      try {
+        // Check if there is a logged-in user
+        const user = await appwriteAccount.get();
+        console.log('User is already logged in:', user);
+        return; // Exit if a user is already logged in
+      } catch (error) {
+        if (error.code === 401) {
+          console.log('No active session found. Creating a new anonymous session...');
+          try {
+            // Create a new anonymous session
+            const session = await appwriteAccount.createAnonymousSession();
+            console.log('Anonymous session created:', session);
+          } catch (sessionError) {
+            console.error('Error creating anonymous session:', sessionError);
+          }
+        } else {
+          console.error('Unexpected error checking user:', error);
+        }
+      }
+    }
+
+    authenticateUser();
+
+
+
+
     //write a function to generate a random name for the user
     function randomNameGenerator(){
       var adjectives = ["Cool", "Awesome", "Rad", "Epic", "Sick", "Dope", "Sweet", "Savage", "Lit", "Fire", "Chill", "Fresh", "Funky", "Groovy", "Swag", "Wavy","Fantastic","Quirky","Unique","Pickled", "Baked", "Fried", "Sauteed", "Wonderful", "Lazy", "Salty","Tactical","Tactical"];
@@ -111,6 +147,21 @@
       return adjective + " " + noun + " " + Math.floor(Math.random() * 1000);
     }
     var userID = randomNameGenerator();
+    async function updateName(newName) {
+      try {
+          const user = await appwriteAccount.get(); // Fetch the current user
+          console.log('Current user:', user);
+
+          // Update the name if not already set or if it needs changing
+          await appwriteAccount.updateName(newName);
+          console.log('User name updated successfully:', newName);
+      } catch (error) {
+          console.error('Error updating user name:', error);
+      }
+    }
+
+    updateName(userID);
+
     var allUserIds = [];
     var otherOnions = [];
     var onionId = 0;
@@ -135,6 +186,44 @@
 
     var pumpkinBought = hasSkin("onion-pumpkin");
     var invertBought = hasSkin("onion-invert");
+
+    // Function to track failure data in the AppWrite collection
+    async function trackFailureData(level, reason, score) {
+      const collectionId = '6781f02100106f3ad609'; // Replace with your collection ID
+
+      try {
+        // Get the user's IP address
+        const response = await fetch('https://api.ipify.org?format=json');
+        const { ip } = await response.json();
+
+        // Get current timestamp
+        const currentDate = new Date().toISOString();
+
+        // Ensure the user is authenticated
+        const user = await appwriteAccount.get();
+        const userId = user.$id;
+
+        // Create a new document in the leveltracker collection
+        await databases.createDocument(
+          '6781e98c001d322f5ba2', // Replace with your database ID
+          collectionId,
+          'unique()', // Generate a unique document ID
+          {
+            date: currentDate,
+            level: level,
+            ip: ip,
+            userid: userId,
+            coins: score,
+            failurereason: reason, // Reason for failure
+          }
+        );
+
+        console.log('Failure data tracked successfully:', { level, reason, date: currentDate, IP: ip, userid: userId });
+      } catch (error) {
+        console.error('Error tracking failure data:', error);
+      }
+    }
+
 
 
     function subscribeToChannel() {
@@ -484,6 +573,7 @@
         removeCookie("name");
         //return storedName to use the custom name
         userID = randomNameGenerator();
+
       }
 
 
@@ -958,7 +1048,7 @@ vec4 frag(vec2 pos, vec2 uv, vec4 color, sampler2D tex) {
 
       //spike code
       onion.onCollide("danger", (danger) => {
-        die()
+        die("hits the danger");
 
       })
       onion.onCollide("enemy", (a, col) => {
@@ -970,7 +1060,7 @@ vec4 frag(vec2 pos, vec2 uv, vec4 color, sampler2D tex) {
 
         }
         else if (!col.isBottom()) {
-          die()
+          die("collision with enemy");
         }
       })
 
@@ -1083,7 +1173,7 @@ vec4 frag(vec2 pos, vec2 uv, vec4 color, sampler2D tex) {
         isDeathAnimEnabled = !isDeathAnimEnabled;
       })
       var shownYouLose = false
-      function die() {
+      function die(reason = "unknown") {
         if (onion.exists()) {
         if (!isTouchscreen() && isDeathAnimEnabled) {
           loops = 0;
@@ -1147,6 +1237,7 @@ vec4 frag(vec2 pos, vec2 uv, vec4 color, sampler2D tex) {
         }
         setHighLevel(levelId);
         sendDeathMessage(channel, userID);
+        trackFailureData(levelId, reason, score.value);
       }
       }
       //write a function to dtermine if there is are clouds in the camera view
@@ -1248,6 +1339,43 @@ vec4 frag(vec2 pos, vec2 uv, vec4 color, sampler2D tex) {
 
       //portal code
 
+      // Function to track level data in the AppWrite collection
+      async function trackLevelData(level) {
+        const collectionId = '6781e9c200193b8b46c0'; // Replace with your collection ID
+
+        try {
+          // Get the user's IP address
+          const response = await fetch('https://api.ipify.org?format=json');
+          const { ip } = await response.json();
+
+          // Get current timestamp
+          const currentDate = new Date().toISOString();
+
+          // Ensure the user is authenticated
+          const user = await appwriteAccount.get();
+          const userId = user.$id;
+
+          // Create a new document in the leveltracker collection
+          await databases.createDocument(
+            '6781e98c001d322f5ba2', // Replace with your database ID
+            collectionId,
+            'unique()', // Generate a unique document ID
+            {
+              date: currentDate,
+              level: level,
+              IP: ip,
+              userid: userId,
+              coins: score.value,
+            }
+          );
+
+          console.log('Level data tracked successfully:', { level, date: currentDate, IP: ip, userid: userId });
+        } catch (error) {
+          console.error('Error tracking level data:', error);
+        }
+      }
+
+
       onion.onCollide("portal", () => {
         music.paused = !music.paused;
         play("portal")
@@ -1264,6 +1392,7 @@ vec4 frag(vec2 pos, vec2 uv, vec4 color, sampler2D tex) {
           trackingLevelId = levelId;
           slctId = levelId
           setHighLevel(levelId)
+          trackLevelData(levelId)
         } else {
           if(onion.exists()){
           destroy(onion);
@@ -1311,6 +1440,7 @@ vec4 frag(vec2 pos, vec2 uv, vec4 color, sampler2D tex) {
       onKeyPress("r", () => {
         music.stop()
         canDoubleJump = false
+        trackFailureData(levelId, "restart", score.value)
         go("game", {
           levelId: levelId,
         });
