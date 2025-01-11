@@ -192,9 +192,6 @@
       const collectionId = '6781f02100106f3ad609'; // Replace with your collection ID
 
       try {
-        // Get the user's IP address
-        const response = await fetch('https://api.ipify.org?format=json');
-        const { ip } = await response.json();
 
         // Get current timestamp
         const currentDate = new Date().toISOString();
@@ -211,7 +208,6 @@
           {
             date: currentDate,
             level: level,
-            ip: ip,
             userid: userId,
             coins: score,
             failurereason: reason, // Reason for failure
@@ -1344,9 +1340,6 @@ vec4 frag(vec2 pos, vec2 uv, vec4 color, sampler2D tex) {
         const collectionId = '6781e9c200193b8b46c0'; // Replace with your collection ID
 
         try {
-          // Get the user's IP address
-          const response = await fetch('https://api.ipify.org?format=json');
-          const { ip } = await response.json();
 
           // Get current timestamp
           const currentDate = new Date().toISOString();
@@ -1363,7 +1356,6 @@ vec4 frag(vec2 pos, vec2 uv, vec4 color, sampler2D tex) {
             {
               date: currentDate,
               level: level,
-              IP: ip,
               userid: userId,
               coins: score.value,
             }
