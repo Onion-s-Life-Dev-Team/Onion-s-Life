@@ -87,6 +87,7 @@
     // Import necessary modules
     import kaboom from "https://unpkg.com/kaplay@4000.0.0-alpha.5/dist/kaboom.mjs"
     import { Client, Account, Databases } from 'https://esm.sh/appwrite@14.0.1';
+    import { onPlayerJoin, insertCoin, isHost, myPlayer } from "https://esm.sh/playroomkit@0.0.86";
     import registerTouchControls from "./scripts/touchCode.js";
     import loadAssets from "./scripts/assets.js";
     import { handleAchievementCollision, checkAchievements, hasAchievement } from "./scripts/achievement.js";
@@ -278,6 +279,9 @@
     let funCameraMode = false;
     var canDoubleJump = false;
     var isDeathAnimEnabled = false;
+    var players = [];
+
+    
     
 
     // Set a cookie
@@ -389,13 +393,6 @@
       } catch(error ) {
         console.error('Error in loading custom level:', error);
       }
-      function sendNewPlayer() {
-        // Removed multiplayer code
-      }
-      // Removed multiplayer code
-
-      // Removed multiplayer code
-      // sendNewPlayer()
 
       let hasFoundCoin = false;
 
@@ -664,14 +661,6 @@ vec4 frag(vec2 pos, vec2 uv, vec4 color, sampler2D tex) {
           usePostEffect(null); // Disable post effect when funCameraMode is off
         }
       });
-
-      onion.onCollide("lightbulb", (lightbulb) => {
-        if (lightbulb.exists()){
-          destroy(lightbulb);
-        }
-        toggleFunCameraMode();
-      });
-
 
       onKeyDown('right', () => {
         moveOnion(false, 400)
@@ -2095,8 +2084,11 @@ vec4 frag(vec2 pos, vec2 uv, vec4 color, sampler2D tex) {
       });
     }) 
     */
+    
+    insertCoin({gameId: "fxeEdZ20o200lGbAUzKr"}).then(go("game"));
     // Automatically go to the title scene
     go("title");
+    
 
   </script>
 
