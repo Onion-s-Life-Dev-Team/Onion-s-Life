@@ -25,9 +25,9 @@ This is the best new viral platformer game and we just added multiplayer. Onion'
 
 ## Develop New Levels ##
 
-Onion's Life has an intuitive level builder that you can access [here](https://sharmnten.github.io/Onion-s-Life/levelDesigner.html)! Here's how you can take your brand new creation and run it in Onion's Life:
+Onion's Life has an intuitive level builder that you can access [here](https://design.onions.life/)! Here's how you can take your brand new creation and run it in Onion's Life:
 
-1. Go to the [builder](https://sharmnten.github.io/Onion-s-Life/levelDesigner.html)
+1. Go to the [builder](https://design.onions.life/)
 2. Click `Save`
 3. Click `Test Level in Game`
 4. This should open Onion's Life with your custom level!
@@ -36,7 +36,7 @@ Congratulations! You developed a new level for Onion's Life! When it's ready to 
 
 ## Add Achievements ##
 
-Achievements are there own sprites. To add, do the following:
+Achievements are "there" own sprites. To add, do the following: (Surprise, surprise, Eli doesn't know grammar)
 
 1. Add a new sprite that hasn't been used before to [levels.js](levels.js)
 2. Make that sprite look like this:
