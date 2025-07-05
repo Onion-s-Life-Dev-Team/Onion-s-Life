@@ -25,18 +25,25 @@ function removeTiles(map, start, end, tile, col) {
 
 function addCollision(start, end, tile, col) {
     if (tile == "=") {
-        add([
-            body({ isStatic: true, mass: 5 }),
-            pos(col* 64, end * 64),
-            area({ shape: new Rect(vec2(0, 0), 64, (end * 64) - (start * 64)) }),
-            offscreen({ hide: true }),
-            anchor("bot"),
-            offscreen({ hide: true, distance: (end * 64) - (start * 64)}),
+        // Access the global k object that should be available from window.k
+        const k = window.k;
+        if (!k || !k.add) {
+            console.warn('Kaplay context not available for addCollision');
+            return;
+        }
+        
+        k.add([
+            k.body({ isStatic: true, mass: 5 }),
+            k.pos(col* 64, end * 64),
+            k.area({ shape: new k.Rect(k.vec2(0, 0), 64, (end * 64) - (start * 64)) }),
+            k.offscreen({ hide: true }),
+            k.anchor("bot"),
+            k.offscreen({ hide: true, distance: (end * 64) - (start * 64)}),
             {
                 draw() {
-                    drawSprite({
+                    k.drawSprite({
                         sprite: "grass",
-                        pos: vec2(col * 64, start * 64) - 64,
+                        pos: k.vec2(col * 64, start * 64) - 64,
                         width: 64,
                         height: (end * 64) - (start * 64),
                         tiled: true,

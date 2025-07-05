@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Performance Optimizations Test</title>
+    <style>
+        body {
+            font-family: monospace;
+            margin: 20px;
+            background: #1a1a1a;
+            color: #fff;
+        }
+        .stats {
+            background: #2a2a2a;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .good { color: #4caf50; }
+        .warning { color: #ff9800; }
+        .bad { color: #f44336; }
+        button {
+            background: #4caf50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 5px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <h1>🚀 Performance Optimizations Applied</h1>
+    
+    <div class="stats">
+        <h3>General Optimizations:</h3>
+        <ul>
+            <li>✅ Object Pooling - Reuses particles instead of creating/destroying</li>
+            <li>✅ Smart Culling - Hides objects far from player (1500px distance)</li>
+            <li>✅ Particle Limiting - Max 50 particles at once</li>
+            <li>✅ Collision Optimization - Skips hidden objects</li>
+            <li>✅ Memory Management - Cleans up fallen objects</li>
+            <li>✅ Render Optimization - Low quality image smoothing on mobile</li>
+            <li>✅ FPS Monitoring - Tracks performance in real-time</li>
+        </ul>
+    </div>
+    
+    <div class="stats">
+        <h3>Water Physics:</h3>
+        <ul>
+            <li>✅ Reverted to simple water system</li>
+            <li>✅ Reduced gravity (200) when in water</li>
+            <li>✅ Upward movement (300) for buoyancy</li>
+            <li>✅ Normal gravity (1300) when out of water</li>
+        </ul>
+    </div>
+    
+    <div class="stats">
+        <h3>Still Available (Not Breaking):</h3>
+        <ul>
+            <li>📦 Tile Batching - Can batch wall tiles (disabled for now)</li>
+            <li>🎯 Performance Profiles - Auto-detects device capabilities</li>
+            <li>📴 Offscreen Hiding - Already enabled on all sprites</li>
+        </ul>
+    </div>
+    
+    <button onclick="window.location.href='/'">Play Game with Optimizations</button>
+    <button onclick="testLabyrinth()">Test The Labyrinth (Level 32)</button>
+    
+    <div class="stats" id="notes">
+        <h3>Notes:</h3>
+        <p>These optimizations should improve performance without changing gameplay:</p>
+        <ul>
+            <li>The game should feel smoother, especially on slower devices</li>
+            <li>Water behavior is back to the simple, working version</li>
+            <li>Far-away objects are hidden to reduce rendering load</li>
+            <li>Particles are limited to prevent lag from effects</li>
+        </ul>
+    </div>
+    
+    <script>
+        function testLabyrinth() {
+            // Jump directly to The Labyrinth level
+            window.location.href = '/?level=32';
+        }
+    </script>
+</body>
+</html>

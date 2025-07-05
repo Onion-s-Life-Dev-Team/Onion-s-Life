@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Swimming Fixes Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: #1a1a1a;
+            color: #fff;
+        }
+        .fix-box {
+            background: #2a2a2a;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #4caf50;
+        }
+        .key {
+            display: inline-block;
+            background: #444;
+            padding: 5px 10px;
+            border-radius: 4px;
+            margin: 0 5px;
+            font-family: monospace;
+        }
+        button {
+            background: #4caf50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 5px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background: #45a049;
+        }
+        .water { color: #4fc3f7; }
+        .fixed { color: #4caf50; }
+    </style>
+</head>
+<body>
+    <h1>🏊 Swimming Fixes Applied!</h1>
+    
+    <div class="fix-box">
+        <h2 class="fixed">✅ Fixed: Can Now Escape Water!</h2>
+        <ul>
+            <li>Press <span class="key">SPACE</span> when near water surface to <strong>jump out</strong></li>
+            <li>Strong upward boost (400 speed) to escape water</li>
+            <li>Automatically detects when you're near the surface (within 50 pixels)</li>
+            <li>Normal gravity restored when jumping out</li>
+        </ul>
+    </div>
+    
+    <div class="fix-box">
+        <h2 class="fixed">✅ Fixed: R Key for Restart</h2>
+        <ul>
+            <li>Press <span class="key">R</span> anytime to restart the current level</li>
+            <li>Fixed undefined reference error that was blocking the restart</li>
+            <li>Works in all levels including water levels</li>
+        </ul>
+    </div>
+    
+    <div class="fix-box">
+        <h2 class="water">💧 Easy Swimming Controls</h2>
+        <ul>
+            <li><span class="key">Arrow Keys</span> - Swim in any direction (instant response)</li>
+            <li><span class="key">SPACE</span> near surface - Jump out of water</li>
+            <li><span class="key">SPACE</span> underwater - Swim up</li>
+            <li>No stroke timing - hold keys for continuous swimming</li>
+            <li>Gentle float when not moving</li>
+            <li>Reduced water drag for easier movement</li>
+        </ul>
+    </div>
+    
+    <div class="fix-box">
+        <h2>🎮 Test It Now!</h2>
+        <p>Try these features in any water level:</p>
+        <ol>
+            <li>Jump into water</li>
+            <li>Swim around with arrow keys</li>
+            <li>Swim near the surface</li>
+            <li>Press SPACE to jump out!</li>
+            <li>Press R anytime to restart</li>
+        </ol>
+    </div>
+    
+    <button onclick="window.location.href='/'">Back to Game</button>
+    <button onclick="testWaterLevel()">Jump to Water Level</button>
+    
+    <script>
+        function testWaterLevel() {
+            // Jump to a level with water for testing
+            window.location.href = '/?level=61'; // "Under the Sea" level
+        }
+    </script>
+</body>
+</html>
