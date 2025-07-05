@@ -2335,8 +2335,15 @@ const levelConf = {
       scale(1),
       offscreen({ hide: true }),
       anchor("bot"),
-      "water"
-
+      opacity(0.8), // Slight transparency for water
+      "water",
+      {
+        // Store original position for wave animation
+        originalY: null,
+        init() {
+          this.originalY = this.pos.y;
+        }
+      }
     ],
     "b": () => [
       sprite("invisdanger"),

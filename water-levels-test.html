@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Water Levels Test</title>
+    <style>
+        body {
+            font-family: monospace;
+            margin: 20px;
+            background: #0a1929;
+            color: #fff;
+        }
+        .level-list {
+            background: #132f4c;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .level-item {
+            padding: 10px;
+            margin: 5px 0;
+            background: #1e3a5f;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .level-item:hover {
+            background: #2e4a6f;
+            transform: translateX(5px);
+        }
+        .has-water {
+            border-left: 4px solid #4fc3f7;
+        }
+        .water-icon {
+            color: #4fc3f7;
+            margin-right: 10px;
+        }
+        button {
+            background: #1976d2;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px;
+        }
+        button:hover {
+            background: #1565c0;
+        }
+        .info {
+            background: #0d47a1;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>🌊 Water Levels in Onion's Life</h1>
+    
+    <div class="info">
+        <h3>Enhanced Water Physics Features:</h3>
+        <ul>
+            <li>🌊 Realistic buoyancy - objects float based on depth</li>
+            <li>💨 Water drag - movement slows down in water</li>
+            <li>💧 Splash effects when entering/exiting water</li>
+            <li>🫧 Bubble particles while underwater</li>
+            <li>🌀 Wave animations on water surface</li>
+            <li>🎨 Blue tint effect when submerged</li>
+            <li>🏊 Surface tension makes it harder to break through</li>
+        </ul>
+    </div>
+    
+    <button onclick="window.location.href='/'">Back to Game</button>
+    <button onclick="findWaterLevels()">Scan for Water Levels</button>
+    
+    <div class="level-list" id="water-levels">
+        <h3>Loading level data...</h3>
+    </div>
+
+    <script type="module">
+        import { LEVELS } from './scripts/levels.js';
+        
+        window.findWaterLevels = function() {
+            const container = document.getElementById('water-levels');
+            container.innerHTML = '<h3>Levels with Water:</h3>';
+            
+            let waterLevelCount = 0;
+            
+            LEVELS.forEach((level, index) => {
+                let hasWater = false;
+                let waterTileCount = 0;
+                
+                // Check each row for water tiles
+                level.forEach(row => {
+                    for (let char of row) {
+                        if (char === 'w') {
+                            hasWater = true;
+                            waterTileCount++;
+                        }
+                    }
+                });
+                
+                if (hasWater) {
+                    waterLevelCount++;
+                    const levelDiv = document.createElement('div');
+                    levelDiv.className = 'level-item has-water';
+                    levelDiv.innerHTML = `
+                        <span class="water-icon">💧</span>
+                        <strong>Level ${index}:</strong> ${getLevelName(index)}
+                        <br>
+                        <small>Water tiles: ${waterTileCount}</small>
+                    `;
+                    levelDiv.onclick = () => {
+                        window.location.href = `/?level=${index}`;
+                    };
+                    container.appendChild(levelDiv);
+                }
+            });
+            
+            if (waterLevelCount === 0) {
+                container.innerHTML += '<p>No water levels found!</p>';
+            } else {
+                container.innerHTML = `<h3>Found ${waterLevelCount} levels with water:</h3>` + container.innerHTML;
+            }
+        };
+        
+        function getLevelName(index) {
+            const names = [
+                "Intro", "Classic", "Flying For Coins", "Bouncy House", "Booby Trap",
+                "Staircase of Doom", "Boucin' Around", "Look Out Below", "Whoop de doo",
+                "Healthy Hurdles", "Onion Can Fly", "Free Fallin'", "Da Brick Wall",
+                "Leap O' Faith", "Descending Tomfoolery", "Now this is Hard",
+                "DON'T GET SPIKED", "Platform Chaos", "Enter the Secret Lair",
+                "Secret Lair", "Rollercoaster", "Onion's got HOPS", "Cruisin' for a Bruisin'",
+                "Mount Scallion", "DROP", "Tower of Pain", "Tricky timing",
+                "Insane Precision", "It's Not That Simple", "It's a long drop",
+                "Into the Abyss", "Here We Go!", "The Labyrinth", "Baby Steps",
+                "Beginner Booby Trap", "Jumping Jiminy", "You Can't Touch The Floor!",
+                "Here we go again", "OOOOhhhhhh", "Think twice", "Danger at every turn",
+                "Aaaaaaaaah", "Hoppity hop", "Going Up", "Three tier Tower",
+                "Don't Drop", "Easier than it looks", "It's All in the Name",
+                "The Pyramid", "Watch out below", "Your Name Here", "Coin Heaven",
+                "Surprise", "Tiny Passages", "Evil Vines", "PANIC", "This is just mean",
+                "Funky Town", "Hop Scotch", "The Tower of Tomfoolery", "The Grand Finale",
+                "Under the Sea", "Super Sea Survivor", "It Takes A Village", "Sunset Sandstorm"
+            ];
+            return names[index] || `Level ${index}`;
+        }
+        
+        // Auto-scan on load
+        findWaterLevels();
+    </script>
+</body>
+</html>

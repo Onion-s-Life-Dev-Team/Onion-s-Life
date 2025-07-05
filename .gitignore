@@ -1,2 +1,15 @@
-/node_modules/
-/.vscode/
+node_modules/
+.vscode/
+dist/
+.npm-cache/
+.DS_Store
+*.log
+.env
+.env.local
+.vite/
+coverage/
+*.swp
+*.swo
+*~
+.idea/
+*.sublime-*

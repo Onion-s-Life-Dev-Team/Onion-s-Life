@@ -4,6 +4,9 @@
   "description": "A fun, multiplayer game where you, the onion, goes on adventures",
   "main": "index.html",
   "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
     "test": "npx eslint scripts/levels.js"
   },
   "repository": {
@@ -15,6 +18,10 @@
   "devDependencies": {
     "@eslint/js": "^9.3.0",
     "eslint": "^9.3.0",
-    "globals": "^15.3.0"
+    "globals": "^15.3.0",
+    "vite": "^7.0.0"
+  },
+  "dependencies": {
+    "acorn": "^8.15.0"
   }
 }

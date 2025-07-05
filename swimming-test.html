@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Realistic Swimming Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: #0a1929;
+            color: #fff;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .feature-box {
+            background: #132f4c;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #4fc3f7;
+        }
+        .controls {
+            background: #1e3a5f;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .key {
+            display: inline-block;
+            background: #2e4a6f;
+            padding: 5px 10px;
+            border-radius: 4px;
+            margin: 0 5px;
+            font-family: monospace;
+        }
+        button {
+            background: #4fc3f7;
+            color: #0a1929;
+            border: none;
+            padding: 10px 20px;
+            margin: 5px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+        }
+        button:hover {
+            background: #29b6f6;
+        }
+        h1 {
+            color: #4fc3f7;
+            text-align: center;
+        }
+        .water-icon {
+            color: #4fc3f7;
+            margin-right: 10px;
+        }
+        ul {
+            line-height: 1.8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🏊 Realistic Swimming in Onion's Life</h1>
+        
+        <div class="feature-box">
+            <h2><span class="water-icon">💧</span>Swimming Mechanics</h2>
+            <ul>
+                <li><strong>Water Resistance:</strong> Movement naturally slows down in water (92% velocity retention)</li>
+                <li><strong>Momentum System:</strong> Each swim stroke builds momentum that carries you forward</li>
+                <li><strong>Natural Buoyancy:</strong> You slowly float upward when not actively swimming</li>
+                <li><strong>Stroke Cooldown:</strong> Can't spam swim - must wait 0.3s between strokes for realistic pacing</li>
+                <li><strong>Speed Limits:</strong> Maximum swimming speed capped for realism</li>
+                <li><strong>Wave Motion:</strong> Subtle up/down movement simulates water currents</li>
+            </ul>
+        </div>
+        
+        <div class="controls">
+            <h2><span class="water-icon">🎮</span>Swimming Controls</h2>
+            <p><strong>Desktop:</strong></p>
+            <ul>
+                <li><span class="key">SPACE</span> - Swim upward (powerful stroke)</li>
+                <li><span class="key">←</span> <span class="key">→</span> - Swim left/right</li>
+                <li><span class="key">↓</span> - Dive down (slower than other directions)</li>
+                <li>Combine directions for diagonal swimming!</li>
+            </ul>
+            <p><strong>Mobile:</strong></p>
+            <ul>
+                <li>Jump button - Swim up</li>
+                <li>Arrow buttons - Swim horizontally</li>
+                <li>Jump + Arrow combos for diagonal swimming</li>
+            </ul>
+        </div>
+        
+        <div class="feature-box">
+            <h2><span class="water-icon">🌊</span>Visual Effects</h2>
+            <ul>
+                <li><strong>Entry Splash:</strong> Big splash when diving in fast, small splash for gentle entry</li>
+                <li><strong>Exit Splash:</strong> Water droplets when jumping out</li>
+                <li><strong>Swimming Ripples:</strong> Circular waves with each stroke</li>
+                <li><strong>Bubble Trail:</strong> Realistic bubbles when moving fast</li>
+                <li><strong>Momentum Feedback:</strong> See your swimming power through particle effects</li>
+            </ul>
+        </div>
+        
+        <div class="feature-box">
+            <h2><span class="water-icon">🎯</span>Tips for Swimming</h2>
+            <ul>
+                <li>Time your strokes - spamming won't help due to cooldown</li>
+                <li>Use momentum - let yourself glide between strokes</li>
+                <li>Fight the buoyancy if you need to stay deep</li>
+                <li>Diagonal swimming is faster for escaping danger</li>
+                <li>Watch for the bubble trail - it shows your speed</li>
+            </ul>
+        </div>
+        
+        <button onclick="testSwimming()">Test Swimming Now!</button>
+        <button onclick="findWaterLevels()">Find All Water Levels</button>
+        
+        <div id="water-levels" style="display: none;">
+            <div class="feature-box">
+                <h2><span class="water-icon">💦</span>Levels with Water</h2>
+                <div id="level-list"></div>
+            </div>
+        </div>
+    </div>
+    
+    <script type="module">
+        import { LEVELS } from './scripts/levels.js';
+        
+        window.testSwimming = function() {
+            // Find first level with water
+            for (let i = 0; i < LEVELS.length; i++) {
+                const hasWater = LEVELS[i].some(row => row.includes('w'));
+                if (hasWater) {
+                    window.location.href = `/?level=${i}`;
+                    return;
+                }
+            }
+            alert("No water levels found!");
+        };
+        
+        window.findWaterLevels = function() {
+            const container = document.getElementById('level-list');
+            const waterDiv = document.getElementById('water-levels');
+            container.innerHTML = '';
+            
+            const waterLevels = [];
+            LEVELS.forEach((level, index) => {
+                const hasWater = level.some(row => row.includes('w'));
+                if (hasWater) {
+                    waterLevels.push(index);
+                }
+            });
+            
+            if (waterLevels.length > 0) {
+                container.innerHTML = '<ul>' + 
+                    waterLevels.map(level => 
+                        `<li><a href="/?level=${level}" style="color: #4fc3f7;">Level ${level}</a></li>`
+                    ).join('') + 
+                    '</ul>';
+            } else {
+                container.innerHTML = '<p>No water levels found in the game.</p>';
+            }
+            
+            waterDiv.style.display = 'block';
+        };
+    </script>
+</body>
+</html>
