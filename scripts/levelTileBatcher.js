@@ -42,8 +42,12 @@ export class LevelTileBatcher {
         if (tile && tile !== ' ' && !batchedTiles.has(`${x},${y}`) && levelConf.tiles[tile]) {
           const tileObj = levelConf.tiles[tile]();
           if (tileObj) {
-            tileObj.push(this.k.pos(x * this.tileSize, y * this.tileSize));
-            optimizedTiles.push(tileObj);
+            // Filter out offscreen component - keep anchor("bot") from original tiles
+            // Smart culling in generalOptimizations.js handles visibility instead
+            const filtered = tileObj.filter(comp => !(comp && comp.id === "offscreen"));
+            // Add pos at beginning - match addLevel positioning (row * tileSize)
+            filtered.unshift(this.k.pos(x * this.tileSize, y * this.tileSize));
+            optimizedTiles.push(filtered);
           }
         }
       }
@@ -139,7 +143,7 @@ export class LevelTileBatcher {
   // Check if a tile type should be batched
   isBatchableTile(tile) {
     // Batch solid tiles like walls, ground, etc.
-    const batchableTiles = ['=', 'i', '#', '_', '+', '~'];
+    const batchableTiles = ['=', 'i', '#', '_', '+', '~', 'w', 's'];
     return batchableTiles.includes(tile);
   }
 
@@ -166,30 +170,34 @@ export class LevelTileBatcher {
   // Create a batched wall with proper collision and rendering
   createBatchedWall(x, y, width, height) {
     const k = this.k;
-    
+    const tileSize = this.tileSize;
+
     const components = [
-      k.pos(x, y),
-      k.area({ shape: new k.Rect(k.vec2(0, 0), width, height) }),
+      k.pos(x + width/2 - tileSize/2, y + height - tileSize),
+      k.anchor("bot"),
+      k.area({ shape: new k.Rect(k.vec2(-width/2, -height), width, height) }),
       k.body({ isStatic: true }),
-      k.offscreen({ hide: true, distance: Math.max(width, height) }),
+      // Note: offscreen removed due to Kaplay v4000 compatibility - using smart culling instead
       "ground",
       {
         width,
         height,
         draw() {
           // Use tiled rendering for better performance
+          // Draw offset from anchor point (bottom-center) to top-left of region
           k.drawSprite({
             sprite: "grass",
-            pos: k.vec2(0, 0),
+            pos: k.vec2(-width/2, -height),
             width: width,
             height: height,
             tiled: true,
             anchor: "topleft"
           });
-          
+
           // Debug mode - show batch boundaries
           if (this.debugMode) {
             k.drawRect({
+              pos: k.vec2(-width/2, -height),
               width: width,
               height: height,
               color: k.rgb(255, 0, 0),
@@ -207,8 +215,9 @@ export class LevelTileBatcher {
   // Create a generic batched tile
   createGenericBatchedTile(tileType, x, y, width, height, tileConfig) {
     const k = this.k;
+    const tileSize = this.tileSize;
     const baseComponents = tileConfig();
-    
+
     // Find the sprite component
     let spriteName = null;
     for (const comp of baseComponents) {
@@ -217,20 +226,21 @@ export class LevelTileBatcher {
         break;
       }
     }
-    
+
     if (!spriteName) return null;
-    
+
     const components = [
-      k.pos(x, y),
-      k.area({ shape: new k.Rect(k.vec2(0, 0), width, height) }),
-      k.offscreen({ hide: true, distance: Math.max(width, height) }),
+      k.pos(x + width/2 - tileSize/2, y + height - tileSize),
+      k.anchor("bot"),
+      k.area({ shape: new k.Rect(k.vec2(-width/2, -height), width, height) }),
+      // Note: offscreen removed due to Kaplay v4000 compatibility - using smart culling instead
       {
         width,
         height,
         draw() {
           k.drawSprite({
             sprite: spriteName,
-            pos: k.vec2(0, 0),
+            pos: k.vec2(-width/2, -height),
             width: width,
             height: height,
             tiled: true,

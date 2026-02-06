@@ -57,21 +57,24 @@ export class GeneralOptimizer {
 
   // Smart culling based on distance from player
   setupSmartCulling() {
-    const cullDistance = 1500; // Distance to hide objects
-    const updateInterval = 5; // Update every 5 frames
-    
+    // Use culling distance from gameConfig if available, otherwise default to 1000
+    const cullDistance = (window.gameConfig && window.gameConfig.cullingDistance) || 1000;
+    console.log(`Smart culling initialized with distance: ${cullDistance}px`);
+
     this.k.onUpdate(() => {
       this.frameSkip++;
+      // Use longer interval for large levels to reduce get("*") overhead
+      const updateInterval = window._largeLevelLoaded ? 30 : 5;
       if (this.frameSkip % updateInterval !== 0) return;
-      
+
       const player = this.k.get("player")[0];
       if (!player || !player.pos) return;
-      
+
       // Update visibility for all objects with offscreen component
       this.k.get("*", { recursive: true }).forEach(obj => {
         if (obj.offscreen && obj.pos && obj !== player) {
           const dist = obj.pos.dist(player.pos);
-          
+
           // Hide far objects
           if (dist > cullDistance && !obj.hidden) {
             obj.hidden = true;
