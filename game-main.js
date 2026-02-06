@@ -18,12 +18,16 @@
       createDocument() { return Promise.resolve(); }
     };
     import registerTouchControls from "./scripts/touchCode.js";
+    import { setupMobilePerformance } from "./scripts/mobilePerformanceMonitor.js";
+    import { addCustomizationButton } from "./scripts/touchControlCustomizer.js";
     import loadAssets from "./scripts/assets.js";
     import { handleAchievementCollision, checkAchievements, hasAchievement } from "./scripts/achievement.js";
     import { addCoin, retrieveCoins, storeCoins } from "./scripts/coinManager.js";
     import { hasSkin, saveSkin } from "./scripts/skinManager.js";
     import { getWinSpins, useWinSpin, spinWheel, addWinSpin } from './scripts/winSpins.js';
     import { getPack } from "./scripts/packHandler.js";
+import { createBatchedGroundRenderer } from "./scripts/batchedGroundRenderer.js";
+import { createCollisionBatcher } from "./scripts/collisionBatcher.js";
 
     console.log(checkAchievements())
 
@@ -324,13 +328,27 @@
 
 
     // Helper function for sending our own mouse position.
+    let _networkFailed = false;
+    let _networkRetryAt = 0;
     function sendOnionPosition(channel, userId, onionId, x, y, level) {
       if (multiplayerEnabled) {
-        return channel.send({
+        // If network previously failed, back off to avoid flooding errors
+        if (_networkFailed) {
+          if (Date.now() < _networkRetryAt) return;
+          _networkFailed = false; // Try again
+        }
+        const result = channel.send({
           type: 'broadcast',
           event: PLAYER_EVENT,
           payload: { userId, onionId, x, y, level }
-        })
+        });
+        if (result && result.catch) {
+          result.catch(() => {
+            _networkFailed = true;
+            _networkRetryAt = Date.now() + 10000; // Back off 10 seconds on failure
+          });
+        }
+        return result;
       }
     }
     //what to do when the onion dies
@@ -395,11 +413,19 @@
     //if (canvasWidth < 800){
     //scale = .5;
     //} 
+    // Initialize global game config for performance system
+    window.gameConfig = window.gameConfig || {
+      debug: false,
+      tileBatching: false,  // Disabled - using onDraw batched rendering instead
+      batchedGroundRendering: true,  // New: render ground tiles via onDraw for performance
+      performanceProfile: 'medium'
+    };
+
     // Apply performance profile before initializing
     const detectedProfile = detectBestProfile();
     console.log(`Auto-detected performance profile: ${detectedProfile}`);
     applyPerformanceProfile(detectedProfile, window.gameConfig);
-    
+
     // Initialize dynamic performance manager
     const dynamicPerfManager = new DynamicPerformanceManager(window.gameConfig);
     
@@ -426,8 +452,15 @@
     // Initialize FPS monitor
     const fpsMonitor = new FPSMonitor(k);
 
-
-
+    // Setup callback for dynamic performance adjustment
+    // This is called by DynamicPerformanceManager when quality changes
+    window.reloadLevelWithSettings = function() {
+      console.log(`Reloading level with new performance settings: ${window.gameConfig.performanceProfile}`);
+      // Reload the current level with updated settings
+      if (typeof slctId !== 'undefined') {
+        go("game", { levelId: slctId });
+      }
+    };
 
 
     // load assets
@@ -574,12 +607,58 @@
           setHighLevel(levelId)
         } else {
           //load the level
-          // Temporarily disable optimizeLevel as it's removing floor tiles
           const optimizedLevel = fixWater(LEVELS[levelId ?? 0]);
-          
-          // Just use regular loading for all levels - optimizations were causing issues
-          addLevel(optimizedLevel, levelConf);
-          
+
+          // Force batched rendering for large levels (e.g., The Labyrinth, ocean levels)
+          // Even high-end devices choke on 1000+ individual physics bodies
+          if (window.gameConfig && !window.gameConfig.batchedGroundRendering) {
+            let batchableTileCount = 0;
+            for (const row of optimizedLevel) {
+              for (const ch of row) {
+                if (ch === '=' || ch === 's' || ch === 'w') batchableTileCount++;
+              }
+            }
+            if (batchableTileCount > 200) {
+              console.log(`Large level detected (${batchableTileCount} batchable tiles) - enabling batched rendering`);
+              window.gameConfig.batchedGroundRendering = true;
+              window._largeLevelLoaded = true;
+            }
+          }
+
+          // Set up batched ground rendering if enabled (follows Kaplay optimization guide)
+          if (window.gameConfig && window.gameConfig.batchedGroundRendering) {
+            // Also mark as large level if batching was already enabled by profile
+            if (!window._largeLevelLoaded) {
+              let tc = 0;
+              for (const row of optimizedLevel) for (const ch of row) if (ch === '=' || ch === 's' || ch === 'w') tc++;
+              if (tc > 200) window._largeLevelLoaded = true;
+            }
+            console.log(`Loading level ${levelId} with batched ground rendering`);
+            // Create and set up the batched ground renderer (handles visuals)
+            const groundRenderer = createBatchedGroundRenderer(k);
+            groundRenderer.registerGroundTiles(optimizedLevel, 64);
+            groundRenderer.setupRenderer();
+            window.groundRenderer = groundRenderer;
+
+            // Create batched collision objects (merges thousands of tiles into dozens of collision boxes)
+            const collisionBatcher = createCollisionBatcher(k);
+            const stats = collisionBatcher.getStats(optimizedLevel);
+            console.log(`Collision batching: ${stats.totalGroundTiles} ground + ${stats.totalSandTiles} sand tiles -> ${stats.batchedRegions} regions (${stats.reductionRatio} reduction)`);
+            collisionBatcher.createBatchedCollisions(optimizedLevel, 64);
+            window.collisionBatcher = collisionBatcher;
+
+            // Pre-compute merged water regions for water physics (much faster than per-tile checks)
+            window._mergedWaterRegions = collisionBatcher.computeWaterRegions(optimizedLevel, 64);
+            console.log(`Water regions: ${window._mergedWaterRegions.length} areas computed from level data (no game objects needed)`);
+          }
+
+          // When batching is enabled, strip batched tiles from level data so addLevel
+          // doesn't process hundreds of tiles that would just return null anyway
+          const levelForAddLevel = (window.gameConfig && window.gameConfig.batchedGroundRendering)
+            ? optimizedLevel.map(row => row.replace(/[=sw]/g, ' '))
+            : optimizedLevel;
+          addLevel(levelForAddLevel, levelConf);
+
           checkLevel(LEVELS[levelId])
         }
       } catch(error ) {
@@ -612,32 +691,29 @@ let hasFoundCoin = false;
       // const labyrinthOptimizer = new LabyrinthOptimizer(k);
       // labyrinthOptimizer.initialize(levelId);
       
-      // Show FPS counter for The Labyrinth to monitor performance
-      if (levelId === 32) {
-        console.log("The Labyrinth level loaded - monitoring performance");
-        
-        const fpsText = add([
-          text("FPS: ?", { size: 20 }),
+      // Performance diagnostic overlay - only when debug mode is enabled
+      if (window.gameConfig?.debug) {
+        console.log(`Level ${levelId} loaded - performance monitoring active`);
+
+        const perfOverlay = add([
+          text("", { size: 16 }),
           pos(10, 150),
           fixed(),
           z(1000),
           color(0, 255, 0)
         ]);
-        
-        // Update FPS display
+
+        let perfUpdateTimer = 0;
         onUpdate(() => {
+          // Throttle overlay updates to twice per second
+          perfUpdateTimer += dt();
+          if (perfUpdateTimer < 0.5) return;
+          perfUpdateTimer = 0;
+
           if (debug && debug.fps) {
             const fps = Math.round(debug.fps());
-            fpsText.text = `FPS: ${fps}`;
-            
-            // Change color based on FPS
-            if (fps < 20) {
-              fpsText.color = rgb(255, 0, 0); // Red
-            } else if (fps < 30) {
-              fpsText.color = rgb(255, 255, 0); // Yellow
-            } else {
-              fpsText.color = rgb(0, 255, 0); // Green
-            }
+            perfOverlay.text = `FPS: ${fps}`;
+            perfOverlay.color = fps < 20 ? rgb(255, 0, 0) : fps < 30 ? rgb(255, 255, 0) : rgb(0, 255, 0);
           }
         });
       }
@@ -799,6 +875,89 @@ let hasFoundCoin = false;
         moveOnion(true, 400)
       })
 
+      // --- Gameplay Improvements: Dash & Particles ---
+      
+      // Particle System
+      function spawnDust(position) {
+        for (let i = 0; i < 8; i++) {
+          add([
+            rect(rand(3, 6), rand(3, 6)),
+            pos(position),
+            color(255, 255, 255),
+            anchor("center"),
+            move(rand(0, 360), rand(60, 180)),
+            lifespan(0.4, { fade: 0.5 }),
+            opacity(0.8),
+            z(1000), // Ensure particles are on top
+          ]);
+        }
+      }
+
+      function spawnDashParticles(position) {
+        add([
+          rect(rand(4, 8), rand(4, 8)),
+          pos(position),
+          color(100, 200, 255),
+          anchor("center"),
+          move(rand(0, 360), rand(20, 100)),
+          lifespan(0.3, { fade: 0.5 }),
+          opacity(0.6),
+          z(900),
+        ]);
+      }
+
+      // Dash Mechanic
+      let canDash = true;
+      const DASH_COOLDOWN = 1.0;
+      const DASH_SPEED = 1500;
+      const DASH_DURATION = 0.15;
+      let isDashing = false;
+
+      function performDash() {
+        if (canDash && !isDashing) {
+          canDash = false;
+          isDashing = true;
+          
+          // Determine direction based on input or default to facing direction (if tracked) 
+          // For now, default to right, or check keys
+          let dir = 0;
+          if (isKeyDown("left") || isKeyDown("a")) dir = -1;
+          else if (isKeyDown("right") || isKeyDown("d")) dir = 1;
+          else dir = 1; // Default right
+
+          play("jump", { detune: -600 }); // deeper sound for dash
+          shake(4);
+          
+          // Dash visual burst
+          spawnDust(onion.pos);
+
+          const startTime = time();
+          const dashCancel = onUpdate(() => {
+            if (time() - startTime < DASH_DURATION) {
+              onion.move(dir * DASH_SPEED, 0);
+              spawnDashParticles(onion.pos);
+              // Create afterimage
+              if (rand() < 0.3) {
+                 add([
+                    sprite(onions[onionId]),
+                    pos(onion.pos),
+                    opacity(0.3),
+                    lifespan(0.1, { fade: 0.3 }),
+                    anchor("center"), // Adjust if onion is not centered
+                 ]);
+              }
+            } else {
+              dashCancel.cancel();
+              isDashing = false;
+              wait(DASH_COOLDOWN, () => canDash = true);
+            }
+          });
+        }
+      }
+
+      onKeyPress("shift", performDash);
+      // ---------------------------------------------
+
       const cameraSpeed = 2;
       let zoomLevel = 3;  // Start zoomed in
       let effectState = 0;
@@ -951,24 +1110,46 @@ vec4 frag(vec2 pos, vec2 uv, vec4 color, sampler2D tex) {
         // Optionally handle the error further or throw it to the caller
     }}
 
-      registerTouchControls(onion, moveOnion, levelId, setHighLevel, rEnabled, music, applyRandomEffects, continuouslyChangeEffects, jumpCount);
-
-      //get all water sprites
-      const water = get("water", { recursive: true });
-      //determine the various water areas on the map based on their positions
-      const waterAreas = water.map(water => {
-        return {
-          x: water.pos.x,
-          y: water.pos.y,
-          width: water.width,
-          height: water.height,
+      // Setup mobile controls with performance monitoring
+      const touchControlsSetup = registerTouchControls(onion, moveOnion, levelId, setHighLevel, rEnabled, music, applyRandomEffects, continuouslyChangeEffects, jumpCount);
+      
+      // Setup mobile performance monitoring for touch devices
+      let mobilePerformanceMonitor = null;
+      if (isTouchscreen()) {
+        mobilePerformanceMonitor = setupMobilePerformance(k, {
+          targetFPS: 60,
+          showDebugInfo: false, // Can be toggled by user
+          adjustmentInterval: 5000
+        });
+        
+        // Add customization button if optimized controls are active
+        if (touchControlsSetup && touchControlsSetup.touchControls) {
+          addCustomizationButton(k, touchControlsSetup.touchControls);
         }
-      })
+      }
+
+      //determine the various water areas on the map
+      let waterAreas;
+      if (window._mergedWaterRegions) {
+        // Use pre-computed merged water regions (much faster than per-tile checks)
+        waterAreas = window._mergedWaterRegions;
+        console.log(`Water physics: using ${waterAreas.length} merged water regions`);
+      } else {
+        // Fallback: get water areas from individual game objects
+        const water = get("water", { recursive: true });
+        waterAreas = water.map(w => ({
+          x: w.pos.x,
+          y: w.pos.y,
+          width: w.width,
+          height: w.height,
+        }));
+      }
 
       if (levelId != 32 || isOnionInWater(onion, waterAreas)) {
         onKeyPress("up", () => {
           play("jump")
-          if(canDoubleJump){
+          spawnDust(onion.pos.add(0, 20));
+          if(canDoubleJump && !isOnionInWater(onion, waterAreas)){
             onion.doubleJump()
           }
           sendOnionPosition(channel, userID, onion.pos.x, onion.pos.y, levelId);
@@ -976,7 +1157,8 @@ vec4 frag(vec2 pos, vec2 uv, vec4 color, sampler2D tex) {
         })
         onKeyPress("w", () => {
           play("jump")
-          if(canDoubleJump){
+          spawnDust(onion.pos.add(0, 20));
+          if(canDoubleJump && !isOnionInWater(onion, waterAreas)){
             onion.doubleJump()
           }
           sendOnionPosition(channel, userID, onion.pos.x, onion.pos.y, levelId);
@@ -984,7 +1166,8 @@ vec4 frag(vec2 pos, vec2 uv, vec4 color, sampler2D tex) {
         })
         onKeyPress("space", () => {
           play("jump")
-          if(canDoubleJump){
+          spawnDust(onion.pos.add(0, 20));
+          if(canDoubleJump && !isOnionInWater(onion, waterAreas)){
             onion.doubleJump()
           }
           sendOnionPosition(channel, userID, onion.pos.x, onion.pos.y, levelId);
@@ -993,18 +1176,21 @@ vec4 frag(vec2 pos, vec2 uv, vec4 color, sampler2D tex) {
       } else if (levelId == 32 && !isOnionInWater(onion, waterAreas)){
         onKeyPress("up", () => {
           play("jump")
+          spawnDust(onion.pos.add(0, 20));
           onion.jump()
           sendOnionPosition(channel, userID, onion.pos.x, onion.pos.y, levelId);
           myCoords = { x: onion.pos.x, y: onion.pos.y, level: levelId };
         })
         onKeyPress("w", () => {
           play("jump")
+          spawnDust(onion.pos.add(0, 20));
           onion.jump()
           sendOnionPosition(channel, userID, onion.pos.x, onion.pos.y, levelId);
           myCoords = { x: onion.pos.x, y: onion.pos.y, level: levelId };
         })
         onKeyPress("space", () => {
           play("jump")
+          spawnDust(onion.pos.add(0, 20));
           onion.jump()
           sendOnionPosition(channel, userID, onion.pos.x, onion.pos.y, levelId);
           myCoords = { x: onion.pos.x, y: onion.pos.y, level: levelId };
@@ -1014,6 +1200,25 @@ vec4 frag(vec2 pos, vec2 uv, vec4 color, sampler2D tex) {
 
       onKeyPress("f", (c) => {
         setFullscreen(!isFullscreen())
+      })
+
+      // Debug: Toggle tile batching with 'g' key and reload level
+      onKeyPress("g", () => {
+        if (window.gameConfig) {
+          window.gameConfig.tileBatching = !window.gameConfig.tileBatching;
+          console.log(`Tile batching: ${window.gameConfig.tileBatching ? 'ON' : 'OFF'}`);
+          // Reload level to apply change
+          go("game", { levelId: levelId });
+        }
+      })
+
+      // Debug: Toggle performance overlay with 'h' key
+      onKeyPress("h", () => {
+        if (window.gameConfig) {
+          window.gameConfig.debug = !window.gameConfig.debug;
+          console.log(`Debug overlay: ${window.gameConfig.debug ? 'ON' : 'OFF'}`);
+          go("game", { levelId: levelId });
+        }
       })
 
 
@@ -1051,11 +1256,9 @@ vec4 frag(vec2 pos, vec2 uv, vec4 color, sampler2D tex) {
               fixed: true,
               color: rgb(255, 127, 255),
               });
-          
-          // Update dynamic performance manager
-          if (dynamicPerfManager) {
-              dynamicPerfManager.update(currentFPS);
-          }
+
+          // DynamicPerformanceManager disabled - its reload loop causes more harm than good
+          // (reloading heavy levels every 5 seconds when FPS is low creates a death spiral)
       }    );
 
       //spike code
@@ -1100,6 +1303,8 @@ vec4 frag(vec2 pos, vec2 uv, vec4 color, sampler2D tex) {
       onion.onCollide("ground", (ground) => {
         canDoubleJump = true
         setGravity(1300)
+        spawnDust(onion.pos.add(0, 20));
+        shake(2);
       })
       onion.onCollide("sand", (ground) => {
         canDoubleJump = true
@@ -1176,6 +1381,16 @@ vec4 frag(vec2 pos, vec2 uv, vec4 color, sampler2D tex) {
       if (waterAreas.length > 0) {
         console.log("Initializing simple water physics for this level");
         setupSimpleWaterPhysics(k, onion, waterAreas);
+
+        // When water tiles are batched, onCollide("water") never fires,
+        // so we need to set canDoubleJump via position-based water detection
+        if (window.gameConfig && window.gameConfig.batchedGroundRendering) {
+          onUpdate(() => {
+            if (isOnionInWater(onion, waterAreas)) {
+              canDoubleJump = true;
+            }
+          });
+        }
       }
       
 
@@ -1458,6 +1673,13 @@ vec4 frag(vec2 pos, vec2 uv, vec4 color, sampler2D tex) {
         // Clean up optimizer before restarting
         if (typeof labyrinthOptimizer !== 'undefined' && labyrinthOptimizer) {
           labyrinthOptimizer.cleanup();
+        }
+        // Clean up mobile controls
+        if (touchControlsSetup && touchControlsSetup.destroy) {
+          touchControlsSetup.destroy();
+        }
+        if (mobilePerformanceMonitor) {
+          mobilePerformanceMonitor.destroy();
         }
         go("game", {
           levelId: levelId,

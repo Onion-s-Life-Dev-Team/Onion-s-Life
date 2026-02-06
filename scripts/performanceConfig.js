@@ -4,7 +4,8 @@
 export const PerformanceProfiles = {
   // Ultra Low - for very slow devices (targets 30 FPS)
   ultraLow: {
-    tileBatching: true,
+    tileBatching: false,
+    batchedGroundRendering: true,
     aggressiveCulling: true,
     cullingDistance: 400,
     disableParticles: true,
@@ -18,7 +19,8 @@ export const PerformanceProfiles = {
   
   // Low - for slow devices (targets 45 FPS)
   low: {
-    tileBatching: true,
+    tileBatching: false,
+    batchedGroundRendering: true,
     aggressiveCulling: true,
     cullingDistance: 600,
     disableParticles: false,
@@ -32,7 +34,8 @@ export const PerformanceProfiles = {
   
   // Medium - balanced performance (targets 60 FPS)
   medium: {
-    tileBatching: true,
+    tileBatching: false,
+    batchedGroundRendering: true,
     aggressiveCulling: false,
     cullingDistance: 1000,
     disableParticles: false,
@@ -46,7 +49,8 @@ export const PerformanceProfiles = {
   
   // High - full quality (targets 60+ FPS)
   high: {
-    tileBatching: false, // Use original rendering
+    tileBatching: false,
+    batchedGroundRendering: false, // Full sprite rendering for high-end devices
     aggressiveCulling: false,
     cullingDistance: 2000,
     disableParticles: false,

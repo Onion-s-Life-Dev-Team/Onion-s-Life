@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Mobile Controls Test - Onion's Life</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background: #000;
+            touch-action: none;
+        }
+        #info {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            color: white;
+            font-family: monospace;
+            font-size: 14px;
+            z-index: 10000;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 10px;
+            border-radius: 5px;
+        }
+        #toggleOptimized {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            padding: 10px 20px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            z-index: 10000;
+        }
+        #toggleOptimized:active {
+            background: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div id="info">
+        <div>Mobile Controls Test</div>
+        <div>FPS: <span id="fps">0</span></div>
+        <div>Touch Count: <span id="touchCount">0</span></div>
+        <div>Control Type: <span id="controlType">Optimized</span></div>
+    </div>
+    <button id="toggleOptimized">Toggle Control Type</button>
+
+    <script type="module">
+        import kaplay from "https://unpkg.com/kaplay@4000.0.0-alpha.5/dist/kaplay.mjs";
+        
+        const k = kaplay({
+            width: window.innerWidth,
+            height: window.innerHeight,
+            background: [20, 20, 40],
+            touchToMouse: false,
+            crisp: true
+        });
+        
+        // Make k globally available
+        window.k = k;
+        
+        // Load test assets
+        k.loadSprite("onion", "/assets/sprites/onion.png");
+        k.loadSprite("leftmove", "/assets/sprites/chevronleft.png");
+        k.loadSprite("rightmove", "/assets/sprites/rightchevron.png");
+        k.loadSprite("jumpbutton", "/assets/sprites/jumpbutton.png");
+        k.loadSprite("restart", "/assets/sprites/replay.png");
+        k.loadSprite("home", "/assets/sprites/home.png");
+        k.loadSprite("jumpright", "/assets/sprites/jumpright.png");
+        k.loadSprite("jumpleft", "/assets/sprites/jumpleft.png");
+        k.loadSprite("dj", "/assets/sprites/dj.png");
+        
+        // Create test scene
+        k.scene("test", () => {
+            k.setGravity(1300);
+            
+            // Create ground
+            k.add([
+                k.rect(k.width(), 100),
+                k.pos(0, k.height() - 100),
+                k.area(),
+                k.body({ isStatic: true }),
+                k.color(100, 100, 100),
+                "ground"
+            ]);
+            
+            // Create some platforms
+            k.add([
+                k.rect(200, 20),
+                k.pos(200, k.height() - 200),
+                k.area(),
+                k.body({ isStatic: true }),
+                k.color(150, 150, 150),
+                "platform"
+            ]);
+            
+            k.add([
+                k.rect(200, 20),
+                k.pos(500, k.height() - 300),
+                k.area(),
+                k.body({ isStatic: true }),
+                k.color(150, 150, 150),
+                "platform"
+            ]);
+            
+            // Create player
+            const onion = k.add([
+                k.sprite("onion"),
+                k.pos(100, k.height() - 200),
+                k.area(),
+                k.body(),
+                k.scale(2),
+                "player"
+            ]);
+            
+            onion.jumpCount = 0;
+            
+            // Movement function
+            function moveOnion(invert, distance) {
+                const moveDistance = invert ? -distance : distance;
+                onion.move(moveDistance, 0);
+            }
+            
+            // Mock functions for touch controls
+            const setHighLevel = () => {};
+            const rEnabled = true;
+            const music = { stop: () => {}, paused: false };
+            const applyRandomEffects = () => {};
+            const continuouslyChangeEffects = () => {};
+            let jumpCount = 0;
+            
+            // Import and setup touch controls
+            import("/scripts/touchCode.js").then(module => {
+                const touchControls = module.default(
+                    onion,
+                    moveOnion,
+                    0, // levelId
+                    setHighLevel,
+                    rEnabled,
+                    music,
+                    applyRandomEffects,
+                    continuouslyChangeEffects,
+                    jumpCount
+                );
+                
+                // Setup performance monitor
+                import("/scripts/mobilePerformanceMonitor.js").then(perfModule => {
+                    const monitor = perfModule.setupMobilePerformance(k, {
+                        showDebugInfo: true,
+                        targetFPS: 60
+                    });
+                });
+            });
+            
+            // Update jump count
+            k.onUpdate(() => {
+                if (onion.isGrounded()) {
+                    onion.jumpCount = 0;
+                }
+            });
+            
+            // FPS counter
+            let frameCount = 0;
+            let lastTime = performance.now();
+            
+            k.onUpdate(() => {
+                frameCount++;
+                const currentTime = performance.now();
+                if (currentTime - lastTime >= 1000) {
+                    document.getElementById('fps').textContent = frameCount;
+                    frameCount = 0;
+                    lastTime = currentTime;
+                }
+            });
+            
+            // Touch counter
+            k.onTouchStart(() => {
+                const touchCount = k.canvas.touches ? k.canvas.touches.length : 0;
+                document.getElementById('touchCount').textContent = touchCount;
+            });
+            
+            k.onTouchEnd(() => {
+                const touchCount = k.canvas.touches ? k.canvas.touches.length : 0;
+                document.getElementById('touchCount').textContent = touchCount;
+            });
+        });
+        
+        // Start the test scene
+        k.go("test");
+        
+        // Toggle control type
+        document.getElementById('toggleOptimized').addEventListener('click', () => {
+            const current = localStorage.getItem('useOptimizedControls');
+            const newValue = current === 'false' ? 'true' : 'false';
+            localStorage.setItem('useOptimizedControls', newValue);
+            document.getElementById('controlType').textContent = newValue === 'false' ? 'Legacy' : 'Optimized';
+            location.reload();
+        });
+        
+        // Set initial control type display
+        const isOptimized = localStorage.getItem('useOptimizedControls') !== 'false';
+        document.getElementById('controlType').textContent = isOptimized ? 'Optimized' : 'Legacy';
+    </script>
+</body>
+</html>

@@ -2044,15 +2044,23 @@ const levelConf = {
   tileHeight: 64,
 
   tiles:{
-    "=": () => [
-      sprite("grass"),
-      area(),
-      body({ isStatic: true, mass: 5 }),
-      scale(1),
-      offscreen({ hide: true }),
-      anchor("bot"),
-      "ground"
-    ],
+    "=": () => {
+      // When batched ground rendering is enabled, return null to skip tile creation
+      // CollisionBatcher handles collision, BatchedGroundRenderer handles visuals
+      if (window.gameConfig && window.gameConfig.batchedGroundRendering) {
+        return null;  // Skip - collision batcher creates merged collision objects
+      }
+      // Fallback: normal rendering with sprite
+      return [
+        sprite("grass"),
+        area(),
+        body({ isStatic: true, mass: 5 }),
+        scale(1),
+        offscreen({ hide: true }),
+        anchor("bot"),
+        "ground"
+      ];
+    },
     "+": () => [
       sprite("grass5"),
       area(new Rect(vec2(), 160, 32)),
@@ -2319,32 +2327,41 @@ const levelConf = {
         achSprite: "water",
       },
     ],
-    "s": () => [
-      sprite("sand"),
-      area(),
-      body({ isStatic: true }),
-      scale(1),
-      offscreen({ hide: true }),
-      anchor("bot"),
-      "sand"
-
-    ],
-    "w": () => [
-      sprite("water"),
-      area(),
-      scale(1),
-      offscreen({ hide: true }),
-      anchor("bot"),
-      opacity(0.8), // Slight transparency for water
-      "water",
-      {
-        // Store original position for wave animation
-        originalY: null,
-        init() {
-          this.originalY = this.pos.y;
-        }
+    "s": () => {
+      if (window.gameConfig && window.gameConfig.batchedGroundRendering) {
+        return null;  // Skip - collision batcher creates merged collision objects
       }
-    ],
+      return [
+        sprite("sand"),
+        area(),
+        body({ isStatic: true }),
+        scale(1),
+        offscreen({ hide: true }),
+        anchor("bot"),
+        "sand"
+      ];
+    },
+    "w": () => {
+      if (window.gameConfig && window.gameConfig.batchedGroundRendering) {
+        return null;  // Skip - batched renderer handles visuals, water regions computed from level data
+      }
+      return [
+        sprite("water"),
+        area(),
+        scale(1),
+        offscreen({ hide: true }),
+        anchor("bot"),
+        opacity(0.8), // Slight transparency for water
+        "water",
+        {
+          // Store original position for wave animation
+          originalY: null,
+          init() {
+            this.originalY = this.pos.y;
+          }
+        }
+      ];
+    },
     "b": () => [
       sprite("invisdanger"),
       area(),
