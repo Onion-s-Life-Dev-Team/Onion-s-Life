@@ -19,7 +19,6 @@
     };
     import registerTouchControls from "./scripts/touchCode.js";
     import { setupMobilePerformance } from "./scripts/mobilePerformanceMonitor.js";
-    import { addCustomizationButton } from "./scripts/touchControlCustomizer.js";
     import loadAssets from "./scripts/assets.js";
     import { handleAchievementCollision, checkAchievements, hasAchievement } from "./scripts/achievement.js";
     import { addCoin, retrieveCoins, storeCoins } from "./scripts/coinManager.js";
@@ -893,69 +892,6 @@ let hasFoundCoin = false;
         }
       }
 
-      function spawnDashParticles(position) {
-        add([
-          rect(rand(4, 8), rand(4, 8)),
-          pos(position),
-          color(100, 200, 255),
-          anchor("center"),
-          move(rand(0, 360), rand(20, 100)),
-          lifespan(0.3, { fade: 0.5 }),
-          opacity(0.6),
-          z(900),
-        ]);
-      }
-
-      // Dash Mechanic
-      let canDash = true;
-      const DASH_COOLDOWN = 1.0;
-      const DASH_SPEED = 1500;
-      const DASH_DURATION = 0.15;
-      let isDashing = false;
-
-      function performDash() {
-        if (canDash && !isDashing) {
-          canDash = false;
-          isDashing = true;
-          
-          // Determine direction based on input or default to facing direction (if tracked) 
-          // For now, default to right, or check keys
-          let dir = 0;
-          if (isKeyDown("left") || isKeyDown("a")) dir = -1;
-          else if (isKeyDown("right") || isKeyDown("d")) dir = 1;
-          else dir = 1; // Default right
-
-          play("jump", { detune: -600 }); // deeper sound for dash
-          shake(4);
-          
-          // Dash visual burst
-          spawnDust(onion.pos);
-
-          const startTime = time();
-          const dashCancel = onUpdate(() => {
-            if (time() - startTime < DASH_DURATION) {
-              onion.move(dir * DASH_SPEED, 0);
-              spawnDashParticles(onion.pos);
-              // Create afterimage
-              if (rand() < 0.3) {
-                 add([
-                    sprite(onions[onionId]),
-                    pos(onion.pos),
-                    opacity(0.3),
-                    lifespan(0.1, { fade: 0.3 }),
-                    anchor("center"), // Adjust if onion is not centered
-                 ]);
-              }
-            } else {
-              dashCancel.cancel();
-              isDashing = false;
-              wait(DASH_COOLDOWN, () => canDash = true);
-            }
-          });
-        }
-      }
-
-      onKeyPress("shift", performDash);
       // ---------------------------------------------
 
       const cameraSpeed = 2;
@@ -1122,10 +1058,6 @@ vec4 frag(vec2 pos, vec2 uv, vec4 color, sampler2D tex) {
           adjustmentInterval: 5000
         });
         
-        // Add customization button if optimized controls are active
-        if (touchControlsSetup && touchControlsSetup.touchControls) {
-          addCustomizationButton(k, touchControlsSetup.touchControls);
-        }
       }
 
       //determine the various water areas on the map
@@ -1304,7 +1236,6 @@ vec4 frag(vec2 pos, vec2 uv, vec4 color, sampler2D tex) {
         canDoubleJump = true
         setGravity(1300)
         spawnDust(onion.pos.add(0, 20));
-        shake(2);
       })
       onion.onCollide("sand", (ground) => {
         canDoubleJump = true
@@ -1540,7 +1471,6 @@ vec4 frag(vec2 pos, vec2 uv, vec4 color, sampler2D tex) {
         })
 
         destroy(key);
-        shake();
       })
       onion.onCollide("coin", (coin) => {
 
