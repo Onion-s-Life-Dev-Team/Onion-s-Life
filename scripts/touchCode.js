@@ -1,27 +1,5 @@
-import registerOptimizedTouchControls from './optimizedTouchControls.js';
-
 export default function registerTouchControls(onion, moveOnion, levelId, setHighLevel, rEnabled, music, applyRandomEffects, continuouslyChangeEffects, jumpCount) {
     if (isTouchscreen()) {
-        // Check if we should use optimized controls (can be configured)
-        const useOptimizedControls = localStorage.getItem('useOptimizedControls') !== 'false';
-        
-        if (useOptimizedControls && window.k) {
-            // Use new optimized controls
-            return registerOptimizedTouchControls(
-                window.k,
-                onion,
-                moveOnion,
-                levelId,
-                setHighLevel,
-                rEnabled,
-                music,
-                applyRandomEffects,
-                continuouslyChangeEffects,
-                jumpCount
-            );
-        }
-        
-        // Fallback to legacy controls
         const leftArrow = add([
             sprite("leftmove"),
             "leftArrow",
