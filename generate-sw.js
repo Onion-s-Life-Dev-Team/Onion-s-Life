@@ -62,6 +62,12 @@ for (const dir of ASSET_DIRS) {
   }
 }
 
+// Critical CDN dependencies that must be pre-cached for offline play
+// Extracted from game-main.js imports
+const CDN_DEPS = [
+  'https://unpkg.com/kaplay@4000.0.0-alpha.5/dist/kaplay.mjs',
+];
+
 // Sort for deterministic output
 const sortedAssets = [...assets].sort();
 
@@ -82,16 +88,28 @@ const CACHE_NAME = 'onions-life-${contentHash}';
 
 const PRECACHE_ASSETS = ${JSON.stringify(sortedAssets, null, 2)};
 
-// Origins we want to cache on first fetch (e.g. Kaplay CDN)
+// Critical CDN modules to pre-cache on install (game won't load without these)
+const PRECACHE_CDN = ${JSON.stringify(CDN_DEPS, null, 2)};
+
+// CDN origins to cache on first fetch (for non-critical imports like Supabase)
 const CACHEABLE_CDN = [
   'https://unpkg.com',
+  'https://esm.sh',
 ];
 
-// --- Install: pre-cache all game assets ---
+// --- Install: pre-cache all game assets + critical CDN modules ---
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME)
-      .then((cache) => cache.addAll(PRECACHE_ASSETS))
+      .then((cache) => {
+        // Pre-cache CDN modules with cross-origin fetch
+        const cdnPromises = PRECACHE_CDN.map((url) =>
+          fetch(url, { mode: 'cors' })
+            .then((resp) => cache.put(url, resp))
+            .catch((err) => console.warn('Failed to pre-cache CDN:', url, err))
+        );
+        return Promise.all([cache.addAll(PRECACHE_ASSETS), ...cdnPromises]);
+      })
       .then(() => self.skipWaiting())
   );
 });
