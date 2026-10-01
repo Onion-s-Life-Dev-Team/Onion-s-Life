@@ -2081,7 +2081,7 @@ const levelConf = {
     ],
     "?": () => [
       sprite("fake"),
-      area(),
+      area({ isSensor: true }),
       scale(1),
       offscreen({ hide: true }),
       anchor("bot"),
@@ -2089,7 +2089,7 @@ const levelConf = {
     ],
     "$": () => [
       sprite("coin"),
-      area(),
+      area({ isSensor: true }),
       offscreen({ hide: true }),
       anchor("bot"),
       "coin",
@@ -2128,7 +2128,7 @@ const levelConf = {
     ],
     "O": () => [
       sprite("portal"),
-      area({ scale: 0.5, }),
+      area({ scale: 0.5, isSensor: true }),
       offscreen({ hide: true }),
       pos(0, -12),
       anchor("bot"),
@@ -2138,7 +2138,7 @@ const levelConf = {
       sprite("jumpy"),
       anchor("bot"),
       offscreen({ hide: true }),
-      area(),
+      area({ isSensor: true }),
       "jumpy",
     ],
     "D": () => [
@@ -2152,7 +2152,7 @@ const levelConf = {
     "k": () => [
       sprite("key"),
       offscreen({ hide: true }),
-      area(),
+      area({ isSensor: true }),
       anchor("bot"),
       "key",
     ],
@@ -2197,35 +2197,35 @@ const levelConf = {
       "i": () => [
       sprite("invisdanger"),
       offscreen({ hide: true }),
-      area(),
+      area({ isSensor: true }),
       "danger",
-      anchor("bot"), 
+      anchor("bot"),
     ],
     "~": () => [
       sprite("invis25"),
-      area(new Rect(vec2(), 800, 32)),
+      area(new Rect(vec2(), 800, 32), { isSensor: true }),
       offscreen({ hide: true, distance: 1 }),
       "danger",
-      anchor("bot"), 
+      anchor("bot"),
     ],
     "#": () => [
       rect(2400, 32),
-      area(new Rect(vec2(), 2400, 32)),
+      area(new Rect(vec2(), 2400, 32), { isSensor: true }),
       offscreen({ hide: true, distance: 1 }),
       "danger",
-      anchor("bot"), 
+      anchor("bot"),
       opacity(0),
     ],
     "S": () => [
       sprite("invisdanger"),
-      area(),
+      area({ isSensor: true }),
       offscreen({ hide: true }),
       "spawn",
-      anchor("bot"), 
+      anchor("bot"),
     ],
     "Q": () => [
       sprite("invisdanger"),
-      area(),
+      area({ isSensor: true }),
       offscreen({ hide: true }),
       "arg",
       anchor("bot"),
@@ -2252,12 +2252,12 @@ const levelConf = {
       sprite("darrow"),
       anchor("bot"),
       offscreen({ hide: true }),
-      area(),
+      area({ isSensor: true }),
       scale(0.25),
     ],
     "a": () => [
       sprite("achievement"),
-      area(),
+      area({ isSensor: true }),
       offscreen({ hide: true }),
       anchor("bot"),
       "achievement",
@@ -2269,7 +2269,7 @@ const levelConf = {
     ],
     "|": () => [
       sprite("achievement"),
-      area(),
+      area({ isSensor: true }),
       offscreen({ hide: true }),
       anchor("bot"),
       "achievement",
@@ -2281,7 +2281,7 @@ const levelConf = {
     ],
     ")": () => [
       sprite("achievement"),
-      area(),
+      area({ isSensor: true }),
       offscreen({ hide: true }),
       anchor("bot"),
       "achievement",
@@ -2293,7 +2293,7 @@ const levelConf = {
     ],
     "(": () => [
       sprite("achievement"),
-      area(),
+      area({ isSensor: true }),
       offscreen({ hide: true }),
       anchor("bot"),
       "achievement",
@@ -2305,7 +2305,7 @@ const levelConf = {
     ],
 	  "*": () => [
       sprite("achievement"),
-      area(),
+      area({ isSensor: true }),
       offscreen({ hide: true }),
       anchor("bot"),
       "achievement",
@@ -2317,7 +2317,7 @@ const levelConf = {
     ],
   "u": () => [
       sprite("achievement"),
-      area(),
+      area({ isSensor: true }),
       offscreen({ hide: true }),
       anchor("bot"),
       "achievement",
@@ -2347,7 +2347,7 @@ const levelConf = {
       }
       return [
         sprite("water"),
-        area(),
+        area({ isSensor: true }),
         scale(1),
         offscreen({ hide: true }),
         anchor("bot"),
@@ -2364,14 +2364,14 @@ const levelConf = {
     },
     "b": () => [
       sprite("invisdanger"),
-      area(),
+      area({ isSensor: true }),
       offscreen({ hide: true }),
       anchor("bot"),
       "gravityreset"
     ],
     "2": () => [
       sprite("winSpin"),
-      area(),
+      area({ isSensor: true }),
       offscreen({ hide: true }),
       anchor("center"),
       rotate(0),

@@ -1,22 +1,6 @@
     // import kaplay.js
-    import kaplay from "https://unpkg.com/kaplay@4000.0.0-alpha.5/dist/kaplay.mjs"
+    import kaplay from "https://unpkg.com/kaplay@4000.0.0-alpha.27.1/dist/kaplay.mjs"
     import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
-    // Temporarily disable Appwrite to fix loading issues
-    // import { Client, Account, Databases } from 'https://unpkg.com/appwrite@14.0.1/dist/esm/sdk.js';
-    
-    // Create dummy Appwrite classes so the game doesn't crash
-    const Client = class { 
-      setEndpoint() { return this; }
-      setProject() { return this; }
-    };
-    const Account = class { 
-      get() { throw { code: 401 }; }
-      createAnonymousSession() { return Promise.resolve(); }
-      updateName() { return Promise.resolve(); }
-    };
-    const Databases = class {
-      createDocument() { return Promise.resolve(); }
-    };
     import registerTouchControls from "./scripts/touchCode.js";
     import { setupMobilePerformance } from "./scripts/mobilePerformanceMonitor.js";
     import loadAssets from "./scripts/assets.js";
@@ -28,46 +12,10 @@
 import { createBatchedGroundRenderer } from "./scripts/batchedGroundRenderer.js";
 import { createCollisionBatcher } from "./scripts/collisionBatcher.js";
 
-    console.log(checkAchievements())
-
     const SUPABASE_URL = 'https://ihrdqbqvoflutgbzhqqo.supabase.co'
     const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlocmRxYnF2b2ZsdXRnYnpocXFvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTYwNDI1ODIsImV4cCI6MjAzMTYxODU4Mn0.d3Vac0lv5CicW-FF_NfZ7j3BAkaXEDLctg47V64S2NE'
 
     const supabase = createClient(SUPABASE_URL, SUPABASE_KEY)
-
-    // Appwrite Setup
-    const appwriteClient = new Client()
-      .setEndpoint('https://cloud.appwrite.io/v1') // Replace with your endpoint
-      .setProject('6781dba90004b3e58f38'); // Replace with your project ID
-    const appwriteAccount = new Account(appwriteClient);
-    const databases = new Databases(appwriteClient);
-
-    async function authenticateUser() {
-      try {
-        // Check if there is a logged-in user
-        const user = await appwriteAccount.get();
-        console.log('User is already logged in:', user);
-        return; // Exit if a user is already logged in
-      } catch (error) {
-        if (error.code === 401) {
-          console.log('No active session found. Creating a new anonymous session...');
-          try {
-            // Create a new anonymous session
-            const session = await appwriteAccount.createAnonymousSession();
-            console.log('Anonymous session created:', session);
-          } catch (sessionError) {
-            console.error('Error creating anonymous session:', sessionError);
-          }
-        } else {
-          console.error('Unexpected error checking user:', error);
-        }
-      }
-    }
-
-    authenticateUser();
-
-
-
 
     //write a function to generate a random name for the user
     function randomNameGenerator(){
@@ -78,20 +26,6 @@ import { createCollisionBatcher } from "./scripts/collisionBatcher.js";
       return adjective + " " + noun + " " + Math.floor(Math.random() * 1000);
     }
     var userID = randomNameGenerator();
-    async function updateName(newName) {
-      try {
-          const user = await appwriteAccount.get(); // Fetch the current user
-          console.log('Current user:', user);
-
-          // Update the name if not already set or if it needs changing
-          await appwriteAccount.updateName(newName);
-          console.log('User name updated successfully:', newName);
-      } catch (error) {
-          console.error('Error updating user name:', error);
-      }
-    }
-
-    updateName(userID);
 
     var allUserIds = [];
     var otherOnions = [];
@@ -111,47 +45,8 @@ import { createCollisionBatcher } from "./scripts/collisionBatcher.js";
     var myCoords = { x: 120, y: 40, level: trackingLevelId };
     var isDeathAnimEnabled = false;
     var multiplayerEnabled = true;
-    var speedCap = 400; // raising this raises the max speed
     var canDoubleJump = false;
     let funCameraMode = false;
-
-    var pumpkinBought = hasSkin("onion-pumpkin");
-    var invertBought = hasSkin("onion-invert");
-
-    // Function to track failure data in the AppWrite collection
-    async function trackFailureData(level, reason, score) {
-      const collectionId = '6781f02100106f3ad609'; // Replace with your collection ID
-
-      try {
-
-        // Get current timestamp
-        const currentDate = new Date().toISOString();
-
-        // Ensure the user is authenticated
-        const user = await appwriteAccount.get();
-        const userId = user.$id;
-
-        // Create a new document in the leveltracker collection
-        await databases.createDocument(
-          '6781e98c001d322f5ba2', // Replace with your database ID
-          collectionId,
-          'unique()', // Generate a unique document ID
-          {
-            date: currentDate,
-            level: level,
-            userid: userId,
-            coins: score,
-            failurereason: reason, // Reason for failure
-          }
-        );
-
-        console.log('Failure data tracked successfully:', { level, reason, date: currentDate, userid: userId });
-      } catch (error) {
-        console.error('Error tracking failure data:', error);
-      }
-    }
-
-
 
     function subscribeToChannel() {
       // Subscribe to mouse events.
@@ -193,10 +88,6 @@ import { createCollisionBatcher } from "./scripts/collisionBatcher.js";
 
     subscribeToChannel();
 
-    function removeChannel() {
-      const channel = supabase.removeChannel(channel);
-    }
-
     //function remove cookie
     function removeCookie(name) {
       document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
@@ -224,26 +115,11 @@ import { createCollisionBatcher } from "./scripts/collisionBatcher.js";
       sendOnionPosition(channel, userID, onionId, myCoords.x, myCoords.y, myCoords.level)
     }
 
-    function removeOnionListFromScreen() {
-
-      for (var i = 0; i < 20; i++) {
-        add([
-          text("", { size: 20 }),
-          pos(canvasWidth - 400, 10 + (i * 20)),
-          fixed(),
-        ])
-      }
-    }
-
-
     //create a function that prints all onion users
     // this should add a number in the corner to display how many onions are on, and the uptime
     //this could include each user
     function printOnions(presences) {
       if (multiplayerEnabled) {
-        //create a for loop that removes the previous onion text from screen
-        //do it by inserting clear text in the for 20 onions in the same position
-        removeOnionListFromScreen()
         var k = 0;
         for (const [userId, presence] of Object.entries(presences)) {
           if (presence.userId && presence.level) {
@@ -254,7 +130,6 @@ import { createCollisionBatcher } from "./scripts/collisionBatcher.js";
           }
           k++;
         }
-        removeOnionListFromScreen()
         for (var i = 0; i < allUserIds.length; i++) {
           add([
             text(`Onion ${i + 1} (${allUserIds[i].userId}) - Level ${allUserIds[i].level}`, { size: 20, align: "right" }),
@@ -310,8 +185,8 @@ import { createCollisionBatcher } from "./scripts/collisionBatcher.js";
             ]);
             otherOnions.push(onion);
           } else {
-            onion.pos.x = x;
-            onion.pos.y = y;
+            // alpha.25+ requires whole-Vec2 pos assignment instead of pos.x/pos.y writes
+            onion.pos = vec2(x, y);
 
           }
         } else {
@@ -400,23 +275,18 @@ import { createCollisionBatcher } from "./scripts/collisionBatcher.js";
     }
     
 
-    import { LEVELS, SECRET_LEVELS, levelConf } from './scripts/levels.js';
-    import { optimizeLevel, checkLevel } from "./scripts/levelOptimizer.js";
+    import { LEVELS, levelConf } from './scripts/levels.js';
+    import { checkLevel } from "./scripts/levelOptimizer.js";
     import fixWater from "./scripts/waterFixer.js";
-    import { createBatchedLevel, LevelTileBatcher } from "./scripts/levelTileBatcher.js";
-    import { detectBestProfile, applyPerformanceProfile, DynamicPerformanceManager } from "./scripts/performanceConfig.js";
+    import { createBatchedLevel } from "./scripts/levelTileBatcher.js";
+    import { detectBestProfile, applyPerformanceProfile } from "./scripts/performanceConfig.js";
     import { GeneralOptimizer, applySafeRenderingOptimizations, FPSMonitor } from "./scripts/generalOptimizations.js";
     import { setupSimpleWaterPhysics } from "./scripts/simpleWaterPhysics.js";
     // Removed complex water physics that made water behavior worse
-    //var scale = 1;
-    //if (canvasWidth < 800){
-    //scale = .5;
-    //} 
     // Initialize global game config for performance system
     window.gameConfig = window.gameConfig || {
       debug: false,
-      tileBatching: false,  // Disabled - using onDraw batched rendering instead
-      batchedGroundRendering: true,  // New: render ground tiles via onDraw for performance
+      batchedGroundRendering: true,  // Render ground tiles via onDraw for performance
       performanceProfile: 'medium'
     };
 
@@ -425,9 +295,6 @@ import { createCollisionBatcher } from "./scripts/collisionBatcher.js";
     console.log(`Auto-detected performance profile: ${detectedProfile}`);
     applyPerformanceProfile(detectedProfile, window.gameConfig);
 
-    // Initialize dynamic performance manager
-    const dynamicPerfManager = new DynamicPerformanceManager(window.gameConfig);
-    
     //initializing
     const k = kaplay({
       background: [153, 204, 255],
@@ -447,47 +314,15 @@ import { createCollisionBatcher } from "./scripts/collisionBatcher.js";
     // Initialize general performance optimizer
     const generalOptimizer = new GeneralOptimizer(k);
     generalOptimizer.initialize();
-    
-    // Initialize FPS monitor
-    const fpsMonitor = new FPSMonitor(k);
-
-    // Setup callback for dynamic performance adjustment
-    // This is called by DynamicPerformanceManager when quality changes
-    window.reloadLevelWithSettings = function() {
-      console.log(`Reloading level with new performance settings: ${window.gameConfig.performanceProfile}`);
-      // Reload the current level with updated settings
-      if (typeof slctId !== 'undefined') {
-        go("game", { levelId: slctId });
-      }
-    };
-
 
     // load assets
     loadAssets();
 
-
-    //convert the layers to kaboom js 3000
-    const bg = add([
-      fixed(),
-      z(200),
-    ])
-    const obj = add([
-      fixed(),
-      z(400),
-    ])
-    const game = add([
-      fixed(),
-      z(0),
-    ])
-    const ui = add([
-      fixed(),
-      z(800),
-    ])
-    const title = add([
-      fixed(),
-      z(700),
-    ])
-
+    const bg = add([fixed(), z(200)])
+    const obj = add([fixed(), z(400)])
+    const game = add([fixed(), z(0)])
+    const ui = add([fixed(), z(800)])
+    const title = add([fixed(), z(700)])
 
     //if(savedId != null){
     //  savedId = 0;
@@ -589,7 +424,6 @@ import { createCollisionBatcher } from "./scripts/collisionBatcher.js";
         //get local storage value of levelToTest
         const levelToTest = localStorage.getItem("levelToTest");
         if (levelToTest && isTestMode) {
-          console.log(levelToTest)
           const level = levelToTest.split("\n");
           // Use batched level loading for better performance
           const batchedTiles = createBatchedLevel(k, level, levelConf);
@@ -608,8 +442,8 @@ import { createCollisionBatcher } from "./scripts/collisionBatcher.js";
           //load the level
           const optimizedLevel = fixWater(LEVELS[levelId ?? 0]);
 
-          // Force batched rendering for large levels (e.g., The Labyrinth, ocean levels)
-          // Even high-end devices choke on 1000+ individual physics bodies
+      // Force batched rendering for large levels (e.g., The Labyrinth, ocean levels)
+      // Even high-end devices choke on 1000+ individual physics bodies
           if (window.gameConfig && !window.gameConfig.batchedGroundRendering) {
             let batchableTileCount = 0;
             for (const row of optimizedLevel) {
@@ -620,18 +454,11 @@ import { createCollisionBatcher } from "./scripts/collisionBatcher.js";
             if (batchableTileCount > 200) {
               console.log(`Large level detected (${batchableTileCount} batchable tiles) - enabling batched rendering`);
               window.gameConfig.batchedGroundRendering = true;
-              window._largeLevelLoaded = true;
             }
           }
 
           // Set up batched ground rendering if enabled (follows Kaplay optimization guide)
           if (window.gameConfig && window.gameConfig.batchedGroundRendering) {
-            // Also mark as large level if batching was already enabled by profile
-            if (!window._largeLevelLoaded) {
-              let tc = 0;
-              for (const row of optimizedLevel) for (const ch of row) if (ch === '=' || ch === 's' || ch === 'w') tc++;
-              if (tc > 200) window._largeLevelLoaded = true;
-            }
             console.log(`Loading level ${levelId} with batched ground rendering`);
             // Create and set up the batched ground renderer (handles visuals)
             const groundRenderer = createBatchedGroundRenderer(k);
@@ -673,7 +500,6 @@ import { createCollisionBatcher } from "./scripts/collisionBatcher.js";
           })
         }
       }
-      removeOnionListFromScreen()
       if (multiplayerEnabled) {
         printOnions(channel.presenceState())
       }
@@ -811,8 +637,11 @@ let hasFoundCoin = false;
       }
 
       // Function to continuously apply changing effects
+      let effectsInterval = null;
       function continuouslyChangeEffects() {
-        setInterval(() => {
+        // Clear any previous interval so repeated "c" presses don't stack them
+        if (effectsInterval) clearInterval(effectsInterval);
+        effectsInterval = setInterval(() => {
           if (music && music.paused) {
             applyRandomEffects();
           }
@@ -829,39 +658,42 @@ let hasFoundCoin = false;
         }
       });
 
-      //movement or controls
+      // Cheat: press p, then z to skip to the next level
+      let cheatArmed = false;
       onKeyPress('p', () => {
         music.stop()
-        onKeyPress('z', () => {
-          music.stop()
-          canDoubleJump = true
-          if (levelId + 1 < LEVELS.length) {
-            go("game", {
-              levelId: levelId + 1,
-              coins: coins,
+        cheatArmed = true
+      })
+      onKeyPress('z', () => {
+        if (!cheatArmed) return
+        cheatArmed = false
+        music.stop()
+        canDoubleJump = true
+        if (levelId + 1 < LEVELS.length) {
+          go("game", {
+            levelId: levelId + 1,
+            coins: coins,
 
-            })
-            levelId = levelId + 1
-            trackingLevelId = levelId;
-            slctId = levelId
-            setHighLevel(levelId)
-            channel.track({ userId: userID, level: levelId })
-          } else {
-            if(onion.exists()){
-            destroy(onion);
-              }
-              play("win")
-            add([
-              text("You Win!"),
-              color(0, 255, 0),
-              pos(onion.pos),
-              anchor("center"),
-            ])
-            setHighLevel(levelId)
+          })
+          levelId = levelId + 1
+          trackingLevelId = levelId;
+          slctId = levelId
+          setHighLevel(levelId)
+          channel.track({ userId: userID, level: levelId })
+        } else {
+          if(onion.exists()){
+          destroy(onion);
+            }
+            play("win")
+          add([
+            text("You Win!"),
+            color(0, 255, 0),
+            pos(onion.pos),
+            anchor("center"),
+          ])
+          setHighLevel(levelId)
 
-          }
-        })
-
+        }
       })
       onKeyPress("b", () => {
         go("title");
@@ -1008,16 +840,13 @@ vec4 frag(vec2 pos, vec2 uv, vec4 color, sampler2D tex) {
           const effect = Object.keys(effects)[curEffect];
           usePostEffect(effect, effects[effect]());
         } else {
-          usePostEffect(null); // Disable post effect when funCameraMode is off
+          usePostEffect(null);
         }
       });
 
       onion.onCollide("lightbulb", (lightbulb) => {
-        if (lightbulb.exists()){
         destroy(lightbulb);
-        }
         toggleFunCameraMode();
-        
       });
 
 
@@ -1030,21 +859,8 @@ vec4 frag(vec2 pos, vec2 uv, vec4 color, sampler2D tex) {
 
       
       function moveOnion(invert, distance) {
-    if (typeof invert !== 'boolean' || typeof distance !== 'number') {
-        console.error('Invalid parameters for moveOnion');
-        return;
-    }
-
-    try {
-        const moveDistance = invert ? -distance : distance;
-        onion.move(moveDistance, 0);
-        // Network update is already throttled in onion.onUpdate()
-        // No need to send position on every move
-        const myCoords = { x: onion.pos.x, y: onion.pos.y, level: levelId };
-    } catch (error) {
-        console.error('Error in moveOnion:', error);
-        // Optionally handle the error further or throw it to the caller
-    }}
+        onion.move(invert ? -distance : distance, 0);
+      }
 
       // Setup mobile controls with performance monitoring
       const touchControlsSetup = registerTouchControls(onion, moveOnion, levelId, setHighLevel, rEnabled, music, applyRandomEffects, continuouslyChangeEffects, jumpCount);
@@ -1077,53 +893,15 @@ vec4 frag(vec2 pos, vec2 uv, vec4 color, sampler2D tex) {
         }));
       }
 
-      if (levelId != 32 || isOnionInWater(onion, waterAreas)) {
-        onKeyPress("up", () => {
+      for (const jumpKey of ["up", "w", "space"]) {
+        onKeyPress(jumpKey, () => {
           play("jump")
           spawnDust(onion.pos.add(0, 20));
-          if(canDoubleJump && !isOnionInWater(onion, waterAreas)){
+          if (levelId == 32 && !isOnionInWater(onion, waterAreas)) {
+            onion.jump()
+          } else if (canDoubleJump && !isOnionInWater(onion, waterAreas)) {
             onion.doubleJump()
           }
-          sendOnionPosition(channel, userID, onion.pos.x, onion.pos.y, levelId);
-          myCoords = { x: onion.pos.x, y: onion.pos.y, level: levelId };
-        })
-        onKeyPress("w", () => {
-          play("jump")
-          spawnDust(onion.pos.add(0, 20));
-          if(canDoubleJump && !isOnionInWater(onion, waterAreas)){
-            onion.doubleJump()
-          }
-          sendOnionPosition(channel, userID, onion.pos.x, onion.pos.y, levelId);
-          myCoords = { x: onion.pos.x, y: onion.pos.y, level: levelId };
-        })
-        onKeyPress("space", () => {
-          play("jump")
-          spawnDust(onion.pos.add(0, 20));
-          if(canDoubleJump && !isOnionInWater(onion, waterAreas)){
-            onion.doubleJump()
-          }
-          sendOnionPosition(channel, userID, onion.pos.x, onion.pos.y, levelId);
-          myCoords = { x: onion.pos.x, y: onion.pos.y, level: levelId };
-        })
-      } else if (levelId == 32 && !isOnionInWater(onion, waterAreas)){
-        onKeyPress("up", () => {
-          play("jump")
-          spawnDust(onion.pos.add(0, 20));
-          onion.jump()
-          sendOnionPosition(channel, userID, onion.pos.x, onion.pos.y, levelId);
-          myCoords = { x: onion.pos.x, y: onion.pos.y, level: levelId };
-        })
-        onKeyPress("w", () => {
-          play("jump")
-          spawnDust(onion.pos.add(0, 20));
-          onion.jump()
-          sendOnionPosition(channel, userID, onion.pos.x, onion.pos.y, levelId);
-          myCoords = { x: onion.pos.x, y: onion.pos.y, level: levelId };
-        })
-        onKeyPress("space", () => {
-          play("jump")
-          spawnDust(onion.pos.add(0, 20));
-          onion.jump()
           sendOnionPosition(channel, userID, onion.pos.x, onion.pos.y, levelId);
           myCoords = { x: onion.pos.x, y: onion.pos.y, level: levelId };
         })
@@ -1132,16 +910,6 @@ vec4 frag(vec2 pos, vec2 uv, vec4 color, sampler2D tex) {
 
       onKeyPress("f", (c) => {
         setFullscreen(!isFullscreen())
-      })
-
-      // Debug: Toggle tile batching with 'g' key and reload level
-      onKeyPress("g", () => {
-        if (window.gameConfig) {
-          window.gameConfig.tileBatching = !window.gameConfig.tileBatching;
-          console.log(`Tile batching: ${window.gameConfig.tileBatching ? 'ON' : 'OFF'}`);
-          // Reload level to apply change
-          go("game", { levelId: levelId });
-        }
       })
 
       // Debug: Toggle performance overlay with 'h' key
@@ -1155,11 +923,6 @@ vec4 frag(vec2 pos, vec2 uv, vec4 color, sampler2D tex) {
 
 
       //devkey
-      /*onKeyDown('q', () => {
-
-         onion.jump()
-
-        })*/
 
       //scrolling
       // camera follows player
@@ -1175,23 +938,17 @@ vec4 frag(vec2 pos, vec2 uv, vec4 color, sampler2D tex) {
           sendOnionPosition(channel, userID, onion.pos.x, onion.pos.y, levelId);
           lastNetworkUpdate = now;
         }
-        
-        myCoords = { x: onion.pos.x, y: onion.pos.y, level: levelId };
       })
+      const fpsColor = rgb(255, 127, 255);
       onDraw(() => {
-          let fpsTextPosition = { x: width() - 50, y: height() - 50 };
-          const currentFPS = debug.fps();
           drawText({
-              text: currentFPS,
-              pos: vec2(fpsTextPosition.x, fpsTextPosition.y),
+              text: debug.fps(),
+              pos: vec2(width() - 50, height() - 50),
               anchor: "center",
               fixed: true,
-              color: rgb(255, 127, 255),
+              color: fpsColor,
               });
-
-          // DynamicPerformanceManager disabled - its reload loop causes more harm than good
-          // (reloading heavy levels every 5 seconds when FPS is low creates a death spiral)
-      }    );
+      });
 
       //spike code
       onion.onCollide("danger", (danger) => {
@@ -1206,7 +963,7 @@ vec4 frag(vec2 pos, vec2 uv, vec4 color, sampler2D tex) {
           destroy(col.target)
 
         }
-        else if (!col.isBottom()) {
+        else {
           die("collision with enemy");
         }
       })
@@ -1232,38 +989,24 @@ vec4 frag(vec2 pos, vec2 uv, vec4 color, sampler2D tex) {
       })
       
 
-      onion.onCollide("ground", (ground) => {
-        canDoubleJump = true
-        setGravity(1300)
-        spawnDust(onion.pos.add(0, 20));
-      })
-      onion.onCollide("sand", (ground) => {
-        canDoubleJump = true
-        setGravity(1300)
-      })
-      onion.onCollide("door", (ground) => {
-        setGravity(1300)
-      })
-      onion.onCollide("enemy", (ground) => {
-        setGravity(1300)
-      })
-      onion.onCollide("water", (ground) => {
-        canDoubleJump = true
-      })
-      onion.onCollide("jumpy", (ground) => {
-        canDoubleJump = true
-      })
-      onion.onCollide("left", (ground) => {
-        canDoubleJump = true
-        setGravity(1300)
-      })
-      onion.onCollide("right", (ground) => {
-        canDoubleJump = true
-        setGravity(1300)
-      })
-      onion.onCollide("block", (ground) => {
-        canDoubleJump = true
-      })
+      // Collide reactions: [tag, resetDoubleJump, resetGravity, spawnDust]
+      for (const [tag, resetJump, resetGravity, spawnDustOnHit] of [
+        ["ground", true, true, true],
+        ["sand", true, true, false],
+        ["door", false, true, false],
+        ["enemy", false, true, false],
+        ["left", true, true, false],
+        ["right", true, true, false],
+        ["water", true, false, false],
+        ["jumpy", true, false, false],
+        ["block", true, false, false],
+      ]) {
+        onion.onCollide(tag, () => {
+          if (resetJump) canDoubleJump = true;
+          if (resetGravity) setGravity(1300);
+          if (spawnDustOnHit) spawnDust(onion.pos.add(0, 20));
+        })
+      }
       onion.onCollide("winSpin", (winSpin)=>{
         addWinSpin()
         destroy(winSpin)
@@ -1325,11 +1068,6 @@ vec4 frag(vec2 pos, vec2 uv, vec4 color, sampler2D tex) {
       }
       
 
-      /*onion.onCollide("ground",(ground)=>{
-      play("jump")
-
-      //})
-      */
       //write code so that if the d button is clicked, death animation is disabled
       onKeyPress("d", () => {
         isDeathAnimEnabled = !isDeathAnimEnabled;
@@ -1352,11 +1090,8 @@ vec4 frag(vec2 pos, vec2 uv, vec4 color, sampler2D tex) {
             "onion-secret",
           ]
 
-          sprites.forEach((spr) => {
-            loadSprite(spr, `sprites/${spr}.png`)
-          })
-
-          loop(0.1, () => {
+          let deathParticleLoop = null;
+          deathParticleLoop = loop(0.1, () => {
             if (loops < 5) {
               const item = add([
                 pos(onion.pos),
@@ -1367,8 +1102,11 @@ vec4 frag(vec2 pos, vec2 uv, vec4 color, sampler2D tex) {
                 body({ solid: false, }),
                 move(choose([LEFT, RIGHT]), rand(60, 240)),
                 offscreen({ hidden: true }),
+                lifespan(1.5),
               ])
 
+            } else {
+              deathParticleLoop.cancel();
             }
             loops++;
           })
@@ -1399,65 +1137,8 @@ vec4 frag(vec2 pos, vec2 uv, vec4 color, sampler2D tex) {
         }
         setHighLevel(levelId);
         sendDeathMessage(channel, userID);
-        trackFailureData(levelId, reason, score.value);
       }
       }
-      //write a function to dtermine if there is are clouds in the camera view
-      //if there are not, spawn a cloud
-      /*
-      function checkClouds() {
-        var camPosition = camPos();
-        var clouds = get("cloud");
-        var cloudPositions = clouds.map(cloud => cloud.pos);
-        var cloudInCamera = cloudPositions.filter(cloudPos => {
-          return cloudPos.x > camPosition.x - 100 && cloudPos.x < camPosition.x + width() + 100
-        })
-        if (cloudInCamera.length <= 2) {
-          spawnCloud()
-        }
-
-      }
-      var clouds = []
-      function spawnCloud() {
-        const dir = choose([LEFT, RIGHT]);
-        var cloud = add([
-          sprite("cloud", { flipX: dir === LEFT }),
-          move(dir, rand(20, 60)),
-          offscreen({ destroy: true }),
-          pos(rand(-20 + onion.pos.x, width() + onion.pos.x + 300), rand(-20, 480)),
-          anchor("top"),
-          area(),
-          z(-50),
-          "cloud",
-        ]);
-        clouds.push(cloud);
-
-        if (clouds.length > 3) {
-          destroy(clouds[0]);  // Just destroy the cloud object
-          clouds.shift();      // Remove the first element from the array after it's destroyed
-        }
-      }
-
-      //spawn 3 clouds to start
-      for (let i = 0; i < 3; i++) {
-        spawnCloud()
-      }
-      setInterval(spawnCloud, 15000)
-      setInterval(checkClouds, 1000)
-      */
-      /*
-      function buttonAnims(){
-        this.onHover(){
-          
-        }
-        this.onHoverUpdate(){
-          
-        }
-        this.onHoverEnd(){
-          
-        }
-        
-      }*/
       const score = add([
         text("Score: 0"),
         pos(40, 100),
@@ -1466,7 +1147,7 @@ vec4 frag(vec2 pos, vec2 uv, vec4 color, sampler2D tex) {
       ])
       onion.onCollide("key", (key) => {
         //write a for loop to get all doors and remove them
-        get("door", { recursive: true, liveUpdate: true }).forEach((door) => {
+        get("door", { recursive: true }).forEach((door) => {
           destroy(door)
         })
 
@@ -1500,39 +1181,6 @@ vec4 frag(vec2 pos, vec2 uv, vec4 color, sampler2D tex) {
 
       //portal code
 
-      // Function to track level data in the AppWrite collection
-      async function trackLevelData(level) {
-        const collectionId = '6781e9c200193b8b46c0'; // Replace with your collection ID
-
-        try {
-
-          // Get current timestamp
-          const currentDate = new Date().toISOString();
-
-          // Ensure the user is authenticated
-          const user = await appwriteAccount.get();
-          const userId = user.$id;
-
-          // Create a new document in the leveltracker collection
-          await databases.createDocument(
-            '6781e98c001d322f5ba2', // Replace with your database ID
-            collectionId,
-            'unique()', // Generate a unique document ID
-            {
-              date: currentDate,
-              level: level,
-              userid: userId,
-              coins: score.value,
-            }
-          );
-
-          console.log('Level data tracked successfully:', { level, date: currentDate, userid: userId });
-        } catch (error) {
-          console.error('Error tracking level data:', error);
-        }
-      }
-
-
       onion.onCollide("portal", () => {
         music.paused = !music.paused;
         play("portal")
@@ -1549,7 +1197,6 @@ vec4 frag(vec2 pos, vec2 uv, vec4 color, sampler2D tex) {
           trackingLevelId = levelId;
           slctId = levelId
           setHighLevel(levelId)
-          trackLevelData(levelId)
         } else {
           if(onion.exists()){
           destroy(onion);
@@ -1563,15 +1210,6 @@ vec4 frag(vec2 pos, vec2 uv, vec4 color, sampler2D tex) {
           setHighLevel(levelId)
         }
       })
-      /*
-      onion.onCollide("arg", () => {
-        music.paused = !music.paused;
-        go("game", {
-          secretLevelId: 1,
-          coins: coins,
-        })
-      })
-      */
       //jumpy code
       onion.onCollide("jumpy", () => {
         play("jumpy")
@@ -1597,13 +1235,6 @@ vec4 frag(vec2 pos, vec2 uv, vec4 color, sampler2D tex) {
       onKeyPress("r", () => {
         music.stop()
         canDoubleJump = false
-        if(onion.exists()){
-          trackFailureData(levelId, "restart", score.value)
-        }
-        // Clean up optimizer before restarting
-        if (typeof labyrinthOptimizer !== 'undefined' && labyrinthOptimizer) {
-          labyrinthOptimizer.cleanup();
-        }
         // Clean up mobile controls
         if (touchControlsSetup && touchControlsSetup.destroy) {
           touchControlsSetup.destroy();
@@ -1682,7 +1313,6 @@ function button() {
 
 
       var randTypo = Math.round((Math.random() * 10000))
-      console.log(randTypo);
       if(randTypo == 1337){
         add([
           text("Oinon's Life", { size: width()/10, align: "center" }),
@@ -1822,7 +1452,7 @@ function button() {
       onKeyPress('q', () => {
         onKeyPress('m', () => {
           onKeyPress('p', () => {
-            levelId = levelNames ? levelNames.length : 64;
+            levelId = LEVELS.length - 1;
             trackingLevelId = levelId;
             slctId = levelId;
             setHighLevel(levelId);
@@ -2055,7 +1685,7 @@ function button() {
         fixed(),
       ])
 
-      on("click", () => {
+      onMousePress(() => {
         nameInput.text = "Name";
       })
 
@@ -2089,10 +1719,8 @@ function button() {
       // Like onKeyPress() but will retrigger when key is being held (which is similar to text input behavior)
       // Insert new line when user presses enter
       onKeyPressRepeat("enter", () => {
-        console.log(allUserIds)
           //if the name is in the user ids, throw an error
           for (let userId of allUserIds) {
-            console.log(userId.userId)
             if (userId.userId === input.text) {
               alert("Name already in use!");
               console.log("Name already in use!");
@@ -2176,22 +1804,31 @@ function button() {
         pos(width() * 0.85, height() * 0.05),
       ])
 
+      // Skin unlock rules: achievement-gated skins and coin-purchasable skins
+      const ACHIEVEMENT_SKINS = { "onion-secret": "...", "onion-ocean": "Explored the Depths" };
+      const PRICED_SKINS = { "onion-pumpkin": 750, "onion-invert": 1250 };
+
       var unlocked = false;
-      if (onions[onionId] === "onion-secret") {
+      const currentSkin = onions[onionId];
+      const showOnionSprite = () => add([
+        sprite(currentSkin),
+        "btn",
+        pos(width() / 2 - 38, height() / 2 - 50),
+        area(),
+      ]);
+
+      if (ACHIEVEMENT_SKINS[currentSkin]) {
+        const required = ACHIEVEMENT_SKINS[currentSkin];
         for (let achievement of checkAchievements()) {
-          if (achievement.name === "...") {
+          if (achievement.name === required) {
             unlocked = true;
-            const onionSelect = add([
-              sprite(onions[onionId]),
-              "btn",
-              pos(width() / 2 - 38, height() / 2 - 50),
-              area(),
-            ]);
-            saveSkin(onions[onionId]);
+            showOnionSprite();
+            saveSkin(currentSkin);
+            break;
           }
         }
         if (!unlocked) {
-          const onionSelect = add([
+          add([
             sprite("skinsBtn"),
             "btn",
             scale(0.421875),
@@ -2205,137 +1842,34 @@ function button() {
             anchor("center"),
           ]);
         }
-      } else if (onions[onionId] === "onion-ocean") {
-        for (let achievement of checkAchievements()) {
-          if (achievement.name === "Explored the Depths") {
-            unlocked = true;
-            const onionSelect = add([
-              sprite(onions[onionId]),
-              "btn",
-              pos(width() / 2 - 38, height() / 2 - 50),
-              area(),
-            ]);
-            saveSkin(onions[onionId]);
-          }
-        }
-        if (!unlocked) {
-          const onionSelect = add([
-            sprite("skinsBtn"),
-            "btn",
-            scale(0.421875),
-            pos(width() / 2, height() / 2),
-            area(),
-            anchor("center"),
-          ]);
-          add([
-            text("An achievement is required...", { size: 40 }),
-            pos(width() / 2, height() * 0.7),
-            anchor("center"),
-          ]);
-        }
-      } else if (onions[onionId] === "onion-pumpkin") {
-        // Check if the pumpkin has been bought
-        pumpkinBought = hasSkin("onion-pumpkin")
-        if (pumpkinBought) {
-          unlocked = true;
-          const onionSelect = add([
-            sprite(onions[onionId]),
-            "btn",
-            pos(width() / 2 - 38, height() / 2 - 50),
-            area(),
-          ]);
-          const startBtn = add([
-            sprite("startbtn"),
-            scale(0.421875),
-            pos(width() / 2, height() * 0.7),
-            anchor("center"),
-          ]);
-          startBtn.add([
+      } else if (PRICED_SKINS[currentSkin]) {
+        const price = PRICED_SKINS[currentSkin];
+        unlocked = true;
+        showOnionSprite();
+        const actionBtn = add([
+          sprite("startbtn"),
+          pos(width() / 2, height() * 0.7),
+          anchor("center"),
+        ]);
+        if (hasSkin(currentSkin)) {
+          actionBtn.scale = 0.421875;
+          actionBtn.add([
             text("Bought", { size: 64 }),
             scale(2.37037037037),
             fixed(),
             anchor("center"),
           ]);
         } else {
-          // Retrieve the user's coins and check if they have enough
-          let coins = retrieveCoins();
-          unlocked = true;
-          const onionSelect = add([
-            sprite(onions[onionId]),
-            "btn",
-            pos(width() / 2 - 38, height() / 2 - 50),
-            area(),
-          ]);
-          const buyBtn = add([
-            sprite("startbtn"),
-            pos(width() / 2, height() * 0.7),
-            anchor("center"),
-            area(),
-            "buyBtn"
-          ]);
-          buyBtn.add([
-            text("$750", { size: 64 }),
+          actionBtn.add([
+            text(`$${price.toLocaleString()}`, { size: 64 }),
             fixed(),
             anchor("center"),
           ]);
-          
-        }
-      } else if (onions[onionId] === "onion-invert") {
-        // Check if the invert has been bought
-        invertBought = hasSkin("onion-invert")
-        if (invertBought) {
-          unlocked = true;
-          const onionSelect = add([
-            sprite(onions[onionId]),
-            "btn",
-            pos(width() / 2 - 38, height() / 2 - 50),
-            area(),
-          ]);
-          const startBtn = add([
-            sprite("startbtn"),
-            scale(0.421875),
-            pos(width() / 2, height() * 0.7),
-            anchor("center"),
-          ]);
-          startBtn.add([
-            text("Bought", { size: 64 }),
-            scale(2.37037037037),
-            fixed(),
-            anchor("center"),
-          ]);
-        } else {
-          // Retrieve the user's coins and check if they have enough
-          let coins = retrieveCoins();
-          unlocked = true;
-          const onionSelect = add([
-            sprite(onions[onionId]),
-            "btn",
-            pos(width() / 2 - 38, height() / 2 - 50),
-            area(),
-          ]);
-          const buyBtn = add([
-            sprite("startbtn"),
-            pos(width() / 2, height() * 0.7),
-            anchor("center"),
-            area(),
-            "buyBtn"
-          ]);
-          buyBtn.add([
-            text("$1,250", { size: 64 }),
-            fixed(),
-            anchor("center"),
-          ]);
-          
         }
       } else {
         unlocked = true;
-        saveSkin(onions[onionId])
-        const onionSelect = add([
-          sprite(onions[onionId]),
-          "btn",
-          pos(width() / 2 - 38, height() / 2 - 50),
-          area()
-        ]);
+        saveSkin(currentSkin);
+        showOnionSprite();
       }
 
       const leftArrow = add([
@@ -2453,33 +1987,6 @@ function button() {
       })
     })
     var highestId = 0;
-    // scene("piracy", () => {
-    //   add([
-    //     // list of components
-    //     sprite("nopiracy"),
-    //     pos(width() / 2 - 115, height() / 2 + 50),
-    //   ])
-
-    //   add([
-    //     text("Onion doesn't like", {size: 120}),
-    //     layer("title"),
-    //     color(255, 255, 255),
-    //     fixed(),
-    //     pos(width() / 2 - 651, height() * 0.10),
-    //   ])
-    //   add([
-    //     text("pirates.", {size: 120}),
-    //     layer("title"),
-    //     color(255, 0, 0),
-    //     fixed(),
-    //     pos(width() / 2 - 275, height() * 0.30),
-    //   ])
-    //   onKeyPress("h", () => {
-    //     onKeyPress("q", () => {
-    //       go("title");
-    //     })
-    //   })
-    // })
 
 
     scene("winSpins", () => {
@@ -2558,7 +2065,8 @@ function button() {
                 underPrizeBtn.prizeText.text = "COINS";
                 break;
               case "skin":
-                const randomSkin = "onion-" + ["beach", "blue", "dark", "gold", "watermelon", "eggplant", "magic", "pumpkin", "invert", "ocean"][Math.floor(Math.random() * 11)];
+                const skinNames = ["beach", "blue", "dark", "gold", "watermelon", "eggplant", "magic", "pumpkin", "invert", "ocean"];
+                const randomSkin = "onion-" + skinNames[Math.floor(Math.random() * skinNames.length)];
                 prizeSprite.use(sprite(randomSkin));
                 underPrizeBtn.prizeText.text = "SKIN";
                 break;
@@ -2567,8 +2075,8 @@ function button() {
                 underPrizeBtn.prizeText.text = "WINSPIN";
                 break;
             }
-            underPrizeBtn.prizeText.pos.y = (prizeSprite.height / 2) + (height() / 2) + 40;
-            underPrizeBtn.collectText.pos.y = (prizeSprite.height / 2) + (height() / 2) + 80;
+            underPrizeBtn.prizeText.pos = vec2(underPrizeBtn.prizeText.pos.x, (prizeSprite.height / 2) + (height() / 2) + 40);
+            underPrizeBtn.collectText.pos = vec2(underPrizeBtn.collectText.pos.x, (prizeSprite.height / 2) + (height() / 2) + 80);
             underPrizeBtn.collectText.text = "COLLECT";
             spinCount.text = `Available Spins: ${getWinSpins()}`;
             isSpinning = false; // Reset spinning flag to false
@@ -2648,78 +2156,6 @@ function button() {
       }
     })
 
-    /*
-    scene("dj", () => {
-      const music = play("OverworldlyFoe", {
-        volume: 1,
-        loop: true
-      })
-      music.play()
-      const wheelSize = 100; // Size of the control wheels
-      const wheelSpacing = 50; // Spacing between the wheels
-      const wheelCenterY = height() / 2; // Y position for all wheels
-      const wheelSpeed = 0.1; // Speed of wheel rotation
-
-      const wheels = [
-        { name: "Volume", value: 0, min: 0, max: 1, step: 0.1 },
-        { name: "Speed", value: 1, min: 0.5, max: 2, step: 0.1 },
-        { name: "Detune", value: 0, min: -1200, max: 1200, step: 100 },
-      ];
-
-      const wheelSprites = [];
-
-      // Create the control wheels
-      wheels.forEach((wheel, index) => {
-        const wheelSprite = add([
-          sprite("dj"),
-          area(),
-          pos((index + 1) * (wheelSize + wheelSpacing), wheelCenterY),
-          anchor("center"),
-          rotate(0),
-          wheel,
-        ]);
-        wheelSprites.push(wheelSprite);
-      });
-
-      // Function to modify the sound based on the wheel values
-      function modifySound() {
-        const volume = wheelSprites[0].value;
-        const speed = wheelSprites[1].value;
-        const detune = wheelSprites[2].value;
-
-        // Apply the modifications to the sound
-        music.volume(volume);
-        music.speed(speed);
-        music.detune(detune);
-      }
-
-      // Update the sound modification on each frame
-      action(() => {
-        modifySound();
-      });
-
-      // Mouse movement and click events to control the wheels
-      let wheelIndex = 0; // Index of the active wheel
-
-      onMouseMove(() => {
-        wheelIndex = Math.floor(mousePos().x / (wheelSize + wheelSpacing));
-      });
-
-      onMousePress(() => {
-        const activeWheel = wheelSprites[wheelIndex];
-        const scrollDelta = mousePos().y - activeWheel.pos.y;
-
-        // Update the wheel value based on the scroll direction and step
-        const { value, min, max, step } = activeWheel;
-
-        if (scrollDelta > 0) {
-          activeWheel.value = Math.min(value + step, max);
-        } else if (scrollDelta < 0) {
-          activeWheel.value = Math.max(value - step, min);
-        }
-      });
-    }) 
-    */
     // if ((window.matchMedia('(display-mode: fullscreen)').matches || window.navigator.fullscreen) || (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone)) {
     go("title");
     // }
