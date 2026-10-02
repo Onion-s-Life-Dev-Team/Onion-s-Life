@@ -136,7 +136,7 @@
             let jumpCount = 0;
             
             // Import and setup touch controls
-            import("/scripts/touchCode.js").then(module => {
+            import("/scripts/game/touchCode.js").then(module => {
                 const touchControls = module.default(
                     onion,
                     moveOnion,
@@ -150,7 +150,7 @@
                 );
                 
                 // Setup performance monitor
-                import("/scripts/mobilePerformanceMonitor.js").then(perfModule => {
+                import("/scripts/game/mobilePerformanceMonitor.js").then(perfModule => {
                     const monitor = perfModule.setupMobilePerformance(k, {
                         showDebugInfo: true,
                         targetFPS: 60

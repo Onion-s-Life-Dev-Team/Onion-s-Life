@@ -1,7 +1,7 @@
 import { textures, sounds, music } from "./resourcePaths.js";
 
 /*
- * Go to scripts/resourcePaths.js to add new textures/sounds/music
+ * Go to scripts/core/resourcePaths.js to add new textures/sounds/music
  * - LagTheSystem
  */
 

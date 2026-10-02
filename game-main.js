@@ -1,16 +1,16 @@
     // import kaplay.js
     import kaplay from "https://unpkg.com/kaplay@4000.0.0-alpha.27.1/dist/kaplay.mjs"
     import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
-    import registerTouchControls from "./scripts/touchCode.js";
-    import { setupMobilePerformance } from "./scripts/mobilePerformanceMonitor.js";
-    import loadAssets from "./scripts/assets.js";
-    import { handleAchievementCollision, checkAchievements, hasAchievement } from "./scripts/achievement.js";
-    import { addCoin, retrieveCoins, storeCoins } from "./scripts/coinManager.js";
-    import { hasSkin, saveSkin } from "./scripts/skinManager.js";
-    import { getWinSpins, useWinSpin, spinWheel, addWinSpin } from './scripts/winSpins.js';
-    import { getPack } from "./scripts/packHandler.js";
-import { createBatchedGroundRenderer } from "./scripts/batchedGroundRenderer.js";
-import { createCollisionBatcher } from "./scripts/collisionBatcher.js";
+    import registerTouchControls from "./scripts/game/touchCode.js";
+    import { setupMobilePerformance } from "./scripts/game/mobilePerformanceMonitor.js";
+    import loadAssets from "./scripts/core/assets.js";
+    import { handleAchievementCollision, checkAchievements, hasAchievement } from "./scripts/core/achievement.js";
+    import { addCoin, retrieveCoins, storeCoins } from "./scripts/core/coinManager.js";
+    import { hasSkin, saveSkin } from "./scripts/core/skinManager.js";
+    import { getWinSpins, useWinSpin, spinWheel, addWinSpin } from './scripts/core/winSpins.js';
+    import { getPack } from "./scripts/core/packHandler.js";
+import { createBatchedGroundRenderer } from "./scripts/game/batchedGroundRenderer.js";
+import { createCollisionBatcher } from "./scripts/game/collisionBatcher.js";
 
     const SUPABASE_URL = 'https://ihrdqbqvoflutgbzhqqo.supabase.co'
     const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlocmRxYnF2b2ZsdXRnYnpocXFvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTYwNDI1ODIsImV4cCI6MjAzMTYxODU4Mn0.d3Vac0lv5CicW-FF_NfZ7j3BAkaXEDLctg47V64S2NE'
@@ -275,13 +275,13 @@ import { createCollisionBatcher } from "./scripts/collisionBatcher.js";
     }
     
 
-    import { LEVELS, levelConf } from './scripts/levels.js';
-    import { checkLevel } from "./scripts/levelOptimizer.js";
-    import fixWater from "./scripts/waterFixer.js";
-    import { createBatchedLevel } from "./scripts/levelTileBatcher.js";
-    import { detectBestProfile, applyPerformanceProfile } from "./scripts/performanceConfig.js";
-    import { GeneralOptimizer, applySafeRenderingOptimizations, FPSMonitor } from "./scripts/generalOptimizations.js";
-    import { setupSimpleWaterPhysics } from "./scripts/simpleWaterPhysics.js";
+    import { LEVELS, levelConf } from './scripts/game/levels.js';
+    import { checkLevel } from "./scripts/game/levelOptimizer.js";
+    import fixWater from "./scripts/game/waterFixer.js";
+    import { createBatchedLevel } from "./scripts/game/levelTileBatcher.js";
+    import { detectBestProfile, applyPerformanceProfile } from "./scripts/game/performanceConfig.js";
+    import { GeneralOptimizer, applySafeRenderingOptimizations, FPSMonitor } from "./scripts/game/generalOptimizations.js";
+    import { setupSimpleWaterPhysics } from "./scripts/game/simpleWaterPhysics.js";
     // Removed complex water physics that made water behavior worse
     // Initialize global game config for performance system
     window.gameConfig = window.gameConfig || {
