@@ -150,7 +150,7 @@
                 );
                 
                 // Setup performance monitor
-                import("/scripts/game/mobilePerformanceMonitor.js").then(perfModule => {
+                import("/scripts/game/performanceDirector.js").then(perfModule => {
                     const monitor = perfModule.setupMobilePerformance(k, {
                         showDebugInfo: true,
                         targetFPS: 60

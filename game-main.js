@@ -2,15 +2,13 @@
     import kaplay from "https://unpkg.com/kaplay@4000.0.0-alpha.27.1/dist/kaplay.mjs"
     import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
     import registerTouchControls from "./scripts/game/touchCode.js";
-    import { setupMobilePerformance } from "./scripts/game/mobilePerformanceMonitor.js";
+    import { setupMobilePerformance } from "./scripts/game/performanceDirector.js";
     import loadAssets from "./scripts/core/assets.js";
     import { handleAchievementCollision, checkAchievements, hasAchievement } from "./scripts/core/achievement.js";
     import { addCoin, retrieveCoins, storeCoins } from "./scripts/core/coinManager.js";
     import { hasSkin, saveSkin } from "./scripts/core/skinManager.js";
     import { getWinSpins, useWinSpin, spinWheel, addWinSpin } from './scripts/core/winSpins.js';
     import { getPack } from "./scripts/core/packHandler.js";
-import { createBatchedGroundRenderer } from "./scripts/game/batchedGroundRenderer.js";
-import { createCollisionBatcher } from "./scripts/game/collisionBatcher.js";
 
     const SUPABASE_URL = 'https://ihrdqbqvoflutgbzhqqo.supabase.co'
     const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlocmRxYnF2b2ZsdXRnYnpocXFvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTYwNDI1ODIsImV4cCI6MjAzMTYxODU4Mn0.d3Vac0lv5CicW-FF_NfZ7j3BAkaXEDLctg47V64S2NE'
@@ -276,11 +274,10 @@ import { createCollisionBatcher } from "./scripts/game/collisionBatcher.js";
     
 
     import { LEVELS, levelConf } from './scripts/game/levels.js';
-    import { checkLevel } from "./scripts/game/levelOptimizer.js";
-    import fixWater from "./scripts/game/waterFixer.js";
+    import { compileLevel, createBubbles } from "./scripts/game/levelPipeline.js";
     import { createBatchedLevel } from "./scripts/game/levelTileBatcher.js";
     import { detectBestProfile, applyPerformanceProfile } from "./scripts/game/performanceConfig.js";
-    import { GeneralOptimizer, applySafeRenderingOptimizations, FPSMonitor } from "./scripts/game/generalOptimizations.js";
+    import { GeneralOptimizer, applySafeRenderingOptimizations } from "./scripts/game/generalOptimizations.js";
     import { setupSimpleWaterPhysics } from "./scripts/game/simpleWaterPhysics.js";
     // Removed complex water physics that made water behavior worse
     // Initialize global game config for performance system
@@ -440,7 +437,7 @@ import { createCollisionBatcher } from "./scripts/game/collisionBatcher.js";
           setHighLevel(levelId)
         } else {
           //load the level
-          const optimizedLevel = fixWater(LEVELS[levelId ?? 0]);
+          const optimizedLevel = createBubbles(LEVELS[levelId ?? 0]);
 
       // Force batched rendering for large levels (e.g., The Labyrinth, ocean levels)
       // Even high-end devices choke on 1000+ individual physics bodies
@@ -460,21 +457,11 @@ import { createCollisionBatcher } from "./scripts/game/collisionBatcher.js";
           // Set up batched ground rendering if enabled (follows Kaplay optimization guide)
           if (window.gameConfig && window.gameConfig.batchedGroundRendering) {
             console.log(`Loading level ${levelId} with batched ground rendering`);
-            // Create and set up the batched ground renderer (handles visuals)
-            const groundRenderer = createBatchedGroundRenderer(k);
-            groundRenderer.registerGroundTiles(optimizedLevel, 64);
-            groundRenderer.setupRenderer();
-            window.groundRenderer = groundRenderer;
-
-            // Create batched collision objects (merges thousands of tiles into dozens of collision boxes)
-            const collisionBatcher = createCollisionBatcher(k);
-            const stats = collisionBatcher.getStats(optimizedLevel);
-            console.log(`Collision batching: ${stats.totalGroundTiles} ground + ${stats.totalSandTiles} sand tiles -> ${stats.batchedRegions} regions (${stats.reductionRatio} reduction)`);
-            collisionBatcher.createBatchedCollisions(optimizedLevel, 64);
-            window.collisionBatcher = collisionBatcher;
-
-            // Pre-compute merged water regions for water physics (much faster than per-tile checks)
-            window._mergedWaterRegions = collisionBatcher.computeWaterRegions(optimizedLevel, 64);
+            const compiled = compileLevel(k, optimizedLevel, 64);
+            window.groundRenderer = compiled.groundRenderer;
+            window._mergedWaterRegions = compiled.waterRegions;
+            const totalTiles = compiled.groundRenderer.getStats().totalTiles;
+            console.log(`Level compiled: ${totalTiles} render tiles -> ${compiled.collisionObjects.length} collision regions; ${compiled.waterRegions.length} water areas`);
             console.log(`Water regions: ${window._mergedWaterRegions.length} areas computed from level data (no game objects needed)`);
           }
 
@@ -485,7 +472,6 @@ import { createCollisionBatcher } from "./scripts/game/collisionBatcher.js";
             : optimizedLevel;
           addLevel(levelForAddLevel, levelConf);
 
-          checkLevel(LEVELS[levelId])
         }
       } catch(error ) {
         console.error('Error in loading custom level:', error);

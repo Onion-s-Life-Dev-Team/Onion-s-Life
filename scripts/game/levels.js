@@ -2046,9 +2046,9 @@ const levelConf = {
   tiles:{
     "=": () => {
       // When batched ground rendering is enabled, return null to skip tile creation
-      // CollisionBatcher handles collision, BatchedGroundRenderer handles visuals
+      // The level pipeline handles batched collision and ground visuals.
       if (window.gameConfig && window.gameConfig.batchedGroundRendering) {
-        return null;  // Skip - collision batcher creates merged collision objects
+         return null;  // Skip - the level pipeline creates merged collision objects
       }
       // Fallback: normal rendering with sprite
       return [
@@ -2329,7 +2329,7 @@ const levelConf = {
     ],
     "s": () => {
       if (window.gameConfig && window.gameConfig.batchedGroundRendering) {
-        return null;  // Skip - collision batcher creates merged collision objects
+         return null;  // Skip - the level pipeline creates merged collision objects
       }
       return [
         sprite("sand"),
@@ -2343,7 +2343,7 @@ const levelConf = {
     },
     "w": () => {
       if (window.gameConfig && window.gameConfig.batchedGroundRendering) {
-        return null;  // Skip - batched renderer handles visuals, water regions computed from level data
+         return null;  // Batched renderer handles visuals; water areas come from level data.
       }
       return [
         sprite("water"),
