@@ -3,6 +3,7 @@ import kaplay from "https://unpkg.com/kaplay@4000.0.0-alpha.27.1/dist/kaplay.mjs
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 import registerTouchControls from "./scripts/game/touchCode.js";
 import { setupMobilePerformance } from "./scripts/game/performanceDirector.js";
+import { setupCloudBackground } from "./scripts/game/cloudBackground.js";
 import loadAssets from "./scripts/core/assets.js";
 import { handleAchievementCollision, checkAchievements, hasAchievement } from "./scripts/core/achievement.js";
 import { addCoin, retrieveCoins, storeCoins } from "./scripts/core/coinManager.js";
@@ -374,6 +375,9 @@ scene("game", ({ levelId, coins } = {
   levelName: "Intro",
 }) => {
   setGravity(1300)
+  // Register clouds first: their world-space draw callback must precede the
+  // level pipeline callback so terrain and game objects render over them.
+  setupCloudBackground(k);
   var storedName = getCookie("name");
   if (storedName) {
     alert("Why did you make an offensive name? I'm changing it to a random name.")
@@ -1025,7 +1029,7 @@ vec4 frag(vec2 pos, vec2 uv, vec4 color, sampler2D tex) {
         add([
           text("Press 'R' to restart", { size: 30 }),
           fixed(),
-          pos(width() / 2, height() / 2 + 20),
+          pos(width() / 2, height() / 2 + 25),
           anchor("center"),
           z(1),
         ])
@@ -1398,12 +1402,10 @@ scene("select", () => {
 
   if (slctId > 9) {
     lvlWidth = 250;
-    offsetY = 0;
     offsetX = 15;
   }
   if (slctId < 10) {
     lvlWidth = 100;
-    offsetY = -75;
     offsetX = 0;
   }
 
@@ -1414,7 +1416,7 @@ scene("select", () => {
       height: 180,
     }),
     anchor("center"),
-    pos(width() / 2 + offsetX, height() / 2 + offsetY),
+    pos(width() / 2 + offsetX, height() / 2),
   ])
   //touchscreen
   const leftArrow = add([
@@ -1473,9 +1475,7 @@ scene("select", () => {
       if (levelButton.hasPoint(pos)) {
         go("game");
       }
-
     })
-
   }
 
   onClick("sr", () => {
@@ -1508,9 +1508,11 @@ scene("select", () => {
       }
     }
   })
+
   onClick("b", () => {
     go("title");
   });
+
   onClick("l", () => {
     if (slctId > 0) {
       slctId--;
@@ -1521,7 +1523,6 @@ scene("select", () => {
   onClick("btn", () => {
     go("game");
   })
-
 
   add([
     text("Level Select", { size: 64 }),
