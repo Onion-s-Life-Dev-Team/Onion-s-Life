@@ -7,7 +7,7 @@ export default defineConfig({
     assetsDir: 'assets',
     rollupOptions: {
       input: {
-        main: './index-new.html',
+        main: './index.html',
         original: './index.html',
         bagsLife: './bagsLife.html',
         leveldesigner: './leveldesigner.html'

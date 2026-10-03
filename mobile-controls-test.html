@@ -52,7 +52,7 @@
     <button id="toggleOptimized">Toggle Control Type</button>
 
     <script type="module">
-        import kaplay from "https://unpkg.com/kaplay@4000.0.0-alpha.5/dist/kaplay.mjs";
+        import kaplay from "https://unpkg.com/kaplay@4000.0.0-alpha.27.1/dist/kaplay.mjs";
         
         const k = kaplay({
             width: window.innerWidth,
@@ -136,7 +136,7 @@
             let jumpCount = 0;
             
             // Import and setup touch controls
-            import("/scripts/touchCode.js").then(module => {
+            import("/scripts/game/touchCode.js").then(module => {
                 const touchControls = module.default(
                     onion,
                     moveOnion,
@@ -150,7 +150,7 @@
                 );
                 
                 // Setup performance monitor
-                import("/scripts/mobilePerformanceMonitor.js").then(perfModule => {
+                import("/scripts/game/performanceDirector.js").then(perfModule => {
                     const monitor = perfModule.setupMobilePerformance(k, {
                         showDebugInfo: true,
                         targetFPS: 60

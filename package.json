@@ -5,9 +5,10 @@
   "main": "index.html",
   "scripts": {
     "dev": "vite",
+    "host": "vite --host",
     "build": "vite build",
     "preview": "vite preview",
-    "test": "npx eslint scripts/levels.js",
+    "test": "npx eslint scripts/game/levels.js",
     "generate-sw": "node generate-sw.js"
   },
   "repository": {

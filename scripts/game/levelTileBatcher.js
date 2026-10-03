@@ -1,5 +1,6 @@
 // Advanced tile batching system for massive performance improvements
 // This batches both horizontal and vertical runs of tiles into single draw calls
+import { findGreedyRectangles } from './levelMatrixUtils.js';
 
 export class LevelTileBatcher {
   constructor(k, tileSize = 64) {
@@ -43,7 +44,7 @@ export class LevelTileBatcher {
           const tileObj = levelConf.tiles[tile]();
           if (tileObj) {
             // Filter out offscreen component - keep anchor("bot") from original tiles
-            // Smart culling in generalOptimizations.js handles visibility instead
+            // Leave visibility management to the tile's native offscreen behavior.
             const filtered = tileObj.filter(comp => !(comp && comp.id === "offscreen"));
             // Add pos at beginning - match addLevel positioning (row * tileSize)
             filtered.unshift(this.k.pos(x * this.tileSize, y * this.tileSize));
@@ -59,29 +60,24 @@ export class LevelTileBatcher {
   // Find rectangular regions of the same tile type
   findTileBatches(levelData) {
     const batches = new Map();
-    const visited = new Set();
-    
-    for (let y = 0; y < levelData.length; y++) {
-      for (let x = 0; x < levelData[y].length; x++) {
-        const tile = levelData[y][x];
-        
-        // Skip if already visited or not a batchable tile
-        if (visited.has(`${x},${y}`) || !this.isBatchableTile(tile)) {
-          continue;
-        }
-        
-        // Find the largest rectangle starting from this position
-        const region = this.findLargestRectangle(levelData, x, y, tile, visited);
-        
-        if (region.width * region.height > 1) {
-          if (!batches.has(tile)) {
-            batches.set(tile, []);
-          }
-          batches.get(tile).push(region);
-        }
-      }
+    const tileTypes = new Set();
+    for (const row of levelData) {
+      for (const tile of row) if (this.isBatchableTile(tile)) tileTypes.add(tile);
     }
-    
+
+    for (const tile of tileTypes) {
+      const regions = findGreedyRectangles(levelData, tile)
+        .filter(({ width, height }) => width * height > 1)
+        .map(({ x, y, width, height }) => ({
+          startX: x,
+          startY: y - height,
+          endX: x + width - 1,
+          endY: y - 1,
+          width,
+          height,
+        }));
+      if (regions.length) batches.set(tile, regions);
+    }
     return batches;
   }
 

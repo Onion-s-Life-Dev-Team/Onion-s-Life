@@ -65,7 +65,7 @@ for (const dir of ASSET_DIRS) {
 // Critical CDN dependencies that must be pre-cached for offline play
 // Extracted from game-main.js imports
 const CDN_DEPS = [
-  'https://unpkg.com/kaplay@4000.0.0-alpha.5/dist/kaplay.mjs',
+  'https://unpkg.com/kaplay@4000.0.0-alpha.27.1/dist/kaplay.mjs',
 ];
 
 // Sort for deterministic output

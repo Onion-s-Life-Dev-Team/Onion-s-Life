@@ -1,4 +1,4 @@
-export default function registerTouchControls(onion, moveOnion, levelId, setHighLevel, rEnabled, music, applyRandomEffects, continuouslyChangeEffects, jumpCount) {
+export default function registerTouchControls(onion, moveOnion, levelId, setHighLevel, rEnabled, music, applyRandomEffects, continuouslyChangeEffects, jumpCount, isPlayerDead = () => false) {
     if (isTouchscreen()) {
         const leftArrow = add([
             sprite("leftmove"),
@@ -118,7 +118,7 @@ export default function registerTouchControls(onion, moveOnion, levelId, setHigh
         if (jump.hasPoint(pos)) {
             arrowClicked = "jump";
             jump.scale = vec2(1.8); // Scale down the jump button
-            if (jumpCount < maxJumps || onion.isGrounded()) {
+            if (!isPlayerDead() && (jumpCount < maxJumps || onion.isGrounded())) {
             play("jump");
             onion.jump();
             jumpCount++;
@@ -127,7 +127,7 @@ export default function registerTouchControls(onion, moveOnion, levelId, setHigh
         if (jumpright.hasPoint(pos)) {
             arrowClicked = "jumpright";
             jumpright.scale = vec2(1.8); // Scale down the jumpright button
-            if (jumpCount < maxJumps || onion.isGrounded()) {
+            if (!isPlayerDead() && (jumpCount < maxJumps || onion.isGrounded())) {
             play("jump");
             onion.jump();
             if (!onion.isGrounded()) {
@@ -140,7 +140,7 @@ export default function registerTouchControls(onion, moveOnion, levelId, setHigh
         if (jumpleft.hasPoint(pos)) {
             arrowClicked = "jumpleft";
             jumpleft.scale = vec2(1.8); // Scale down the jumpleft button
-            if (jumpCount < maxJumps || onion.isGrounded()) {
+            if (!isPlayerDead() && (jumpCount < maxJumps || onion.isGrounded())) {
             play("jump");
             onion.jump();
             if (!onion.isGrounded()) {
@@ -166,6 +166,11 @@ export default function registerTouchControls(onion, moveOnion, levelId, setHigh
         });
 
         onUpdate(() => {
+        if (isPlayerDead() || !onion.exists()) {
+            touching = false;
+            arrowClicked = null;
+            return;
+        }
         if (touching) {
             if (arrowClicked == "left") {
             moveOnion(true, 400)
