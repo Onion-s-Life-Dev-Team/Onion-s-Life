@@ -531,8 +531,9 @@ scene("game", ({ levelId, coins } = {
     body({ maxVelocity: 1000 }),
     "player", // Tag for optimizer to find player
   ])
+  let onionIdFollower = null;
   if (multiplayerEnabled) {
-    const onionIdFollower = add([
+    onionIdFollower = add([
       text(userID, { size: 15 }),
       //make it follow the onion
       pos(0, 0),
@@ -1026,6 +1027,9 @@ vec4 frag(vec2 pos, vec2 uv, vec4 color, sampler2D tex) {
     if (playerDead || !onion.exists()) return;
     playerDead = true;
     destroy(onion)
+    if (onionIdFollower && onionIdFollower.exists()) {
+      destroy(onionIdFollower);
+    }
     shake();
     music.paused = !music.paused;
     play("death", { volume: 0.2 })
@@ -1054,7 +1058,7 @@ vec4 frag(vec2 pos, vec2 uv, vec4 color, sampler2D tex) {
   }
   const score = add([
     text("Score: 0"),
-    pos(40, 100),
+    pos(40, 115),
     { value: 0 },
     fixed(),
   ])
