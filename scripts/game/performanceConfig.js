@@ -22,7 +22,7 @@ export const PerformanceProfiles = {
   
   // High - full quality
   high: {
-    batchedGroundRendering: false, // Full sprite rendering for high-end devices
+    batchedGroundRendering: true,
     cullingDistance: 2000,
   }
 };
