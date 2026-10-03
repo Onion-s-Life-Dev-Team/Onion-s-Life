@@ -139,7 +139,6 @@ export class PerformanceDirector {
         detail: {
           level,
           settings: {
-            particlesEnabled: !profile.disableParticles,
             maxRenderDistance: profile.cullingDistance,
           },
           reason,
@@ -157,9 +156,6 @@ export class PerformanceDirector {
 
   applyQualitySettings(settings) {
     if (!this.k) return;
-    if (!settings.particlesEnabled) {
-      this.k.get('particle').forEach((particle) => { particle.paused = true; });
-    }
 
     // Use squared distance to avoid the square root in Vec2.dist for every object.
     const camera = this.k.camPos();
@@ -178,7 +174,6 @@ export class PerformanceDirector {
   getQualitySettings() {
     const profile = PerformanceProfiles[this.currentQuality];
     return {
-      particlesEnabled: !profile.disableParticles,
       maxRenderDistance: profile.cullingDistance,
     };
   }

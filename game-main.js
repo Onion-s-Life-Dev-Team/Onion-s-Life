@@ -692,26 +692,6 @@ let hasFoundCoin = false;
         moveOnion(true, 400)
       })
 
-      // --- Gameplay Improvements: Dash & Particles ---
-      
-      // Particle System
-      function spawnDust(position) {
-        for (let i = 0; i < 8; i++) {
-          add([
-            rect(rand(3, 6), rand(3, 6)),
-            pos(position),
-            color(255, 255, 255),
-            anchor("center"),
-            move(rand(0, 360), rand(60, 180)),
-            lifespan(0.4, { fade: 0.5 }),
-            opacity(0.8),
-            z(1000), // Ensure particles are on top
-          ]);
-        }
-      }
-
-      // ---------------------------------------------
-
       const cameraSpeed = 2;
       let zoomLevel = 3;  // Start zoomed in
       let effectState = 0;
@@ -882,7 +862,6 @@ vec4 frag(vec2 pos, vec2 uv, vec4 color, sampler2D tex) {
       for (const jumpKey of ["up", "w", "space"]) {
         onKeyPress(jumpKey, () => {
           play("jump")
-          spawnDust(onion.pos.add(0, 20));
           if (levelId == 32 && !isOnionInWater(onion, waterAreas)) {
             onion.jump()
           } else if (canDoubleJump && !isOnionInWater(onion, waterAreas)) {
@@ -975,22 +954,21 @@ vec4 frag(vec2 pos, vec2 uv, vec4 color, sampler2D tex) {
       })
       
 
-      // Collide reactions: [tag, resetDoubleJump, resetGravity, spawnDust]
-      for (const [tag, resetJump, resetGravity, spawnDustOnHit] of [
-        ["ground", true, true, true],
-        ["sand", true, true, false],
-        ["door", false, true, false],
-        ["enemy", false, true, false],
-        ["left", true, true, false],
-        ["right", true, true, false],
-        ["water", true, false, false],
-        ["jumpy", true, false, false],
-        ["block", true, false, false],
+      // Collision responses: [tag, resetDoubleJump, resetGravity]
+      for (const [tag, resetJump, resetGravity] of [
+        ["ground", true, true],
+        ["sand", true, true],
+        ["door", false, true],
+        ["enemy", false, true],
+        ["left", true, true],
+        ["right", true, true],
+        ["water", true, false],
+        ["jumpy", true, false],
+        ["block", true, false],
       ]) {
         onion.onCollide(tag, () => {
           if (resetJump) canDoubleJump = true;
           if (resetGravity) setGravity(1300);
-          if (spawnDustOnHit) spawnDust(onion.pos.add(0, 20));
         })
       }
       onion.onCollide("winSpin", (winSpin)=>{
@@ -1061,44 +1039,6 @@ vec4 frag(vec2 pos, vec2 uv, vec4 color, sampler2D tex) {
       var shownYouLose = false
       function die(reason = "unknown") {
         if (onion.exists()) {
-        if (!isTouchscreen() && isDeathAnimEnabled) {
-          loops = 0;
-          const sprites = [
-            "onion",
-            "heart",
-            "coin",
-            "onion-watermelon",
-            "onion-beach",
-            "onion-watermelon2",
-            "onion-blue",
-            "onion-gold",
-            "onion-dark",
-            "onion-secret",
-          ]
-
-          let deathParticleLoop = null;
-          deathParticleLoop = loop(0.1, () => {
-            if (loops < 5) {
-              const item = add([
-                pos(onion.pos),
-                sprite(choose(sprites)),
-                anchor("center"),
-                scale(rand(0.25, 0.5)),
-                area(),
-                body({ solid: false, }),
-                move(choose([LEFT, RIGHT]), rand(60, 240)),
-                offscreen({ hidden: true }),
-                lifespan(1.5),
-              ])
-
-            } else {
-              deathParticleLoop.cancel();
-            }
-            loops++;
-          })
-        }
-
-        // Compose particle properties with components
         destroy(onion)
         shake();
         music.paused = !music.paused;

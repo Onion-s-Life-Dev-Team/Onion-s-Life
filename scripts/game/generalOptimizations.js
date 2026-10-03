@@ -11,22 +11,7 @@ export class GeneralOptimizer {
 
   // Apply all general optimizations
   initialize() {
-    this.optimizeParticles();
     this.setupMemoryManagement();
-  }
-
-  // Optimize particle effects
-  optimizeParticles() {
-    // Limit total particles
-    const maxParticles = 50;
-    
-    this.k.onUpdate("particle", () => {
-      const particles = this.k.get("particle");
-      if (particles.length > maxParticles) {
-        // Remove oldest particles
-        particles.slice(0, particles.length - maxParticles).forEach(p => p.destroy());
-      }
-    });
   }
 
   // Memory management - cleanup unused resources
@@ -35,13 +20,6 @@ export class GeneralOptimizer {
       this.lastCleanup++;
       if (this.lastCleanup < this.cleanupInterval) return;
       this.lastCleanup = 0;
-      
-      // Remove particles that have lived too long
-      this.k.get("particle").forEach(p => {
-        if (p.lifespan && p.time && p.time > p.lifespan * 2) {
-          p.destroy();
-        }
-      });
       
       // Clean up any objects that fell too far
       const fallLimit = 3000;
@@ -57,7 +35,6 @@ export class GeneralOptimizer {
   getStats() {
     return {
       objects: this.k.get("*", { recursive: true }).length,
-      particles: this.k.get("particle").length,
       fps: this.k.debug.fps(),
       drawCalls: this.k.debug.drawCalls()
     };

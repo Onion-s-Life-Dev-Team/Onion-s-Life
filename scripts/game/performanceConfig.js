@@ -6,28 +6,24 @@ export const PerformanceProfiles = {
   ultraLow: {
     batchedGroundRendering: true,
     cullingDistance: 400,
-    disableParticles: true,
   },
   
   // Low - for slow devices
   low: {
     batchedGroundRendering: true,
     cullingDistance: 600,
-    disableParticles: false,
   },
   
   // Medium - balanced performance
   medium: {
     batchedGroundRendering: true,
     cullingDistance: 1000,
-    disableParticles: false,
   },
   
   // High - full quality
   high: {
     batchedGroundRendering: false, // Full sprite rendering for high-end devices
     cullingDistance: 2000,
-    disableParticles: false,
   }
 };
 
