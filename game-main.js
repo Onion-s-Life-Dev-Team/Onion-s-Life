@@ -375,6 +375,7 @@ scene("game", ({ levelId, coins } = {
   levelName: "Intro",
 }) => {
   setGravity(1300)
+  let playerDead = false;
   // Register clouds first: their world-space draw callback must precede the
   // level pipeline callback so terrain and game objects render over them.
   setupCloudBackground(k);
@@ -809,11 +810,23 @@ vec4 frag(vec2 pos, vec2 uv, vec4 color, sampler2D tex) {
 
 
   function moveOnion(invert, distance) {
+    if (playerDead || !onion.exists()) return;
     onion.move(invert ? -distance : distance, 0);
   }
 
   // Setup mobile controls with performance monitoring
-  const touchControlsSetup = registerTouchControls(onion, moveOnion, levelId, setHighLevel, rEnabled, music, applyRandomEffects, continuouslyChangeEffects, jumpCount);
+  const touchControlsSetup = registerTouchControls(
+    onion,
+    moveOnion,
+    levelId,
+    setHighLevel,
+    rEnabled,
+    music,
+    applyRandomEffects,
+    continuouslyChangeEffects,
+    jumpCount,
+    () => playerDead,
+  );
 
   // Setup mobile performance monitoring for touch devices
   let mobilePerformanceMonitor = null;
@@ -845,6 +858,7 @@ vec4 frag(vec2 pos, vec2 uv, vec4 color, sampler2D tex) {
 
   for (const jumpKey of ["up", "w", "space"]) {
     onKeyPress(jumpKey, () => {
+      if (playerDead || !onion.exists()) return;
       play("jump")
       if (levelId == 32 && !isOnionInWater(onion, waterAreas)) {
         onion.jump()
@@ -1009,34 +1023,34 @@ vec4 frag(vec2 pos, vec2 uv, vec4 color, sampler2D tex) {
   })
   var shownYouLose = false
   function die() {
-    if (onion.exists()) {
-      destroy(onion)
-      shake();
-      music.paused = !music.paused;
-      play("death", { volume: 0.2 })
-      if (shownYouLose == false) {
-        shownYouLose = true
-        add([
-          text("You Lose", { size: 48 }),
-          pos(width() / 2, height() / 2 - 20),
-          anchor("center"),
-          fixed(),
-          z(1),
-          color(255, 0, 0),
-        ])
-        // Can someone figure out how to get the pos of this correct
+    if (playerDead || !onion.exists()) return;
+    playerDead = true;
+    destroy(onion)
+    shake();
+    music.paused = !music.paused;
+    play("death", { volume: 0.2 })
+    if (shownYouLose == false) {
+      shownYouLose = true
+      add([
+        text("You Lose", { size: 48 }),
+        pos(width() / 2, height() / 2 - 20),
+        anchor("center"),
+        fixed(),
+        z(1),
+        color(255, 0, 0),
+      ])
+      // Can someone figure out how to get the pos of this correct
 
-        add([
-          text("Press 'R' to restart", { size: 30 }),
-          fixed(),
-          pos(width() / 2, height() / 2 + 25),
-          anchor("center"),
-          z(1),
-        ])
-      }
-      setHighLevel(levelId);
-      sendDeathMessage(channel, userID);
+      add([
+        text("Press 'R' to restart", { size: 30 }),
+        fixed(),
+        pos(width() / 2, height() / 2 + 25),
+        anchor("center"),
+        z(1),
+      ])
     }
+    setHighLevel(levelId);
+    sendDeathMessage(channel, userID);
   }
   const score = add([
     text("Score: 0"),
@@ -1111,6 +1125,7 @@ vec4 frag(vec2 pos, vec2 uv, vec4 color, sampler2D tex) {
   })
   //jumpy code
   onion.onCollide("jumpy", () => {
+    if (playerDead) return;
     play("jumpy")
     onion.jump(1650)
     //shake()
