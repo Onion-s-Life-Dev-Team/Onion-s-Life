@@ -510,19 +510,19 @@
     initializeGame();
     
     // Visibility change handler for pause/resume
-    let wasPaused = false;
+    let pausedByVisibility = false;
     document.addEventListener('visibilitychange', () => {
       if (window.k && window.k.canvas) {
         if (document.hidden) {
-          // Store current pause state and pause
-          wasPaused = window.k.isPaused();
-          if (!wasPaused && window.k.pause) {
+          // Track only pauses made by this handler so a manually paused game stays paused.
+          if (typeof window.k.pause === 'function') {
             window.k.pause();
+            pausedByVisibility = true;
           }
         } else {
-          // Resume only if wasn't paused before
-          if (!wasPaused && window.k.resume) {
+          if (pausedByVisibility && typeof window.k.resume === 'function') {
             window.k.resume();
+            pausedByVisibility = false;
           }
         }
       }
