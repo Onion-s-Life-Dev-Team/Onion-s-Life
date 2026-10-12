@@ -6,11 +6,12 @@
 import { createHash } from 'crypto';
 import { readFileSync, writeFileSync, readdirSync, statSync, existsSync } from 'fs';
 import { join, relative, extname } from 'path';
+import { textures, sounds, music } from './scripts/core/resourcePaths.js';
 
 const ROOT = new URL('.', import.meta.url).pathname;
 
 // Asset directories and individual files to scan
-const ASSET_DIRS = ['assets', 'scripts'];
+const ASSET_DIRS = ['scripts'];
 const ROOT_FILES = ['index.html', 'offline.html', 'manifest.json', 'game-main.js'];
 const ALLOWED_EXTENSIONS = new Set([
   '.html', '.js', '.mjs', '.css', '.json',
@@ -60,6 +61,12 @@ for (const dir of ASSET_DIRS) {
     const rel = relative(ROOT, filePath);
     assets.add('/' + rel);
   }
+}
+
+// Add all used assets
+const allAssets = [...textures, ...sounds, ...music, ["apl386", "assets/apl386.woff2"]];
+for (const asset of allAssets) {
+  assets.add('/' + asset[1]);
 }
 
 // Critical CDN dependencies that must be pre-cached for offline play
