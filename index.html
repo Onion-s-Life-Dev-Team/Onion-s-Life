@@ -406,67 +406,14 @@
   </script>
 
   <script type="module">
-    // Asset preloading system
-    class AssetPreloader {
-      constructor() {
-        this.loadedCount = 0;
-        this.totalCount = 0;
-        this.cache = new Map();
-      }
-      
-      async preloadImage(src) {
-        if (this.cache.has(src)) return this.cache.get(src);
-        
-        return new Promise((resolve, reject) => {
-          const img = new Image();
-          img.onload = () => {
-            this.cache.set(src, img);
-            this.loadedCount++;
-            window.updateLoadingProgress((this.loadedCount / this.totalCount) * 100);
-            resolve(img);
-          };
-          img.onerror = () => reject(new Error(`Failed to load: ${src}`));
-          img.src = src;
-        });
-      }
-      
-      async preloadCriticalAssets() {
-        // Critical sprites that should be preloaded
-        const criticalAssets = [
-          '/assets/sprites/onion.png',
-          '/assets/sprites/block.png',
-          '/assets/sprites/spike.png',
-          '/assets/sprites/coin.png',
-          '/assets/sprites/portal.png',
-          '/assets/sprites/heart.png',
-          '/assets/sprites/grass.png'
-        ];
-        
-        this.totalCount = criticalAssets.length;
-        
-        try {
-          window.setLoadingText('Loading sprites...');
-          await Promise.all(criticalAssets.map(src => 
-            this.preloadImage(src).catch(err => {
-              console.warn(`Failed to preload ${src}:`, err);
-              return null; // Continue loading even if some assets fail
-            })
-          ));
-        } catch (error) {
-          console.error('Asset preloading error:', error);
-        }
-      }
-    }
-    
     // Initialize game with optimizations
     async function initializeGame() {
       const startTime = performance.now();
       
       try {
-        // Preload critical assets
-        const preloader = new AssetPreloader();
-        await preloader.preloadCriticalAssets();
-        
+        // Show the loading screen while the engine and game modules download
+        window.setLoadingText('Loading game...');
+
         // Load game with retry logic
         let retries = 0;
         const maxRetries = window.gameConfig.retryAttempts;
