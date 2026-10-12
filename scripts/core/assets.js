@@ -1,4 +1,5 @@
 import { textures, sounds, music } from "./resourcePaths.js";
+import { logger } from "./logger.js";
 
 /*
  * Go to scripts/core/resourcePaths.js to add new textures/sounds/music
@@ -6,54 +7,54 @@ import { textures, sounds, music } from "./resourcePaths.js";
  */
 
 export default function loadAssets() {
+  // Enlarge the Resource Timing buffer so all asset entries are recorded for benchmarking purposes.
+  performance.setResourceTimingBufferSize(1000);
+
   // load sprites
-  batchAssets(textures, "sprite");
+  const pending = [];
+  pending.push(...batchAssets(textures, "sprite"));
   // load sound
-  batchAssets(sounds, "sound");
+  pending.push(...batchAssets(sounds, "sound"));
   // load music
-  batchAssets(music, "music");
+  pending.push(...batchAssets(music, "music"));
   
-  loadFont('apl386', 'assets/apl386.woff2', { outline: 4, filter: 'linear'})
+  pending.push(loadFont('apl386', 'assets/apl386.woff2', { outline: 4, filter: 'linear'}));
 
-  // Custom loading screen
-  // Runs the callback every frame during loading
-  onLoading((progress) => {
-
-    // Black background
-    drawRect({
-      width: width(),
-      height: height(),
-      color: rgb(0, 0, 0),
-    })
-
-    // A pie representing current load progress
-    drawCircle({
-      pos: center(),
-      radius: 32,
-      end: map(progress, 0, 1, 0, 360),
-    })
-
-    drawText({
-      text: "Loading " + Math.round(loadProgress() * 100) + "% " + ".".repeat(wave(1, 4, time() * 12)),
-      font: "monospace",
-      size: 24,
-      anchor: "center",
-      pos: center().add(0, 70),
-    })
-
-  })
+  if (import.meta.env.DEV) {
+    const allAssets = [...textures, ...sounds, ...music, ["apl386", "assets/apl386.woff2"]];
+    logger.debug(`[assets] Loading ${allAssets.length} assets...`);
+    Promise.allSettled(pending).then(() => logAssetSizes(allAssets));
+  }
 }
 
 function batchAssets(data, loadType) {
-  data.forEach((element) => {
+  return data.map((element) => {
     if (loadType == "sprite") {
-      loadSprite(element[0], element[1]);
+      return loadSprite(element[0], element[1]);
     } else if (loadType == "sound") {
-      loadSound(element[0], element[1]);
+      return loadSound(element[0], element[1]);
     } else if (loadType == "music") {
-      loadMusic(element[0], element[1]);
+      return loadMusic(element[0], element[1]);
     } else {
-      console.error(element[0] + " failed to load! Invalid loadType.");
+      logger.error(element[0] + " failed to load! Invalid loadType.");
+      return Promise.resolve();
     }
   });
+}
+
+// Logs the transferred size (KB) of each asset using the Resource Timing API.
+// Uses encodedBodySize so cached responses (service worker / HTTP cache) still report their size.
+function logAssetSizes(assets) {
+  const rows = [];
+  let totalKB = 0;
+  for (const [name, path] of assets) {
+    const url = new URL(path, location.href).href;
+    const entry = performance.getEntriesByName(url).pop();
+    const bytes = entry ? entry.encodedBodySize || entry.transferSize : 0;
+    const kb = bytes / 1024;
+    totalKB += kb;
+    rows.push({ asset: name, path, KB: +kb.toFixed(2) });
+  }
+  if (import.meta.env.DEV) console.table(rows);
+  logger.debug(`Total asset size: ${totalKB.toFixed(2)} KB across ${rows.length} assets`);
 }
