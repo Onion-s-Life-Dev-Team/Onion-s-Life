@@ -130,7 +130,7 @@ function printOnions(presences) {
     }
     for (var i = 0; i < allUserIds.length; i++) {
       add([
-        text(`Onion ${i + 1} (${allUserIds[i].userId}) - Level ${allUserIds[i].level}`, { size: 20, align: "right" }),
+        text(`${allUserIds[i].userId} - Level ${allUserIds[i].level}`, { size: 20, align: "right" }),
         pos(canvasWidth - 600, 10 + (i * 20)),
         fixed(),
       ])
@@ -290,17 +290,14 @@ const k = kaplay({
   //scale: scale,
   width: canvasWidth,
   font: "apl386",
-  height: canvasHeight + heightStretch,
+  height: 2 * Math.floor((canvasHeight + heightStretch) / 2),
   //crisp: true,
 })
 
-// Make k globally available for optimizers
 window.k = k;
 
-// Apply safe rendering optimizations
 applySafeRenderingOptimizations(k);
 
-// Initialize general performance optimizer
 const generalOptimizer = new GeneralOptimizer(k);
 generalOptimizer.initialize();
 
@@ -891,7 +888,7 @@ vec4 frag(vec2 pos, vec2 uv, vec4 color, sampler2D tex) {
   const NETWORK_UPDATE_INTERVAL = 100; // Update position max 10 times per second
 
   onion.onUpdate(() => {
-    camPos(onion.pos)
+    camPos(onion.pos);
 
     // Throttle network updates to reduce lag
     const now = Date.now();
