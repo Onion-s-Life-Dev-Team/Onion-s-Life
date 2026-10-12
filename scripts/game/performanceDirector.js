@@ -4,6 +4,7 @@
 // One FPS sample buffer and one quality decision loop avoid duplicate tracking.
 
 import { detectBestProfile, applyPerformanceProfile, PerformanceProfiles } from './performanceConfig.js';
+import { logger } from "../core/logger.js";
 
 const QUALITY_LEVELS = ['ultraLow', 'low', 'medium', 'high'];
 
@@ -88,7 +89,7 @@ export class PerformanceDirector {
     if (this.cooldown > 0) return;
     // Emit a warning when average performance falls below the configured minimum.
     if (this.avgFPS < this.config.minFPS) {
-      console.warn(`Low performance: ${this.avgFPS.toFixed(1)} FPS`);
+      logger.warn(`Low performance: ${this.avgFPS.toFixed(1)} FPS`);
     }
 
     const idx = QUALITY_LEVELS.indexOf(this.currentQuality);
@@ -115,7 +116,7 @@ export class PerformanceDirector {
     setTimeout(() => {
       if (this.avgFPS < this.config.targetFPS * 0.8) {
         this.setQualityInternal(originalLevel, 'revert');
-        console.log(`Reverting quality to ${originalLevel}, couldn't maintain FPS`);
+        logger.debug(`Reverting quality to ${originalLevel}, couldn't maintain FPS`);
       }
     }, 2000);
   }
@@ -151,7 +152,7 @@ export class PerformanceDirector {
       window.reloadLevelWithSettings();
     }
 
-    console.log(`Performance ${reason || 'changed'} to: ${level}`);
+    logger.debug(`Performance ${reason || 'changed'} to: ${level}`);
   }
 
   applyQualitySettings(settings) {

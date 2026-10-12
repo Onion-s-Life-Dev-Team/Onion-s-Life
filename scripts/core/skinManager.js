@@ -1,3 +1,5 @@
+import { logger } from "./logger.js";
+
 const SKINS_KEY = 'unlockedSkins';
 
 function setCookie(name, value, days) {
@@ -30,7 +32,7 @@ function getUnlockedSkins() {
 // Function to save all unlocked skins to local storage
 function saveUnlockedSkins(skins) {
     setCookie(SKINS_KEY, JSON.stringify(skins), 9999);
-    console.log('Saved unlocked skins:', skins);
+    logger.debug('Saved unlocked skins:', skins);
 }
 
 // Function to check if a skin is unlocked

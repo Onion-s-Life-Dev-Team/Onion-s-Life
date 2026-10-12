@@ -406,6 +406,8 @@
   </script>
 
   <script type="module">
+    import { logger } from './scripts/core/logger.js';
+
     // Initialize game with optimizations
     async function initializeGame() {
       const startTime = performance.now();
@@ -422,12 +424,12 @@
           try {
             // Load game main file which handles all imports
             await import('./game-main.js');
-            console.log(`Game loaded in ${Math.round(performance.now() - startTime)}ms`);
+            logger.debug(`Game loaded in ${Math.round(performance.now() - startTime)}ms`);
             window.hideLoadingScreen();
             break;
           } catch (error) {
             retries++;
-            console.error(`Load attempt ${retries}/${maxRetries} failed:`, error);
+            logger.error(`Load attempt ${retries}/${maxRetries} failed:`, error);
             
             if (retries < maxRetries) {
               window.setLoadingText(`Retrying... (${retries}/${maxRetries})`);
@@ -438,7 +440,7 @@
           }
         }
       } catch (error) {
-        console.error('Failed to initialize game:', error);
+        logger.error('Failed to initialize game:', error);
         window.setLoadingText('Failed to load game. Please refresh.');
         
         const errorDisplay = document.getElementById('error-display');

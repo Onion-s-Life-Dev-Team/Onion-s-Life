@@ -1,4 +1,5 @@
 import { textures, sounds, music } from "./resourcePaths.js";
+import { logger } from "./logger.js";
 
 export function getPack() {
     var url = prompt("Insert Pack URL:");
@@ -23,7 +24,7 @@ export function getPack() {
         var sound = new Audio();
         sound.crossOrigin = "anonymous";
         sound.onloadeddata = function(){
-            console.log("Loaded Data")
+            logger.info("Loaded Data")
             loadSound(element[0], url + element[1]);
         }
         sound.src = url + element[1];
@@ -32,7 +33,7 @@ export function getPack() {
         var sound = new Audio();
         sound.crossOrigin = "anonymous";
         sound.onloadeddata = function(){
-            console.log("Loaded Data")
+            logger.info("Loaded Data")
             loadMusic(element[0], url + element[1]);
         }
         sound.src = url + element[1];

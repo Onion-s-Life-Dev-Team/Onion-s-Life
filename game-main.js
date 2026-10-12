@@ -10,6 +10,7 @@ import { addCoin, retrieveCoins, storeCoins } from "./scripts/core/coinManager.j
 import { hasSkin, saveSkin } from "./scripts/core/skinManager.js";
 import { getWinSpins, useWinSpin, spinWheel, addWinSpin } from './scripts/core/winSpins.js';
 import { getPack } from "./scripts/core/packHandler.js";
+import { logger } from "./scripts/core/logger.js";
 
 const SUPABASE_URL = 'https://ihrdqbqvoflutgbzhqqo.supabase.co'
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlocmRxYnF2b2ZsdXRnYnpocXFvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTYwNDI1ODIsImV4cCI6MjAzMTYxODU4Mn0.d3Vac0lv5CicW-FF_NfZ7j3BAkaXEDLctg47V64S2NE'
@@ -271,17 +272,20 @@ import { createBatchedLevel } from "./scripts/game/levelTileBatcher.js";
 import { detectBestProfile, applyPerformanceProfile } from "./scripts/game/performanceConfig.js";
 import { GeneralOptimizer, applySafeRenderingOptimizations } from "./scripts/game/generalOptimizations.js";
 import { setupSimpleWaterPhysics } from "./scripts/game/simpleWaterPhysics.js";
-// Removed complex water physics that made water behavior worse
 // Initialize global game config for performance system
 window.gameConfig = window.gameConfig || {
   debug: false,
-  batchedGroundRendering: true,  // Render ground tiles via onDraw for performance
+  batchedGroundRendering: true,
   performanceProfile: 'medium'
 };
 
+if (!import.meta.env.DEV) {
+  logger.info("How did you get here?");
+}
+
 // Apply performance profile before initializing
 const detectedProfile = detectBestProfile();
-console.log(`Auto-detected performance profile: ${detectedProfile}`);
+logger.debug(`Using performance profile: ${detectedProfile}`);
 applyPerformanceProfile(detectedProfile, window.gameConfig);
 
 //initializing
@@ -440,20 +444,20 @@ scene("game", ({ levelId, coins } = {
           }
         }
         if (batchableTileCount > 200) {
-          console.log(`Large level detected (${batchableTileCount} batchable tiles) - enabling batched rendering`);
+          logger.debug(`Large level detected (${batchableTileCount} batchable tiles) - enabling batched rendering`);
           window.gameConfig.batchedGroundRendering = true;
         }
       }
 
       // Set up batched ground rendering if enabled (follows Kaplay optimization guide)
       if (window.gameConfig && window.gameConfig.batchedGroundRendering) {
-        console.log(`Loading level ${levelId} with batched ground rendering`);
+        logger.debug(`Loading level ${levelId} with batched ground rendering`);
         const compiled = compileLevel(k, optimizedLevel, 64);
         window.groundRenderer = compiled.groundRenderer;
         window._mergedWaterRegions = compiled.waterRegions;
         const totalTiles = compiled.groundRenderer.getStats().totalTiles;
-        console.log(`Level compiled: ${totalTiles} render tiles -> ${compiled.collisionObjects.length} collision regions; ${compiled.waterRegions.length} water areas`);
-        console.log(`Water regions: ${window._mergedWaterRegions.length} areas computed from level data (no game objects needed)`);
+        logger.debug(`Level compiled: ${totalTiles} render tiles -> ${compiled.collisionObjects.length} collision regions; ${compiled.waterRegions.length} water areas`);
+        logger.debug(`Water regions: ${window._mergedWaterRegions.length} areas computed from level data (no game objects needed)`);
       }
 
       // When batching is enabled, strip batched tiles from level data so addLevel
@@ -465,7 +469,7 @@ scene("game", ({ levelId, coins } = {
 
     }
   } catch (error) {
-    console.error('Error in loading custom level:', error);
+    logger.error('Error in loading custom level:', error);
   }
   function sendNewPlayer() {
     // send a new player event
@@ -493,7 +497,7 @@ scene("game", ({ levelId, coins } = {
   // labyrinthOptimizer.initialize(levelId);
   // Performance diagnostic overlay - only when debug mode is enabled
   if (window.gameConfig?.debug) {
-    console.log(`Level ${levelId} loaded - performance monitoring active`);
+    logger.debug(`Level ${levelId} loaded - performance monitoring active`);
 
     const perfOverlay = add([
       text("", { size: 16 }),
@@ -712,12 +716,11 @@ vec4 frag(vec2 pos, vec2 uv, vec4 color, sampler2D tex) {
   function toggleFunCameraMode() {
     funCameraMode = !funCameraMode;
     if (funCameraMode) {
-      console.log("Wanted Onion Effect Enabled");
       zoomLevel = 3;
       effectState = 0;
       effectTimer = 0;
     } else {
-      console.log("Wanted Onion Effect Disabled");
+
     }
   }
 
@@ -842,7 +845,7 @@ vec4 frag(vec2 pos, vec2 uv, vec4 color, sampler2D tex) {
   if (window._mergedWaterRegions) {
     // Use pre-computed merged water regions (much faster than per-tile checks)
     waterAreas = window._mergedWaterRegions;
-    console.log(`Water physics: using ${waterAreas.length} merged water regions`);
+    logger.debug(`Water physics: using ${waterAreas.length} merged water regions`);
   } else {
     // Fallback: get water areas from individual game objects
     const water = get("water", { recursive: true });
@@ -877,7 +880,7 @@ vec4 frag(vec2 pos, vec2 uv, vec4 color, sampler2D tex) {
   onKeyPress("h", () => {
     if (window.gameConfig) {
       window.gameConfig.debug = !window.gameConfig.debug;
-      console.log(`Debug overlay: ${window.gameConfig.debug ? 'ON' : 'OFF'}`);
+      logger.info(`Debug overlay: ${window.gameConfig.debug ? 'ON' : 'OFF'}`);
       go("game", { levelId: levelId });
     }
   })
@@ -1000,7 +1003,7 @@ vec4 frag(vec2 pos, vec2 uv, vec4 color, sampler2D tex) {
 
   // Simple water physics with reliable escape
   if (waterAreas.length > 0) {
-    console.log("Initializing simple water physics for this level");
+    logger.debug("Initializing simple water physics for this level");
     setupSimpleWaterPhysics(k, onion, waterAreas);
 
     // When water tiles are batched, onCollide("water") never fires,
@@ -1638,7 +1641,7 @@ scene("name", () => {
     for (let userId of allUserIds) {
       if (userId.userId === input.text) {
         alert("Name already in use!");
-        console.log("Name already in use!");
+        logger.warn("Name already in use!");
         return;
       }
     }

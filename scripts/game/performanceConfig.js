@@ -1,3 +1,5 @@
+import { logger } from "../core/logger.js";
+
 // Performance configuration for different quality levels
 // This helps players with slower devices enjoy the game
 
@@ -70,7 +72,7 @@ export function applyPerformanceProfile(profileName, gameConfig) {
     ...profile
   });
   
-  console.log(`Applied performance profile: ${profileName}`, profile);
+  logger.debug(`Applied performance profile: ${profileName}`, profile);
   
   return gameConfig;
 }

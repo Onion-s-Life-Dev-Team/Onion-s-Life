@@ -1,6 +1,7 @@
 // Advanced tile batching system for massive performance improvements
 // This batches both horizontal and vertical runs of tiles into single draw calls
 import { findGreedyRectangles } from './levelMatrixUtils.js';
+import { logger } from "../core/logger.js";
 
 export class LevelTileBatcher {
   constructor(k, tileSize = 64) {
@@ -303,7 +304,7 @@ export function createBatchedLevel(k, levelData, levelConf) {
   // Log batching stats in debug mode
   if (window.gameConfig && window.gameConfig.debug) {
     const stats = batcher.getBatchingStats(levelData);
-    console.log('Tile Batching Stats:', {
+    logger.debug('Tile Batching Stats:', {
       originalDrawCalls: stats.totalTiles,
       optimizedDrawCalls: stats.batchCount + stats.unbatchedTiles,
       reduction: `${(stats.reductionRatio * 100).toFixed(1)}%`,
