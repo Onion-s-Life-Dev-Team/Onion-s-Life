@@ -2,7 +2,7 @@ const textures = [
     ["onion", "assets/sprites/onion.png"],
     ["grass5", "assets/sprites/grass5.png"],
     ["grass25", "assets/sprites/grass25.png"],
-    ["bigonion", "assets/sprites/bigonion.png"],
+    ["bigonion", "assets/sprites/webp/bigonion.webp"],
     ["grass", "assets/sprites/grass.png"],
     ["coin", "assets/sprites/coin.png"],
     ["portal", "assets/sprites/portal.png"],
