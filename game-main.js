@@ -1239,9 +1239,11 @@ scene("title", () => {
   } else {
     add([
       text("Onion's Life", { size: width() / 10, align: "center" }),
-      color(0, 255, 0),
+      //sprite("title"),
+      color(91, 229, 169),
       fixed(),
       anchor("center"),
+      scale(1),
       pos(width() / 2, height() * 0.10),
     ])
   }
