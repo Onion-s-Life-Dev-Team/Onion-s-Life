@@ -9,7 +9,8 @@ import { handleAchievementCollision, checkAchievements, hasAchievement } from ".
 import { addCoin, retrieveCoins, storeCoins } from "./scripts/core/coinManager.js";
 import { hasSkin, saveSkin } from "./scripts/core/skinManager.js";
 import { getWinSpins, useWinSpin, spinWheel, addWinSpin } from './scripts/core/winSpins.js';
-import { getPack } from "./scripts/core/packHandler.js";
+import { promptPackUrl, loadPack } from "./scripts/core/packHandler.js";
+import { FEATURED_PACK_URLS, loadFeaturedPacks } from "./scripts/core/featuredPacks.js";
 import { logger } from "./scripts/core/logger.js";
 
 const SUPABASE_URL = 'https://ihrdqbqvoflutgbzhqqo.supabase.co'
@@ -1225,9 +1226,6 @@ scene("title", () => {
   onKeyPress("n", () => {
     go("name");
   })
-  onKeyPress("u", () => {
-    getPack();
-  })
 
 
   var randTypo = Math.round((Math.random() * 10000))
@@ -1709,6 +1707,20 @@ scene("skins", () => {
     area(),
   ]);
 
+  const packsBtn = add([
+    sprite("packBtn"),
+    "packs",
+    scale(0.421875),
+    fixed(),
+    area(),
+    anchor("center"),
+    pos(width() / 2, height() * 0.9),
+  ])
+
+  onClick("packs", () => {
+    go("packs");
+  })
+
   const coinSpr = add([
     sprite("coin"),
     pos(width() * 0.8, height() * 0.05),
@@ -2063,6 +2075,133 @@ scene("achievements", () => {
     index++;
   }
 })
+
+scene("packs", () => {
+  let active = true;
+  onSceneLeave(() => {
+    active = false;
+  });
+
+  let loadedPacks = [];
+
+  onKeyPress('b', () => {
+    go("skins");
+  });
+
+  add([
+    text("Featured Packs", { size: 64 }),
+    color(255, 255, 255),
+    fixed(),
+    pos(40, 40),
+  ]);
+
+  const backKeybind = add([
+    sprite("keyboardB"),
+    pos(width() * 0.02, height() * 0.9)
+  ]);
+
+  backKeybind.add([
+    text("Back"),
+    pos(75, 13),
+  ]);
+
+  const statusText = add([
+    text("Loading featured packs...", { size: 32 }),
+    color(255, 255, 255),
+    fixed(),
+    pos(40, 130),
+  ]);
+
+  function setStatus(message) {
+    statusText.text = message;
+  }
+
+  async function applyPack(rootUrl, label) {
+    loadPack(rootUrl);
+    setStatus(`Applied ${label}`);
+  }
+
+  // Featured rows are created up front so their click handlers are registered with
+  // the scene. Text and button state are filled in once the manifests arrive.
+  const rowViews = FEATURED_PACK_URLS.map((_, index) => {
+    const y = 200 + index * 140;
+    const title = add([
+      text("Loading...", { size: 32, width: width() * 0.7 }),
+      color(255, 255, 255),
+      fixed(),
+      pos(60, y),
+    ]);
+    const desc = add([
+      text("", { size: 24, width: width() * 0.6 }),
+      color(255, 255, 255),
+      fixed(),
+      pos(60, y + 44),
+    ]);
+    const buttonPos = vec2(width() * 0.85, y + 40);
+    const applyBtn = add([
+      sprite("blankBtn"),
+      `packApply-${index}`,
+      scale(0.421875),
+      fixed(),
+      area(),
+      anchor("center"),
+      pos(buttonPos),
+    ]);
+    const applyLabel = add([
+      text("", { size: 24 }),
+      fixed(),
+      anchor("center"),
+      pos(buttonPos),
+    ]);
+    return { title, desc, applyBtn, applyLabel };
+  });
+
+  FEATURED_PACK_URLS.forEach((_, index) => {
+    onClick(`packApply-${index}`, () => {
+      const entry = loadedPacks[index];
+      if (entry && entry.manifest) {
+        applyPack(entry.url, entry.manifest.name);
+      }
+    });
+  });
+
+  function showRow(view, entry) {
+    if (entry.manifest) {
+      view.title.text = `${entry.manifest.name} by ${entry.manifest.author} (v${entry.manifest.version})`;
+      view.desc.text = entry.manifest.description;
+      view.applyLabel.text = "APPLY";
+    } else {
+      view.title.text = entry.url;
+      view.desc.text = "Unavailable: manifest could not be loaded";
+      view.applyBtn.opacity = 0.4;
+    }
+  }
+
+  loadFeaturedPacks().then((entries) => {
+    if (!active) return;
+    loadedPacks = entries;
+    entries.forEach((entry, index) => showRow(rowViews[index], entry));
+    const available = entries.filter((entry) => entry.manifest).length;
+    setStatus(available > 0
+      ? "Choose a pack to use!"
+      : "No featured packs are available right now");
+  });
+
+  add([
+    sprite("packUpBtn"),
+    "packCustom",
+    scale(0.421875),
+    fixed(),
+    area(),
+    anchor("center"),
+    pos(width() / 2, height() * 0.9),
+  ]);
+
+  onClick("packCustom", () => {
+    const rootUrl = promptPackUrl();
+    if (rootUrl) applyPack(rootUrl, rootUrl);
+  });
+});
 
 // if ((window.matchMedia('(display-mode: fullscreen)').matches || window.navigator.fullscreen) || (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone)) {
 go("title");

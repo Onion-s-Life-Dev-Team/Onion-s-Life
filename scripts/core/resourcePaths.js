@@ -1,6 +1,6 @@
 const textures = [
     ["onion", "onion.png"],
-    ["bigonion", "webp/bigonion.webp"],
+    ["bigonion", "bigonion.webp"],
     ["grass", "grass.png"],
     ["coin", "coin.png"],
     ["portal", "portal.png"],
@@ -17,7 +17,7 @@ const textures = [
     ["coasterRight", "coasterRight.png"],
     ["block", "block.png"],
     ["lvlbtn", "lvlbtn.png"],
-    ["lvlSelect", "lvlselect.png"],
+    ["lvlSelect", "lvlSelectBtn.svg"],
     ["startbtn", "startbtn.png"],
     ["keyboardB", "keyboard_b.svg"],
     ["keyboardR", "keyboard_r.svg"],
@@ -55,12 +55,15 @@ const textures = [
     ["onion-ocean", "onion-ocean.png"],
     ["onion-secret", "onion-secret.png"],
     ["winSpin", "portal1.png"],
-    ["winSpinBtn", "winSpinBtn.png"],
+    ["winSpinBtn", "winSpinBtn.svg"],
     ["lightbulb", "lightbulb.png"],
     ["water", "water.png"],
     ["sand", "sand.png"],
     ["ghostiny", "ghostiny.png"],
-    ["bag", "bag.png"]
+    ["bag", "bag.png"],
+    ["packBtn", "packsBtn.svg"],
+    ["packUpBtn", "packUpBtn.svg"],
+    ["blankBtn", "blankBtn.svg"]
 ];
 
 const sounds = [

@@ -64,10 +64,14 @@ for (const dir of ASSET_DIRS) {
 }
 
 // Add all used assets
-const allAssets = [...textures, ...sounds, ...music, ["apl386", "assets/apl386.woff2"]];
-for (const asset of allAssets) {
-  assets.add('/' + asset[1]);
+const soundAssets = [...sounds, ...music];
+for (const texture of textures) {
+  assets.add('/assets/sprites/' + texture[1]);
 }
+for (const sound of soundAssets) {
+  assets.add('/assets/sounds/' + sound[1]);
+}
+assets.add('assets/apl386.woff2');
 
 // Critical CDN dependencies that must be pre-cached for offline play
 // Extracted from game-main.js imports
