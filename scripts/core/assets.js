@@ -20,7 +20,7 @@ export default function loadAssets() {
   
   pending.push(loadFont('apl386', 'assets/apl386.woff2', { outline: 4, filter: 'linear'}));
 
-  if (import.meta.env.DEV) {
+  if (import.meta.env?.DEV ?? false) {
     const allAssets = [...textures, ...sounds, ...music, ["apl386", "assets/apl386.woff2"]];
     logger.debug(`[assets] Loading ${allAssets.length} assets...`);
     Promise.allSettled(pending).then(() => logAssetSizes(allAssets));
@@ -55,6 +55,6 @@ function logAssetSizes(assets) {
     totalKB += kb;
     rows.push({ asset: name, path, KB: +kb.toFixed(2) });
   }
-  if (import.meta.env.DEV) console.table(rows);
+  if (import.meta.env?.DEV ?? false) console.table(rows);
   logger.debug(`Total asset size: ${totalKB.toFixed(2)} KB across ${rows.length} assets`);
 }

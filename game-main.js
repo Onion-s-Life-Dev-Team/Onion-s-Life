@@ -279,7 +279,7 @@ window.gameConfig = window.gameConfig || {
   performanceProfile: 'medium'
 };
 
-if (!import.meta.env.DEV) {
+if (!(import.meta.env?.DEV ?? false)) {
   logger.info("How did you get here?");
 }
 

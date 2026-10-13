@@ -12,8 +12,8 @@ export const logger = {
   info: console.log.bind(console, PREFIX),
   warn: console.warn.bind(console, PREFIX),
   error: console.error.bind(console, PREFIX),
-  debug: import.meta.env.DEV ? console.log.bind(console, PREFIX) : noop,
-  verbose: import.meta.env.DEV ? console.debug.bind(console, PREFIX) : noop,
+  debug: import.meta.env?.DEV ?? false ? console.log.bind(console, PREFIX) : noop,
+  verbose: import.meta.env?.DEV ?? false ? console.debug.bind(console, PREFIX) : noop,
 };
 
 export default logger;
