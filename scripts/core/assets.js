@@ -30,11 +30,11 @@ export default function loadAssets() {
 function batchAssets(data, loadType) {
   return data.map((element) => {
     if (loadType == "sprite") {
-      return loadSprite(element[0], element[1]);
+      return loadSprite(element[0], 'assets/sprites/' + element[1]);
     } else if (loadType == "sound") {
-      return loadSound(element[0], element[1]);
+      return loadSound(element[0], 'assets/sounds/' + element[1]);
     } else if (loadType == "music") {
-      return loadMusic(element[0], element[1]);
+      return loadMusic(element[0], 'assets/sounds/' + element[1]);
     } else {
       logger.error(element[0] + " failed to load! Invalid loadType.");
       return Promise.resolve();
