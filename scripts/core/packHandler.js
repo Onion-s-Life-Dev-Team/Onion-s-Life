@@ -10,7 +10,6 @@ export function getPack() {
     }
 
     logger.info("Enabling pack from url: " + url);
-
     textures.forEach((element) => {
         var img = new Image();
         img.onload = function(){
@@ -18,25 +17,19 @@ export function getPack() {
         }
         img.src = url + "assets/sprites/" + element[1];
     });
-    // Sounds not yet supported. Sadly they may be never supported, at least with the current protocol I'm using with repo URLs.
-    /*
     sounds.forEach((element) => {
         var sound = new Audio();
-        sound.crossOrigin = "anonymous";
-        sound.onloadeddata = function(){
-            logger.info("Loaded Data")
-            loadSound(element[0], url + element[1]);
+        sound.onload = function(){
+            loadSound(element[0], url + "assets/sounds/" + element[1]);
         }
-        sound.src = url + element[1];
+        sound.src = url + "assets/sounds/" + element[1];
     });
     music.forEach((element) => {
         var sound = new Audio();
-        sound.crossOrigin = "anonymous";
-        sound.onloadeddata = function(){
-            logger.info("Loaded Data")
-            loadMusic(element[0], url + element[1]);
+        sound.onload = function(){
+            loadMusic(element[0], url + "assets/sounds/"+ element[1]);
         }
-        sound.src = url + element[1];
+        sound.src = url + "assets/sounds/" + element[1];
     });
-    */
+    
 }
