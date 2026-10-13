@@ -2,21 +2,21 @@ import { textures, sounds, music } from "./resourcePaths.js";
 import { logger } from "./logger.js";
 
 export function getPack() {
-    var url = prompt("Insert Pack URL:");
+    var url = prompt("Insert <Username/Repo>");
     if (url != null) {
-        if (url.charAt(url.length - 1) != "/") {
-            url += "/";
-        }
+        url = `https://raw.githack.com/${url}/main/`
     } else {
         return;
     }
 
+    logger.info("Enabling pack from url: " + url);
+
     textures.forEach((element) => {
         var img = new Image();
         img.onload = function(){
-            loadSprite(element[0], url + element[1]);
+            loadSprite(element[0], url + "assets/sprites/" + element[1]);
         }
-        img.src = url + element[1];
+        img.src = url + "assets/sprites/" + element[1];
     });
     // Sounds not yet supported. Sadly they may be never supported, at least with the current protocol I'm using with repo URLs.
     /*

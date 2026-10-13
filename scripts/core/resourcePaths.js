@@ -1,7 +1,5 @@
 const textures = [
     ["onion", "onion.png"],
-    ["grass5", "grass5.png"],
-    ["grass25", "grass25.png"],
     ["bigonion", "webp/bigonion.webp"],
     ["grass", "grass.png"],
     ["coin", "coin.png"],
@@ -11,7 +9,6 @@ const textures = [
     ["spike9", "spike9.png"],
     ["dspike", "dspike.png"],
     ["invisdanger", "invisdanger.png"],
-    ["invis25", "invis25.png"],
     ["jumpy", "jumpy.png"],
     ["cloud", "cloud.png"],
     ["key", "key.png"],
