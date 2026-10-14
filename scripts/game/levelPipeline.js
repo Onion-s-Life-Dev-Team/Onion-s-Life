@@ -39,7 +39,7 @@ function createGroundRenderer(k) {
     setupRenderer() {
       k.onDraw(() => {
         if (!enabled || tileGrid.size === 0) return;
-        const cam = k.camPos();
+        const cam = k.getCamPos();
         const screenW = k.width();
         const screenH = k.height();
         const minX = Math.floor((cam.x - screenW / 2 - tileSize) / tileSize);

@@ -738,7 +738,7 @@ vec4 frag(vec2 pos, vec2 uv, vec4 color, sampler2D tex) {
 
       switch (effectState) {
         case 0: // Initial zoom in
-          camScale(vec2(zoomLevel));
+          setCamScale(vec2(zoomLevel));
           if (effectTimer > 1) { // After 1 second
             effectTimer = 0;
             effectState = 1;
@@ -746,7 +746,7 @@ vec4 frag(vec2 pos, vec2 uv, vec4 color, sampler2D tex) {
           break;
         case 1: // Dramatically zoom out
           zoomLevel -= dt() * 2; // Zoom out faster
-          camScale(vec2(zoomLevel));
+          setCamScale(vec2(zoomLevel));
           if (zoomLevel < 0.5) {
             zoomLevel = 0.5;
             effectTimer = 0;
@@ -754,11 +754,11 @@ vec4 frag(vec2 pos, vec2 uv, vec4 color, sampler2D tex) {
           }
           break;
         case 2: // Spin around
-          camPos(
+          setCamPos(
             onion.pos.x + Math.sin(effectTimer * cameraSpeed) * 200,
             onion.pos.y + Math.cos(effectTimer * cameraSpeed) * 200
           );
-          camRot(Math.sin(t) * 5);
+          setCamRot(Math.sin(t) * 5);
           if (effectTimer > 2 * Math.PI / cameraSpeed) { // After one full rotation
             effectTimer = 0;
             effectState = 3;
@@ -766,7 +766,7 @@ vec4 frag(vec2 pos, vec2 uv, vec4 color, sampler2D tex) {
           break;
         case 3: // Zoom way back
           zoomLevel += dt() * 2; // Zoom back in faster
-          camScale(vec2(zoomLevel));
+          setCamScale(vec2(zoomLevel));
           if (zoomLevel > 3) {
             zoomLevel = 3;
             effectTimer = 0;
@@ -779,9 +779,9 @@ vec4 frag(vec2 pos, vec2 uv, vec4 color, sampler2D tex) {
       }
     } else {
       // Reset camera to default state when effect is off
-      camScale(vec2(1));
-      camRot(0);
-      camPos(onion.pos);
+      setCamScale(vec2(1));
+      setCamRot(0);
+      setCamPos(onion.pos);
     }
   }
 
@@ -892,7 +892,7 @@ vec4 frag(vec2 pos, vec2 uv, vec4 color, sampler2D tex) {
   const NETWORK_UPDATE_INTERVAL = 100; // Update position max 10 times per second
 
   onion.onUpdate(() => {
-    camPos(onion.pos);
+    setCamPos(onion.pos);
 
     // Throttle network updates to reduce lag
     const now = Date.now();

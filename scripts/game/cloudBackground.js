@@ -53,7 +53,7 @@ export function setupCloudBackground(k) {
   // Tile dimensions are captured once so the layout stays consistent.
   const tileWidth = k.width() * TILE_MULTIPLIER;
   const tileHeight = k.height() * TILE_MULTIPLIER;
-  const startCamera = k.camPos();
+  const startCamera = k.getCamPos();
   const originX = startCamera.x - tileWidth / 2;
   const originY = startCamera.y - tileHeight / 2;
 
@@ -70,7 +70,7 @@ export function setupCloudBackground(k) {
   // paints over the clouds, as do regular level objects.
   k.onDraw(() => {
     const dt = k.dt();
-    const camera = k.camPos();
+    const camera = k.getCamPos();
     const halfW = k.width() / 2;
     const halfH = k.height() / 2;
 

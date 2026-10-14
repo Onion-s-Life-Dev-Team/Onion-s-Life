@@ -159,7 +159,7 @@ export class PerformanceDirector {
     if (!this.k) return;
 
     // Use squared distance to avoid the square root in Vec2.dist for every object.
-    const camera = this.k.camPos();
+    const camera = this.k.getCamPos();
     const maxDistanceSquared = settings.maxRenderDistance ** 2;
     this.k.get('*').forEach((obj) => {
       if (!obj.pos) return;
