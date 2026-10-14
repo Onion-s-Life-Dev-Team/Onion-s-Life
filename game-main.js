@@ -28,6 +28,8 @@ function randomNameGenerator() {
 }
 var userID = randomNameGenerator();
 var allUserIds = [];
+var playerListVisible = false;
+var playerListObjects = [];
 var otherOnions = [];
 var onionId = 0;
 var onions = [
@@ -73,7 +75,7 @@ function subscribeToChannel() {
       (event) => { receivedMoveLevels(event) }
     )
     .on('presence', { event: 'join' }, ({ newPresences }) => {
-      printOnions(newPresences)
+      printOnions(channel.presenceState())
     })
     .on('presence', { event: 'sync' }, () => {
       printOnions(channel.presenceState())
@@ -120,24 +122,59 @@ function receivedNewPlayer({ event, payload }) {
 //this could include each user
 function printOnions(presences) {
   if (multiplayerEnabled) {
-    var k = 0;
-    for (const [userId, presence] of Object.entries(presences)) {
-      if (presence.userId && presence.level) {
-        if (allUserIds.find(user => user.userId === presence.userId)) {
-          allUserIds.splice(allUserIds.indexOf(allUserIds.find(user => user.userId === presence.userId)), 1)
+    allUserIds = [];
+    const seenUsers = new Set();
+    for (const [presenceKey, presenceValue] of Object.entries(presences ?? {})) {
+      // Supabase Presence state values are arrays of metadata, while join
+      // notifications may also provide a direct metadata object.
+      const entries = Array.isArray(presenceValue) ? presenceValue : [presenceValue];
+      for (const presence of entries) {
+        if (!presence) continue;
+        const userId = presence.userId ?? presenceKey;
+        if (userId && presence.level != null && !seenUsers.has(userId)) {
+          seenUsers.add(userId);
+          allUserIds.push({ userId, level: presence.level });
         }
-        allUserIds.push({ userId: presence.userId, level: presence.level })
       }
-      k++;
     }
-    for (var i = 0; i < allUserIds.length; i++) {
-      add([
-        text(`${allUserIds[i].userId} - Level ${allUserIds[i].level}`, { size: 20, align: "right" }),
-        pos(canvasWidth - 600, 10 + (i * 20)),
-        fixed(),
-      ])
-    }
+    if (playerListVisible) renderPlayerList();
   }
+}
+
+function clearPlayerList() {
+  for (const object of playerListObjects) {
+    if (object.exists()) destroy(object);
+  }
+  playerListObjects = [];
+}
+
+function renderPlayerList() {
+  clearPlayerList();
+  if (!playerListVisible) return;
+
+  const panelWidth = Math.min(420, width() - 24);
+  const rowHeight = 24;
+  const panelHeight = Math.max(48, allUserIds.length * rowHeight + 20);
+  playerListObjects.push(add([
+    rect(panelWidth, panelHeight),
+    pos(width() - 12, 12),
+    anchor("topright"),
+    color(0, 0, 0),
+    opacity(0.7),
+    fixed(),
+    z(900),
+  ]));
+
+  allUserIds.forEach((user, index) => {
+    playerListObjects.push(add([
+      text(`${user.userId} - Level ${user.level}`, { size: 18, align: "left" }),
+      pos(width() - panelWidth, 20 + index * rowHeight),
+      anchor("topleft"),
+      color(255, 255, 255),
+      fixed(),
+      z(901),
+    ]));
+  });
 }
 
 
@@ -875,6 +912,17 @@ vec4 frag(vec2 pos, vec2 uv, vec4 color, sampler2D tex) {
 
   onKeyPress("f", (c) => {
     setFullscreen(!isFullscreen())
+  })
+
+  onKeyDown("tab", () => {
+    if (playerListVisible) return;
+    playerListVisible = true;
+    renderPlayerList();
+  })
+
+  onKeyRelease("tab", () => {
+    playerListVisible = false;
+    clearPlayerList();
   })
 
   // Debug: Toggle performance overlay with 'h' key
