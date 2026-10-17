@@ -286,18 +286,14 @@ window.addEventListener('beforeunload', () => {
 
 let canvasWidth = document.documentElement.clientWidth;
 let canvasHeight = document.documentElement.clientHeight;
-let deviceMode = null;
 let heightStretch = 0;
 if ((window.matchMedia('(display-mode: fullscreen)').matches || window.navigator.fullscreen) && navigator.userAgent.includes('Android')) {
   // Code for PWA running on Android
-  deviceMode = "Android";
   heightStretch = 75;
 } else if ((window.matchMedia('(display-mode: fullscreen)').matches || window.navigator.fullscreen) && navigator.userAgent.includes('CrOS')) {
   // Code for PWA running on Chrome OS
-  deviceMode = "ChromeOS";
 } else {
   // Code for non-PWA behavior or other platforms
-  deviceMode = "Other";
 }
 
 import { LEVELS, levelConf } from './scripts/game/levels.js';
@@ -1174,34 +1170,6 @@ vec4 frag(vec2 pos, vec2 uv, vec4 color, sampler2D tex) {
 
 });
 
-/*function button(){
-  return {
-  id: "button",
-  require: ["scale", "area"],
-  add() {
-    onHover: () => {
-      this.scale = 0.70;
-    },
-    onHoverEnd: () => {
-      this.scale = 1;
-    }
-  }
-  }
-}*/
-function button() {
-  return {
-    id: "button",
-    require: ["scale", "area"],
-    add() {
-      this.onHover(() => {
-        this.scale = 0.70;
-      })
-      this.onHoverEnd(() => {
-        this.scale = 1;
-      })
-    }
-  }
-}
 
 scene("title", () => {
   if (parseInt(getHighLevel()) > 0) {
