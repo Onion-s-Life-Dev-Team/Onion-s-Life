@@ -140,7 +140,7 @@ export class LevelTileBatcher {
   // Check if a tile type should be batched
   isBatchableTile(tile) {
     // Batch solid tiles like walls, ground, etc.
-    const batchableTiles = ['=', 'i', '#', '_', '+', '~', 'w', 's'];
+    const batchableTiles = ['=', 'i', '#', 'w', 's'];
     return batchableTiles.includes(tile);
   }
 

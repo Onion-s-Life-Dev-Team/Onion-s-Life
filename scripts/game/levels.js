@@ -2046,24 +2046,6 @@ const levelConf = {
   tiles:{
     // Ground tiles are merged by the level pipeline (collision and visuals), so no entity is created.
     "=": () => null,
-    "+": () => [
-      sprite("grass5"),
-      area(new Rect(vec2(), 160, 32)),
-      body({ isStatic: true, mass: 5 }),
-      offscreen({ hide: true, distance: 160 }),
-      scale(1),
-      anchor("bot"),
-      "ground"
-    ],
-    "_": () => [
-      sprite("grass25"),
-      area(new Rect(vec2(), 800, 32)),
-      body({ isStatic: true, mass: 5 }),
-      offscreen({ hide: true, distance: 800 }),
-      scale(1),
-      anchor("bot"),
-      "ground"
-    ],
     "?": () => [
       sprite("fake"),
       area({ isSensor: true }),
@@ -2183,13 +2165,6 @@ const levelConf = {
       sprite("invisdanger"),
       offscreen({ hide: true }),
       area({ isSensor: true }),
-      "danger",
-      anchor("bot"),
-    ],
-    "~": () => [
-      sprite("invis25"),
-      area(new Rect(vec2(), 800, 32), { isSensor: true }),
-      offscreen({ hide: true, distance: 1 }),
       "danger",
       anchor("bot"),
     ],
