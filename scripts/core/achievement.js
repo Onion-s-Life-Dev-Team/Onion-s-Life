@@ -1,6 +1,8 @@
+import { getCookie, setCookie } from "./storage.js";
+
 export function handleAchievementCollision(x, y, level, name, description, sprite) {
     // Get existing achievements from the cookie
-    var achievements = getCookie("achievements");
+    var achievements = getCookie("achievements") ?? "";
     
     // Append the new achievement to the string
     var newAchievements = achievements + level + "," + x + "," + y + "," + name + "," + description + "," + sprite + "--";
@@ -47,26 +49,4 @@ export function hasAchievement(name) {
     //return true if the achievement has been completed
     //don't return the achievement itself
     return achievementsArray.some(achievement => achievement.name === name);
-}
-
-function getCookie(cname) {
-    var name = cname + "=";
-    var ca = document.cookie.split(';');
-    for (var i = 0; i < ca.length; i++) {
-        var c = ca[i];
-        while (c.charAt(0) == ' ') {
-            c = c.substring(1);
-        }
-        if (c.indexOf(name) == 0) {
-            return c.substring(name.length, c.length);
-        }
-    }
-    return "";
-}
-
-function setCookie(cname, cvalue, exdays) {
-    var d = new Date();
-    d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
-    var expires = "expires=" + d.toUTCString();
-    document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
 }

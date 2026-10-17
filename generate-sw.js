@@ -71,7 +71,7 @@ for (const texture of textures) {
 for (const sound of soundAssets) {
   assets.add('/assets/sounds/' + sound[1]);
 }
-assets.add('assets/apl386.woff2');
+assets.add('/assets/apl386.woff2');
 
 // Critical CDN dependencies that must be pre-cached for offline play
 // Extracted from game-main.js imports

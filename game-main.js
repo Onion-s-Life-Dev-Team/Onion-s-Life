@@ -12,6 +12,7 @@ import { getWinSpins, useWinSpin, spinWheel, addWinSpin } from './scripts/core/w
 import { promptPackUrl, loadPack } from "./scripts/core/packHandler.js";
 import { FEATURED_PACK_URLS, loadFeaturedPacks } from "./scripts/core/featuredPacks.js";
 import { logger } from "./scripts/core/logger.js";
+import { getCookie, setCookie, deleteCookie } from "./scripts/core/storage.js";
 
 const SUPABASE_URL = 'https://ihrdqbqvoflutgbzhqqo.supabase.co'
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlocmRxYnF2b2ZsdXRnYnpocXFvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTYwNDI1ODIsImV4cCI6MjAzMTYxODU4Mn0.d3Vac0lv5CicW-FF_NfZ7j3BAkaXEDLctg47V64S2NE'
@@ -89,11 +90,6 @@ function subscribeToChannel() {
 }
 
 subscribeToChannel();
-
-//function remove cookie
-function removeCookie(name) {
-  document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
-}
 
 //handle death event
 function receivedDeathMessage({ event, payload }) {
@@ -364,29 +360,6 @@ var lvlWidth = 0;
 var jumpCount = 0;
 var offsetY = 0;
 var offsetX = 0;
-// Set a cookie
-function setCookie(name, value, days) {
-  let expires = "";
-  if (days) {
-    const date = new Date();
-    date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-    expires = "; expires=" + date.toUTCString();
-  }
-  document.cookie = name + "=" + value + expires + "; path=/";
-}
-
-// Get a cookie value
-function getCookie(name) {
-  const cookies = document.cookie.split("; ");
-  for (let i = 0; i < cookies.length; i++) {
-    const cookie = cookies[i].split("=");
-    if (cookie[0] === name) {
-      return cookie[1];
-    }
-  }
-  return null;
-}
-
 var slctId = 0;
 // Set a high score cookie
 function setHighLevel(score) {
@@ -421,7 +394,7 @@ scene("game", ({ levelId, coins } = {
   var storedName = getCookie("name");
   if (storedName) {
     alert("Why did you make an offensive name? I'm changing it to a random name.")
-    removeCookie("name");
+    deleteCookie("name");
     //return storedName to use the custom name
     userID = randomNameGenerator();
   }
@@ -1713,7 +1686,7 @@ scene("name", () => {
     const nameSoFar = getCookie("name");
     if (nameSoFar) {
       alert("Sorry, this functionality is currently disabled due to abuse.")
-      removeCookie("name");
+      deleteCookie("name");
       //return nameSoFar to use custom name
       return randomNameGenerator();
     } else {
