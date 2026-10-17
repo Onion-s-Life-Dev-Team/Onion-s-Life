@@ -11,42 +11,27 @@ export function handleAchievementCollision(x, y, level, name, description, sprit
     setCookie("achievements", newAchievements, 365);
 }
 
-export function checkAchievements() {
-    var achievements = getCookie("achievements");
+// Parses the "achievements" cookie into objects, dropping entries with invalid coordinates.
+function parseAchievements() {
+    const achievements = getCookie("achievements");
     if (!achievements) {
         return [];
     }
-    
-    // Parse the cookie
-    var achievementsArray = achievements.split("--").map(achievement => {
-        var [level, x, y, name, description, sprite] = achievement.split(",");
-        return { level, x: parseFloat(x), y: parseFloat(y), name, description, sprite };
-    });
 
-    // Filter out invalid achievements
-    achievementsArray = achievementsArray.filter(achievement => !isNaN(achievement.x) && !isNaN(achievement.y));
-
-    // Return the parsed achievements array
-    return achievementsArray;
+    return achievements
+        .split("--")
+        .map(achievement => {
+            const [level, x, y, name, description, sprite] = achievement.split(",");
+            return { level, x: parseFloat(x), y: parseFloat(y), name, description, sprite };
+        })
+        .filter(achievement => !isNaN(achievement.x) && !isNaN(achievement.y));
 }
 
-//write a function that checks if a certain achievement has been completed
+export function checkAchievements() {
+    return parseAchievements();
+}
+
+// Returns true if the achievement with this name has been completed.
 export function hasAchievement(name) {
-    var achievements = getCookie("achievements");
-    if (!achievements) {
-        return false;
-    }
-    
-    // Parse the cookie
-    var achievementsArray = achievements.split("--").map(achievement => {
-        var [level, x, y, name, description, sprite] = achievement.split(",");
-        return { level, x: parseFloat(x), y: parseFloat(y), name, description, sprite };
-    });
-
-    // Filter out invalid achievements
-    achievementsArray = achievementsArray.filter(achievement => !isNaN(achievement.x) && !isNaN(achievement.y));
-
-    //return true if the achievement has been completed
-    //don't return the achievement itself
-    return achievementsArray.some(achievement => achievement.name === name);
+    return checkAchievements().some(achievement => achievement.name === name);
 }
