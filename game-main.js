@@ -8,7 +8,7 @@ import loadAssets from "./scripts/core/assets.js";
 import { handleAchievementCollision, checkAchievements, hasAchievement } from "./scripts/core/achievement.js";
 import { addCoin, retrieveCoins, storeCoins } from "./scripts/core/coinManager.js";
 import { hasSkin, saveSkin } from "./scripts/core/skinManager.js";
-import { getWinSpins, useWinSpin, spinWheel, addWinSpin } from './scripts/core/winSpins.js';
+import { getWinSpins, useWinSpin, addWinSpin } from './scripts/core/winSpins.js';
 import { promptPackUrl, loadPack } from "./scripts/core/packHandler.js";
 import { FEATURED_PACK_URLS, loadFeaturedPacks } from "./scripts/core/featuredPacks.js";
 import { logger } from "./scripts/core/logger.js";
@@ -75,7 +75,7 @@ function subscribeToChannel() {
       { event: 'move_levels' },
       (event) => { receivedMoveLevels(event) }
     )
-    .on('presence', { event: 'join' }, ({ newPresences }) => {
+    .on('presence', { event: 'join' }, () => {
       printOnions(channel.presenceState())
     })
     .on('presence', { event: 'sync' }, () => {
@@ -92,7 +92,7 @@ function subscribeToChannel() {
 subscribeToChannel();
 
 //handle death event
-function receivedDeathMessage({ event, payload }) {
+function receivedDeathMessage({ payload }) {
   const { userId } = payload
   if (userId !== userID) {
     // Check if we already have a sprite for this user.
@@ -175,7 +175,7 @@ function renderPlayerList() {
 
 
 
-function receivedMoveLevels({ event, payload }) {
+function receivedMoveLevels({ payload }) {
   const { userId, level } = payload;
   if (userId !== userID) {
     let onion = otherOnions.find(onion => onion.userId === userId);
@@ -192,7 +192,7 @@ function receivedMoveLevels({ event, payload }) {
   }
 }
 
-function receivedOnionPosition({ event, payload }) {
+function receivedOnionPosition({ payload }) {
 
   const { userId, onionId, x, y, level } = payload;
   if (userId !== userID) {
@@ -349,11 +349,11 @@ k.onUpdate(() => {
 // load assets
 loadAssets();
 
-const bg = add([fixed(), z(200)])
-const obj = add([fixed(), z(400)])
-const game = add([fixed(), z(0)])
-const ui = add([fixed(), z(800)])
-const title = add([fixed(), z(700)])
+add([fixed(), z(200)])
+add([fixed(), z(400)])
+add([fixed(), z(0)])
+add([fixed(), z(800)])
+add([fixed(), z(700)])
 
 //if(savedId != null){
 //  savedId = 0;
@@ -362,10 +362,8 @@ const title = add([fixed(), z(700)])
 //}
 //}
 var rEnabled = true
-var loops = 0;
 var lvlWidth = 0;
 var jumpCount = 0;
-var offsetY = 0;
 var offsetX = 0;
 var slctId = 0;
 // Set a high score cookie
@@ -718,8 +716,6 @@ vec4 frag(vec2 pos, vec2 uv, vec4 color, sampler2D tex) {
       zoomLevel = 3;
       effectState = 0;
       effectTimer = 0;
-    } else {
-
     }
   }
 
@@ -871,7 +867,7 @@ vec4 frag(vec2 pos, vec2 uv, vec4 color, sampler2D tex) {
   }
 
 
-  onKeyPress("f", (c) => {
+  onKeyPress("f", () => {
     setFullscreen(!isFullscreen())
   })
 
@@ -912,7 +908,7 @@ vec4 frag(vec2 pos, vec2 uv, vec4 color, sampler2D tex) {
   })
 
   //spike code
-  onion.onCollide("danger", (danger) => {
+  onion.onCollide("danger", () => {
     die("hits the danger");
 
   })
@@ -1006,7 +1002,7 @@ vec4 frag(vec2 pos, vec2 uv, vec4 color, sampler2D tex) {
     })
   }
 
-  onion.onCollide("gravityreset", (gravityreset) => {
+  onion.onCollide("gravityreset", () => {
     setGravity(1300)
   })
 
@@ -1305,7 +1301,7 @@ scene("title", () => {
     go("achievements");
   })
 
-  const winSpinBtn = add([
+  add([
     sprite("winSpinBtn"),
     "winSpin",
     fixed(),
@@ -1453,21 +1449,21 @@ scene("select", () => {
     pos(width() * 0.35 - 32, height() / 2 - 64),
   ])
   if (slctId < highestId) {
-    var rightArrow = add([
+    add([
       sprite("arrowr"),
       "r",
       area({ scale: 2, }),
       pos(width() * 0.65 - 32, height() / 2 - 64),
     ])
   }
-  const superLeftArrow = add([
+  add([
     sprite("arrowl"),
     "sl",
     area({ scale: 2, }),
     pos(width() * 0.2 - 32, height() / 2 - 64),
   ])
   if (slctId < highestId) {
-    var superRightArrow = add([
+    add([
       sprite("arrowr"),
       "sr",
       area({ scale: 2, }),
@@ -1625,7 +1621,7 @@ scene("name", () => {
       lineSpacing: 8,
       letterSpacing: 4,
       // Transform each character for special effects
-      transform: (idx, ch) => ({
+      transform: (idx) => ({
         color: hsl2rgb((time() * 0.2 + idx * 0.1) % 1, 0.7, 0.8),
         pos: vec2(0, wave(-4, 4, time() * 4 + idx * 0.5)),
 
@@ -1707,14 +1703,14 @@ scene("skins", () => {
     pos(75, 13),
   ]);
 
-  const skinSelectBtn = add([
+  add([
     sprite("lvlbtn"),
     "btn",
     pos(width() / 2 - 128, height() / 2 - 128),
     area(),
   ]);
 
-  const packsBtn = add([
+  add([
     sprite("packBtn"),
     "packs",
     scale(0.421875),
@@ -1728,12 +1724,12 @@ scene("skins", () => {
     go("packs");
   })
 
-  const coinSpr = add([
+  add([
     sprite("coin"),
     pos(width() * 0.8, height() * 0.05),
   ])
 
-  const coinCount = add([
+  add([
     text(coins),
     pos(width() * 0.85, height() * 0.05),
   ])
@@ -1805,14 +1801,14 @@ scene("skins", () => {
     showOnionSprite();
   }
 
-  const leftArrow = add([
+  add([
     sprite("arrowl"),
     "l",
     area({ scale: 2 }),
     pos(width() * 0.3 - 32, height() / 2 - 64),
   ]);
 
-  var rightArrow = add([
+  add([
     sprite("arrowr"),
     "r",
     area({ scale: 2 }),
@@ -1864,7 +1860,7 @@ scene("multiplayer", () => {
     pos(width() / 2 - 395, height() * 0.05),
   ])
 
-  const onOffBtn = add([
+  add([
     // list of components
     sprite("lvlbtn"),
     "btn",
@@ -1873,7 +1869,7 @@ scene("multiplayer", () => {
 
   ])
   if (multiplayerEnabled) {
-    const onOffText = add([
+    add([
       // list of components
       text("ON", { size: 100 }),
       "txt",
@@ -1882,7 +1878,7 @@ scene("multiplayer", () => {
 
     ])
   } else {
-    const onOffText = add([
+    add([
       // list of components
       text("OFF", { size: 100 }),
       "txt",
@@ -1892,7 +1888,7 @@ scene("multiplayer", () => {
     ])
   }
 
-  const leftArrow = add([
+  add([
     sprite("arrowl"),
     "l",
 
@@ -1900,7 +1896,7 @@ scene("multiplayer", () => {
     pos(width() * 0.3 - 32, height() / 2 - 64),
   ])
 
-  var rightArrow = add([
+  add([
     sprite("arrowr"),
     "r",
     area({ scale: 2, }),
@@ -1970,8 +1966,7 @@ scene("winSpins", () => {
     let index = 0;
     const animationDuration = 2000; // total duration of the animation
     const intervalDuration = 100; // interval between sprite changes
-    const totalIntervals = animationDuration / intervalDuration;
-    const interval = setInterval(() => {
+        const interval = setInterval(() => {
       prizeSprite.use(sprite(prizeSprites[index % prizeSprites.length]));
       underPrizeBtn.prizeText.text = "";
       index++;
@@ -1995,12 +1990,13 @@ scene("winSpins", () => {
             prizeSprite.use(sprite("coin"));
             underPrizeBtn.prizeText.text = "COINS";
             break;
-          case "skin":
+          case "skin": {
             const skinNames = ["beach", "blue", "dark", "gold", "watermelon", "eggplant", "magic", "pumpkin", "invert", "ocean"];
             const randomSkin = "onion-" + skinNames[Math.floor(Math.random() * skinNames.length)];
             prizeSprite.use(sprite(randomSkin));
             underPrizeBtn.prizeText.text = "SKIN";
             break;
+          }
           case "winSpin":
             prizeSprite.use(sprite("portal"));
             underPrizeBtn.prizeText.text = "WINSPIN";
@@ -2026,10 +2022,11 @@ scene("winSpins", () => {
       case "COINS":
         addCoin();
         break;
-      case "SKIN":
+      case "SKIN": {
         const skinSprite = prizeSprite.sprite;
         saveSkin(skinSprite.name);
         break;
+      }
       case "WINSPIN":
         addWinSpin();
         break;

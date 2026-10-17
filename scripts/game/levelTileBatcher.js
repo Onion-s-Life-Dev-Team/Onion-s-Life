@@ -279,7 +279,7 @@ export class LevelTileBatcher {
     }
     
     // Count batched tiles
-    for (const [tileType, regions] of batches.entries()) {
+    for (const regions of batches.values()) {
       batchCount += regions.length;
       for (const region of regions) {
         batchedTiles += region.width * region.height;

@@ -47,7 +47,7 @@ export class PerformanceDirector {
     try {
       const saved = localStorage.getItem('mobileQualityLevel');
       if (saved && PerformanceProfiles[saved]) return saved;
-    } catch (e) { /* storage unavailable */ }
+    } catch { /* storage unavailable */ }
     return detectBestProfile();
   }
 
@@ -134,7 +134,7 @@ export class PerformanceDirector {
     }
 
     // Persist preference + dispatch event.
-    try { localStorage.setItem('mobileQualityLevel', level); } catch (e) {}
+    try { localStorage.setItem('mobileQualityLevel', level); } catch { /* storage unavailable */ }
     if (typeof window !== 'undefined' && typeof window.dispatchEvent === 'function') {
       window.dispatchEvent(new CustomEvent('qualityChanged', {
         detail: {

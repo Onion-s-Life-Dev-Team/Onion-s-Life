@@ -28,3 +28,4 @@ jobs:
         cache: 'npm'
     - run: npm install --save-dev eslint @eslint/js
     - run: npm test
+    - run: npm run build

@@ -140,7 +140,7 @@
       "sizes": "620x300"
     },
     {
-      "src": "sprites/onion.png",
+      "src": "assets/sprites/onion.png",
       "type": "image/png",
       "sizes": "77x101",
       "purpose":"any"

@@ -69,7 +69,7 @@ export default function registerTouchControls(onion, moveOnion, levelId, setHigh
         let djRotation = 0; // Variable to track the rotation angle
         let isDjAnimating = false; // Variable to track the animation state
 
-        onTouchStart((pos, id) => {
+        onTouchStart((pos) => {
         touching = true;
         if (rightArrow.hasPoint(pos)) {
             arrowClicked = "right";
