@@ -76,7 +76,7 @@ const sounds = [
 ];
 
 const music = [
-    ["OverworldlyFoe", "music.ogg"]
+    ["OverworldlyFoe", "music.mp3"]
 ];
 
 export { textures, sounds, music };

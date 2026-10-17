@@ -25,10 +25,16 @@ export function loadPack(url) {
         sound.crossOrigin = "anonymous";
         sound.onloadeddata = function(){
             loadMusic(element[0], url + "assets/sounds/"+ element[1]);
-            console.log("Loaded " + element[0]);
         }
         sound.src = url + "assets/sounds/" + element[1];
     });
+    // Code to support legacy ogg format music
+    var ogg = new Audio();
+    ogg.crossOrigin = "anonymous";
+    ogg.onloadeddata = function(){
+        loadMusic("OverworldlyFoe", url + "assets/sounds/music.ogg");
+    }
+    ogg.src = url + "assets/sounds/music.ogg";
 }
 
 // Asks for a <Username/Repo> and returns its pack root URL, or null if cancelled or empty.
