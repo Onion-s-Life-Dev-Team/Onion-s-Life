@@ -308,7 +308,6 @@ import { setupSimpleWaterPhysics } from "./scripts/game/simpleWaterPhysics.js";
 // Initialize global game config for performance system
 window.gameConfig = window.gameConfig || {
   debug: false,
-  batchedGroundRendering: true,
   performanceProfile: 'medium'
 };
 
@@ -453,38 +452,19 @@ scene("game", ({ levelId, coins } = {
       //load the level
       const optimizedLevel = createBubbles(LEVELS[levelId ?? 0]);
 
-      // Force batched rendering for large levels (e.g., The Labyrinth, ocean levels)
-      // Even high-end devices choke on 1000+ individual physics bodies
-      if (window.gameConfig && !window.gameConfig.batchedGroundRendering) {
-        let batchableTileCount = 0;
-        for (const row of optimizedLevel) {
-          for (const ch of row) {
-            if (ch === '=' || ch === 's' || ch === 'w') batchableTileCount++;
-          }
-        }
-        if (batchableTileCount > 200) {
-          logger.debug(`Large level detected (${batchableTileCount} batchable tiles) - enabling batched rendering`);
-          window.gameConfig.batchedGroundRendering = true;
-        }
-      }
+      // Batched ground rendering (follows Kaplay optimization guide). Ground, sand
+      // and water tiles are drawn and collided with as merged regions.
+      logger.debug(`Loading level ${levelId} with batched ground rendering`);
+      const compiled = compileLevel(k, optimizedLevel, 64);
+      window.groundRenderer = compiled.groundRenderer;
+      window._mergedWaterRegions = compiled.waterRegions;
+      const totalTiles = compiled.groundRenderer.getStats().totalTiles;
+      logger.debug(`Level compiled: ${totalTiles} render tiles -> ${compiled.collisionObjects.length} collision regions; ${compiled.waterRegions.length} water areas`);
+      logger.debug(`Water regions: ${window._mergedWaterRegions.length} areas computed from level data (no game objects needed)`);
 
-      // Set up batched ground rendering if enabled (follows Kaplay optimization guide)
-      if (window.gameConfig && window.gameConfig.batchedGroundRendering) {
-        logger.debug(`Loading level ${levelId} with batched ground rendering`);
-        const compiled = compileLevel(k, optimizedLevel, 64);
-        window.groundRenderer = compiled.groundRenderer;
-        window._mergedWaterRegions = compiled.waterRegions;
-        const totalTiles = compiled.groundRenderer.getStats().totalTiles;
-        logger.debug(`Level compiled: ${totalTiles} render tiles -> ${compiled.collisionObjects.length} collision regions; ${compiled.waterRegions.length} water areas`);
-        logger.debug(`Water regions: ${window._mergedWaterRegions.length} areas computed from level data (no game objects needed)`);
-      }
-
-      // When batching is enabled, strip batched tiles from level data so addLevel
-      // doesn't process hundreds of tiles that would just return null anyway
-      const levelForAddLevel = (window.gameConfig && window.gameConfig.batchedGroundRendering)
-        ? optimizedLevel.map(row => row.replace(/[=sw]/g, ' '))
-        : optimizedLevel;
-      addLevel(levelForAddLevel, levelConf);
+      // Strip batched tiles from the level data so addLevel doesn't process
+      // hundreds of tiles that would just return null anyway
+      addLevel(optimizedLevel.map(row => row.replace(/[=sw]/g, ' ')), levelConf);
 
     }
   } catch (error) {
@@ -1036,15 +1016,13 @@ vec4 frag(vec2 pos, vec2 uv, vec4 color, sampler2D tex) {
     logger.debug("Initializing simple water physics for this level");
     setupSimpleWaterPhysics(k, onion, waterAreas);
 
-    // When water tiles are batched, onCollide("water") never fires,
-    // so we need to set canDoubleJump via position-based water detection
-    if (window.gameConfig && window.gameConfig.batchedGroundRendering) {
-      onUpdate(() => {
-        if (isOnionInWater(onion, waterAreas)) {
-          canDoubleJump = true;
-        }
-      });
-    }
+    // Water tiles are batched, so onCollide("water") never fires. Set
+    // canDoubleJump via position-based water detection instead.
+    onUpdate(() => {
+      if (isOnionInWater(onion, waterAreas)) {
+        canDoubleJump = true;
+      }
+    });
   }
 
 

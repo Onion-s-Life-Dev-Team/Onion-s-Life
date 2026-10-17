@@ -6,25 +6,21 @@ import { logger } from "../core/logger.js";
 export const PerformanceProfiles = {
   // Ultra Low - for very slow devices
   ultraLow: {
-    batchedGroundRendering: true,
     cullingDistance: 400,
   },
   
   // Low - for slow devices
   low: {
-    batchedGroundRendering: true,
     cullingDistance: 600,
   },
   
   // Medium - balanced performance
   medium: {
-    batchedGroundRendering: true,
     cullingDistance: 1000,
   },
   
   // High - full quality
   high: {
-    batchedGroundRendering: true,
     cullingDistance: 2000,
   }
 };

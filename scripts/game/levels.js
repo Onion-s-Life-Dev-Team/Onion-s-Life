@@ -2044,23 +2044,8 @@ const levelConf = {
   tileHeight: 64,
 
   tiles:{
-    "=": () => {
-      // When batched ground rendering is enabled, return null to skip tile creation
-      // The level pipeline handles batched collision and ground visuals.
-      if (window.gameConfig && window.gameConfig.batchedGroundRendering) {
-         return null;  // Skip - the level pipeline creates merged collision objects
-      }
-      // Fallback: normal rendering with sprite
-      return [
-        sprite("grass"),
-        area(),
-        body({ isStatic: true, mass: 5 }),
-        scale(1),
-        offscreen({ hide: true }),
-        anchor("bot"),
-        "ground"
-      ];
-    },
+    // Ground tiles are merged by the level pipeline (collision and visuals), so no entity is created.
+    "=": () => null,
     "+": () => [
       sprite("grass5"),
       area(new Rect(vec2(), 160, 32)),
@@ -2327,41 +2312,9 @@ const levelConf = {
         achSprite: "water",
       },
     ],
-    "s": () => {
-      if (window.gameConfig && window.gameConfig.batchedGroundRendering) {
-         return null;  // Skip - the level pipeline creates merged collision objects
-      }
-      return [
-        sprite("sand"),
-        area(),
-        body({ isStatic: true }),
-        scale(1),
-        offscreen({ hide: true }),
-        anchor("bot"),
-        "sand"
-      ];
-    },
-    "w": () => {
-      if (window.gameConfig && window.gameConfig.batchedGroundRendering) {
-         return null;  // Batched renderer handles visuals; water areas come from level data.
-      }
-      return [
-        sprite("water"),
-        area({ isSensor: true }),
-        scale(1),
-        offscreen({ hide: true }),
-        anchor("bot"),
-        opacity(0.8), // Slight transparency for water
-        "water",
-        {
-          // Store original position for wave animation
-          originalY: null,
-          init() {
-            this.originalY = this.pos.y;
-          }
-        }
-      ];
-    },
+    // Sand and water are merged by the level pipeline; water areas come from level data.
+    "s": () => null,
+    "w": () => null,
     "b": () => [
       sprite("invisdanger"),
       area({ isSensor: true }),
