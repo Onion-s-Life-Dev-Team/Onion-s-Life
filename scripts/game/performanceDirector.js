@@ -216,7 +216,3 @@ export function setupMobilePerformance(k, options = {}) {
   return new PerformanceDirector(k, options);
 }
 
-export function setupPerformanceDirector(k, options = {}) {
-  return new PerformanceDirector(k, options);
-}
-

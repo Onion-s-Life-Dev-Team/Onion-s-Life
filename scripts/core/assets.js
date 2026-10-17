@@ -55,6 +55,6 @@ function logAssetSizes(assets) {
     totalKB += kb;
     rows.push({ asset: name, path, KB: +kb.toFixed(2) });
   }
-  if (import.meta.env?.DEV ?? false) console.table(rows);
+  console.table(rows);
   logger.debug(`Total asset size: ${totalKB.toFixed(2)} KB across ${rows.length} assets`);
 }

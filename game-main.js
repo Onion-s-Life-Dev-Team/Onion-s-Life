@@ -304,7 +304,6 @@ import { LEVELS, levelConf } from './scripts/game/levels.js';
 import { compileLevel, createBubbles } from "./scripts/game/levelPipeline.js";
 import { createBatchedLevel } from "./scripts/game/levelTileBatcher.js";
 import { detectBestProfile, applyPerformanceProfile } from "./scripts/game/performanceConfig.js";
-import { GeneralOptimizer, applySafeRenderingOptimizations } from "./scripts/game/generalOptimizations.js";
 import { setupSimpleWaterPhysics } from "./scripts/game/simpleWaterPhysics.js";
 // Initialize global game config for performance system
 window.gameConfig = window.gameConfig || {
@@ -334,10 +333,19 @@ const k = kaplay({
 
 window.k = k;
 
-applySafeRenderingOptimizations(k);
-
-const generalOptimizer = new GeneralOptimizer(k);
-generalOptimizer.initialize();
+// Destroy fallen enemies so they stop simulating once they leave the level.
+// Only enemies have both a body and patrol behaviour, so only they can fall
+// out of the world. Checked every 60 frames (about once a second).
+const FALL_LIMIT_Y = 3000;
+const FALL_CHECK_INTERVAL = 60;
+let fallCheckTimer = 0;
+k.onUpdate(() => {
+  if (++fallCheckTimer < FALL_CHECK_INTERVAL) return;
+  fallCheckTimer = 0;
+  for (const enemy of k.get("enemy", { recursive: true })) {
+    if (enemy.pos && enemy.pos.y > FALL_LIMIT_Y) enemy.destroy();
+  }
+});
 
 // load assets
 loadAssets();
