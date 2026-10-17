@@ -73,11 +73,28 @@ for (const sound of soundAssets) {
 }
 assets.add('/assets/apl386.woff2');
 
-// Critical CDN dependencies that must be pre-cached for offline play
-// Extracted from game-main.js imports
-const CDN_DEPS = [
-  'https://unpkg.com/kaplay@4000.0.0-alpha.27.1/dist/kaplay.mjs',
-];
+// Kaplay URL is read from game-main.js so version is defined in only one place.
+const KAPLAY_URL_PATTERN = /https:\/\/unpkg\.com\/kaplay@[^"'\s]+\/dist\/kaplay\.mjs/;
+
+function readRequiredMatch(relPath, pattern, description) {
+  const match = readFileSync(join(ROOT, relPath), 'utf8').match(pattern);
+  if (!match) {
+    throw new Error(`generate-sw.js: could not find ${description} in ${relPath}`);
+  }
+  return match[0];
+}
+
+const KAPLAY_URL = readRequiredMatch('game-main.js', KAPLAY_URL_PATTERN, 'the kaplay import URL');
+
+// Fail the build if index.html preloads a different kaplay version than game-main.js imports.
+const preloadedKaplayUrl = readRequiredMatch('index.html', KAPLAY_URL_PATTERN, 'the kaplay preload URL');
+if (preloadedKaplayUrl !== KAPLAY_URL) {
+  throw new Error(
+    `generate-sw.js: index.html preloads ${preloadedKaplayUrl} but game-main.js imports ${KAPLAY_URL}. Update index.html to match.`
+  );
+}
+
+const CDN_DEPS = [KAPLAY_URL];
 
 // Sort for deterministic output
 const sortedAssets = [...assets].sort();
