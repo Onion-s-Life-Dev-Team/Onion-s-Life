@@ -8,7 +8,6 @@ export default defineConfig({
     rollupOptions: {
       input: {
         main: './index.html',
-        original: './index.html',
         bagsLife: './bagsLife.html',
         leveldesigner: './leveldesigner.html'
       },

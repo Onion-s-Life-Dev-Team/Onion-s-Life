@@ -23,7 +23,5 @@
     "globals": "^15.3.0",
     "vite": "^7.0.0"
   },
-  "dependencies": {
-    "acorn": "^8.15.0"
-  }
+  "dependencies": {}
 }
